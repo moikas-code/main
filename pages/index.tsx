@@ -217,11 +217,7 @@ export default function Dragon() {
         <div className='market d-flex flex-column mx-auto m-5 p-3'>
           <p>Site Message: {site_message}</p>
           <p>
-            Site Fees: 0.15%
-            <br />
-            0.05% - "Listing Fee" (Taken when purchased)
-            <br />
-            0.1% - "Purchase Fee" - 50% is returned to the Lister and 50% Creator
+            Site Fees: 0.10% - is used to keep the lights on ❤
           </p>
           {market_nfts
             .sort((a, b) => a.length - b.length)
@@ -267,11 +263,30 @@ export default function Dragon() {
                                     amount: 1,
                                     blockchain: orders[0].id.split(':')[0],
                                     creators: [
-                                      {account: orders[0].maker, value: 5},
-                                      {
-                                        account: creators[0].account,
-                                        value: 5,
-                                      },
+                                      _blockchain == 'ETHEREUM'
+                                        ? {
+                                            account: 'ETHEREUM:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
+                                            value: 10,
+                                          }
+                                        : _blockchain == 'POLYGON'
+                                        ? {
+                                            account: 'POLYGON:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
+                                            value: 10,
+                                          }
+                                        : _blockchain == 'TEZOS'
+                                        ? {
+                                            account: 'TEZOS:tz1RrvP2FtnWAgGYKfoKSkLXYoqyHfXQjs8i' as any,
+                                            value: 10,
+                                          }
+                                        : _blockchain == ' FLOW'
+                                        ? {
+                                            account: 'FLOW:0x54607bd2c9da71d0' as any,
+                                            value: 10,
+                                          }
+                                        : _blockchain == 'SOLANA' && {
+                                            account: 'SOLANA:98jiC2PfMNqLwUrabW3LxE15dfHCyaNX5V6nxHaP96NQ' as any,
+                                            value: 10,
+                                          },
                                     ],
                                   })
                                     .then((res) => {
