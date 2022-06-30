@@ -22,6 +22,11 @@ const typeDefs = gql`
     continuation: String
   }
 
+  type Address_Data {
+    nfts: [COLLECTION_ITEM]
+    totalSupply: Int
+  }
+
   type COLLECTION_OBJ {
     total: Int
     continuation: String
@@ -62,16 +67,17 @@ const typeDefs = gql`
 
   type COLLECTION_ITEM {
     id: String!
-    tokenId: String!
-    blockchain: String!
+    tokenId: String
+    blockchain: String
     collection: String
     contract: String
     creators: [Creators]
-    lazySupply: String!
+    lazySupply: String
     mintedAt: String
     lastUpdatedAt: String
     meta: COLLECTION_ITEM_META
     deleted: Boolean
+    orders: Int
   }
 
   type COLLECTION_ITEM_META {
@@ -275,6 +281,7 @@ const typeDefs = gql`
 
   type Query {
     Query_Market_Sell_Orders(input: QueryInput): MARKET_NFTS
+    Query_Address_NFTS(input: QueryInput): Address_Data
   }
 `;
 

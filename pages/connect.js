@@ -22,7 +22,7 @@ export default function Connect() {
         ) : (
           <h4>You Are Connected</h4>
         )}
-        <br/>
+        <br />
         <ConnectOptions />
         <br />
         <Link href={'/'}>

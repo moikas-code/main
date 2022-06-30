@@ -210,9 +210,9 @@ const TAKO = {
     ) {
       throw new Error('Address is not Formatted Properly');
     }
-    const url = await `${base}${collections}/${
-      address.split(':')[0]
-    }:${address.split(':')[1].toLowerCase()}`;
+    const url = await `${base}${collections}/${address.split(':')[0]}:${address
+      .split(':')[1]
+      .toLowerCase()}`;
     //fetch
     return await fetch(url as string, {
       method: 'GET',
@@ -343,7 +343,7 @@ const TAKO = {
           };
         })
       );
-    console.log('clean', await data);
+    // console.log('clean', await data);
     // console.log('clean', clean);
     return await data;
   },
@@ -688,9 +688,10 @@ const TAKO = {
       // base url
       const base = process.env.DEV !== 'true' ? baseURL : dev_baseURL;
       // api url
-      let url = `${base}${items}/all/?size=${size}&continuation=${continuation}&lastUpdatedFrom=${JSON.stringify(
-        Date.now() - 86400000 * 3
-      )}` as string;
+      let url =
+        `${base}${items}/all/?size=${size}&continuation=${continuation}&lastUpdatedFrom=${JSON.stringify(
+          Date.now() - 86400000 * 3
+        )}` as string;
       //fetch
       let data = await fetch(url, {
         method: 'GET',
@@ -737,37 +738,20 @@ const TAKO = {
   get_items_by_owner: async (address: any) => {
     try {
       const base = process.env.DEV !== 'true' ? baseURL : dev_baseURL;
+      //
       let url = (base + items + '/byOwner/' + `?owner=${address}`) as string;
-      // console.log(process.env.DEV, url);
+      //
       let data = await fetch(url, {
         method: 'GET',
       }).then(async (res) => res.json());
+      //
       return {
         totalSupply: data.total,
-        nfts: data.items.map(async (item: any) => {
-          const asArray = Object.entries(item);
-          const asubArray = Object.entries(item?.meta);
-          const filtered = asArray.filter(([key, value]) =>
-            ['tokenId', 'blockchain', 'id', 'bestSellOrder', 'supply'].includes(
-              key
-            )
-          );
-          const filtered2 = asubArray.filter(([key, value]) =>
-            ['name'].includes(key)
-          );
-          const filteredObj1 = Object.fromEntries(filtered);
-          const filteredObj2 = Object.fromEntries(filtered2);
-          const content = await item.meta.content;
-
-          return {
-            ...filteredObj1,
-            ...filteredObj2,
-            url: content[0] !== undefined ? content[0].url : '',
-          };
-        }),
+        nfts: data.items,
+        continuation: data.continuation,
       };
     } catch (error) {
-      console.log(error);
+      return error;
     }
   },
   get_item_by_nft_id: async (nft_id: any) => {
@@ -882,14 +866,16 @@ const TAKO = {
         blockchain == 'POLYGON'
           ? [
               {
-                account: 'POLYGON:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
+                account:
+                  'POLYGON:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
                 value: 5,
               },
             ]
           : blockchain == 'ETHEREUM'
           ? [
               {
-                account: 'ETHEREUM:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
+                account:
+                  'ETHEREUM:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
                 value: 5,
               },
             ]
@@ -944,7 +930,8 @@ const TAKO = {
         blockchain == 'ETHEREUM'
           ? [
               {
-                account: 'ETHEREUM:0x3E874472Da434f8E1252E95430a65e8F516ED00d' as any,
+                account:
+                  'ETHEREUM:0x3E874472Da434f8E1252E95430a65e8F516ED00d' as any,
                 value: 100,
               },
             ]
@@ -992,7 +979,7 @@ const TAKO = {
       // if (amount <= maxAmount) {
       const orderId = await submit({
         amount,
-        originFees:creators,
+        originFees: creators,
       });
       await console.log(orderId);
       return orderId;

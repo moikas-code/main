@@ -151,7 +151,7 @@ export default function Dragon() {
             arr.push(nft);
           }
         }
-        console.log('?', groupArr);
+        // console.log('?', groupArr);
         setMarketNFTS(groupArr);
         setComplete(true);
       }
@@ -165,7 +165,10 @@ export default function Dragon() {
       variables: {
         input: {
           blockchains: [],
-          origins: ['ETHEREUM:0x877728846bFB8332B03ac0769B87262146D777f3'],
+          origins: [
+            'ETHEREUM:0x877728846bFB8332B03ac0769B87262146D777f3',
+            'SOLANA:98jiC2PfMNqLwUrabW3LxE15dfHCyaNX5V6nxHaP96NQ',
+          ],
           continuation: '',
           size: 100,
         },
@@ -196,12 +199,14 @@ export default function Dragon() {
             max-width: 1228px;
           }
           .nft-wrapper {
-            width: 275px;
+            min-width: 275px !important;
+            max-width: 285px !important;
           }
 
           .icon-wrapper img {
             width: 100%;
             height: 100%;
+
             object-fit: contain;
           }
         `}
@@ -216,11 +221,8 @@ export default function Dragon() {
       <div className='d-flex flex-row justify-content-center align-items-center mx-auto position-relative'>
         <div className='market d-flex flex-column mx-auto m-5 p-3'>
           <p>Site Message: {site_message}</p>
-          <p>
-            Site Fees: 0.10% - is used to keep the lights on ❤
-          </p>
+          <p>Site Fees: 0.10% - is used to keep the lights on ❤</p>
           {market_nfts
-            .sort((a, b) => a.length - b.length)
             .map((nfts: any, k) => {
               return (
                 <div
@@ -265,26 +267,31 @@ export default function Dragon() {
                                     creators: [
                                       _blockchain == 'ETHEREUM'
                                         ? {
-                                            account: 'ETHEREUM:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
+                                            account:
+                                              'ETHEREUM:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
                                             value: 10,
                                           }
                                         : _blockchain == 'POLYGON'
                                         ? {
-                                            account: 'POLYGON:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
+                                            account:
+                                              'POLYGON:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
                                             value: 10,
                                           }
                                         : _blockchain == 'TEZOS'
                                         ? {
-                                            account: 'TEZOS:tz1RrvP2FtnWAgGYKfoKSkLXYoqyHfXQjs8i' as any,
+                                            account:
+                                              'TEZOS:tz1RrvP2FtnWAgGYKfoKSkLXYoqyHfXQjs8i' as any,
                                             value: 10,
                                           }
                                         : _blockchain == ' FLOW'
                                         ? {
-                                            account: 'FLOW:0x54607bd2c9da71d0' as any,
+                                            account:
+                                              'FLOW:0x54607bd2c9da71d0' as any,
                                             value: 10,
                                           }
                                         : _blockchain == 'SOLANA' && {
-                                            account: 'SOLANA:98jiC2PfMNqLwUrabW3LxE15dfHCyaNX5V6nxHaP96NQ' as any,
+                                            account:
+                                              'SOLANA:98jiC2PfMNqLwUrabW3LxE15dfHCyaNX5V6nxHaP96NQ' as any,
                                             value: 10,
                                           },
                                     ],
