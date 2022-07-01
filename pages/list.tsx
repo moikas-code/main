@@ -50,6 +50,7 @@ function ListPage() {
           mintedAt
           lastUpdatedAt
           orders
+          isListed
           meta {
             name
             description
@@ -84,14 +85,16 @@ function ListPage() {
         for (const nft of nfts) {
           i = i + 1;
           // console.log('?', i == nfts.length, i, nfts.length);
-          if (arr.length < 4 && i !== nfts.length) {
-            arr.push(nft);
-          } else if (i == nfts.length) {
-            groupArr.push(arr);
-          } else if (arr.length == 4) {
-            groupArr.push(arr);
-            arr = [];
-            arr.push(nft);
+          if (!nft.isListed) {
+            if (arr.length < 4 && i !== nfts.length) {
+              arr.push(nft);
+            } else if (i == nfts.length) {
+              groupArr.push(arr);
+            } else if (arr.length == 4) {
+              groupArr.push(arr);
+              arr = [];
+              arr.push(nft);
+            }
           }
         }
 
@@ -104,13 +107,17 @@ function ListPage() {
     },
   });
   React.useEffect(() => {
-    Query_Address_NFTS({
-      variables: {
-        input: {
-          address: `${_blockchain}:${_address}`,
+    typeof _blockchain !== 'undefined' &&
+      typeof _address !== 'undefined' &&
+      Query_Address_NFTS({
+        variables: {
+          input: {
+            address: `${
+              _blockchain === 'POLYGON' ? 'ETHEREUM' : _blockchain
+            }:${_address}`,
+          },
         },
-      },
-    });
+      });
   }, [_blockchain, _address]);
 
   if (loading) {
@@ -136,22 +143,29 @@ function ListPage() {
                 className='d-flex flex-column flex-md-row flex-wrap w-100'
                 key={k}>
                 {rows.map((nft_item, q) => {
-                  return (
-                    <NFT_ITEM
-                      key={q}
-                      ID={nft_item.id}
-                      Name={nft_item.meta?.name}
-                      Content={nft_item.meta.content}
-                      Url={nft_item.meta.content[0]?.url}
-                      Orders={nft_item.orders}
-                      onClick={() => {
-                        async () => {
-                          console.log('Bought', nft_item.id);
-                          setID(nft_item.id);
-                        };
-                      }}
-                    />
-                  );
+                  if (!nft_item.isListed)
+                    return (
+                      <NFT_ITEM
+                        key={q}
+                        ID={nft_item.id}
+                        Name={nft_item.meta?.name}
+                        Content={nft_item.meta.content}
+                        Type={
+                          typeof nft_item.meta.content[0] !== 'undefined'
+                            ? nft_item.meta.content[0].type
+                            : 'IMAGE'
+                        }
+                        Url={nft_item.meta.content[0]?.url}
+                        Orders={nft_item.orders}
+                        isListed={nft_item.isListed}
+                        onClick={() => {
+                          async () => {
+                            console.log('Bought', nft_item.id);
+                            setID(nft_item.id);
+                          };
+                        }}
+                      />
+                    );
                 })}
               </div>
             );
@@ -197,33 +211,40 @@ function NFT_ITEM({...props}) {
         id={props.ID}
         className='nft-wrapper  border border-dark m-2 p-2 d-flex flex-column col justify-content-between'>
         <div className='icon-wrapper mx-auto'>
-          {props.Content.length > 0 && (
+          {props.Content.length > 0 && props.Type === 'IMAGE' ? (
             <img
               className='mx-auto'
               src={props.Url || 'https://via.placeholder.com/350'}
               alt=''
             />
+          ) : props.Type === 'VIDEO' ? (
+            <video src={props.Url} />
+          ) : (
+            <></>
           )}
         </div>
         <div className='d-flex flex-column'>
           <hr />
           {connection.state.status === 'connected' &&
-          props.Orders === 0 &&
-          !show && (
-            <>
-              <p className='m-0'>{props.Name}</p>
-              <hr />
-              <Button
-                className='btn btn-dark'
-                onClick={() => {
-                  props.onClick();
-                  setShow(!show);
-                }}>
-                Quick List
-              </Button>
-            </>
+            !props.isListed &&
+            !show &&
+            _blockchain === props.ID.split(':')[0] && (
+              <>
+                <p className='m-0'>{props.Name}</p>
+                <hr />
+                <Button
+                  className='btn btn-dark'
+                  onClick={() => {
+                    props.onClick();
+                    setShow(!show);
+                  }}>
+                  Quick List
+                </Button>
+              </>
+            )}
+          {_blockchain !== props.ID.split(':')[0] && (
+            <p className='mx-auto'>Please Switch Networks to {props.ID.split(':')[0]}</p>
           )}
-
           {show && (
             <ListSection
               ID={props.ID}

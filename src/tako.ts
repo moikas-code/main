@@ -297,52 +297,51 @@ const TAKO = {
     // console.log(url);
     let data = await fetch(url, {
       method: 'GET',
-    })
-      .then((res) => {
-        // console.log(res);
-        return res.json();
-      })
-      .then((res) =>
-        res.orders.map(async (item: any) => {
-          // console.log(item);
-          const asArray = Object.entries(item);
-          const filtered = asArray.filter(([key, value]) =>
-            [
-              'platform',
-              'fill',
-              'id',
-              'status',
-              'makeStock',
-              'createdAt',
-              'makePrice',
-              'makePriceUsd',
-              'maker',
-            ].includes(key)
-          );
+    }).then((res) => {
+      // console.log(res);
+      return res.json();
+    });
+    // .then((res) =>
+    //   res.orders.map(async (item: any) => {
+    //     // console.log(item);
+    //     const asArray = Object.entries(item);
+    //     const filtered = asArray.filter(([key, value]) =>
+    //       [
+    //         'platform',
+    //         'fill',
+    //         'id',
+    //         'status',
+    //         'makeStock',
+    //         'createdAt',
+    //         'makePrice',
+    //         'makePriceUsd',
+    //         'maker',
+    //       ].includes(key)
+    //     );
 
-          // const filtered2 = asubArray.filter(([key, value]) =>
-          //   [''].includes(key)
-          // );
+    //     // const filtered2 = asubArray.filter(([key, value]) =>
+    //     //   [''].includes(key)
+    //     // );
 
-          const filteredObj1 = Object.fromEntries(filtered);
-          // const filteredObj2 = Object.fromEntries(filtered2);
-          // const content = await item.meta.content;
-          // console.log(item.make);
-          return await {
-            ...(await filteredObj1),
-            // ...filteredObj2,
-            make: {
-              type: {
-                type: item.make.type['@type'],
+    //     const filteredObj1 = Object.fromEntries(filtered);
+    //     // const filteredObj2 = Object.fromEntries(filtered2);
+    //     // const content = await item.meta.content;
+    //     // console.log(item.make);
+    //     return await {
+    //       ...(await filteredObj1),
+    //       // ...filteredObj2,
+    //       make: {
+    //         type: {
+    //           type: item.make.type['@type'],
 
-                contract: item.make.type.contract,
-                tokenId: item.make.type.tokenId,
-              },
-              value: item.make.value,
-            },
-          };
-        })
-      );
+    //           contract: item.make.type.contract,
+    //           tokenId: item.make.type.tokenId,
+    //         },
+    //         value: item.make.value,
+    //       },
+    //     };
+    //   })
+    // );
     // console.log('clean', await data);
     // console.log('clean', clean);
     return await data;
@@ -745,6 +744,8 @@ const TAKO = {
         method: 'GET',
       }).then(async (res) => res.json());
       //
+      // console.log(address, data);
+      //
       return {
         totalSupply: data.total,
         nfts: data.items,
@@ -868,7 +869,7 @@ const TAKO = {
               {
                 account:
                   'POLYGON:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
-                value: 5,
+                value: 0,
               },
             ]
           : blockchain == 'ETHEREUM'
@@ -876,21 +877,28 @@ const TAKO = {
               {
                 account:
                   'ETHEREUM:0x877728846bFB8332B03ac0769B87262146D777f3' as any,
-                value: 5,
+                value: 0,
               },
             ]
           : blockchain == 'TEZOS'
           ? [
               {
                 account: 'TEZOS:tz1Q5duBxjCNy1c5Kba63Mf5Jqz9wyKqXFAk' as any,
-                value: 5,
+                value: 0,
               },
             ]
           : blockchain == ' FLOW'
           ? [
               {
                 account: 'FLOW:0x54607bd2c9da71d0' as any,
-                value: 5,
+                value: 0,
+              },
+            ]
+          : blockchain == 'SOLANA'
+          ? [
+              {
+                account: 'SOLANA:98jiC2PfMNqLwUrabW3LxE15dfHCyaNX5V6nxHaP96NQ',
+                value: 0,
               },
             ]
           : [],

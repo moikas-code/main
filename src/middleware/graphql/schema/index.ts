@@ -78,6 +78,7 @@ const typeDefs = gql`
     meta: COLLECTION_ITEM_META
     deleted: Boolean
     orders: Int
+    isListed: Boolean
   }
 
   type COLLECTION_ITEM_META {
