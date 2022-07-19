@@ -1,7 +1,5 @@
 //@ts-nocheck
 import React from 'react';
-import {ThemeProvider} from '@mui/material';
-import {appTheme} from '../src/theme';
 import {ApolloProvider} from '@apollo/client';
 import client from '../src/middleware/graphql/apollo-client';
 import type {AppProps /*, AppContext */, NextWebVitalsMetric} from 'next/app';
@@ -11,21 +9,29 @@ import {Provider} from 'react-redux';
 import {store} from '../src/store';
 import Head from 'next/head';
 import metrics from '../src/metrics';
-import {SdkConnectionProvider} from '@/src/components/connector/sdk-connection-provider';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Navbar from '../src/components/Navbar';
+import WalletProvider from '@/src/components/WalletProvider';
+import {ChainId, ThirdwebProvider} from '@thirdweb-dev/react';
 import dynamic from 'next/dynamic';
-const EnvironmentSelectorProvider = dynamic(
-  (): any =>
-    import('../src/components/connector/environment-selector-provider').then(
-      (mod) => mod.EnvironmentSelectorProvider
-    ),
-  {ssr: false}
-);
-
 function MyApp({Component, pageProps}: AppProps) {
   return (
-    <>
+    <ThirdwebProvider
+      desiredChainId={ChainId.Polygon}
+      chainRpc={{
+        [ChainId.Polygon]:
+          'https://polygon-mainnet.infura.io/v3/157c8192a65149daa7bea1a4b17d3abf',
+      }}
+      supportedChains={[ChainId.Mainnet, ChainId.Polygon]}
+      // sdkOptions={{
+      //   gasSettings: {maxPriceInGwei: 500, speed: 'fast'},
+      //   gasless: {
+      //     openzeppelin: {
+      //       relayerForwarderAddress:'0x140786e784015c1aebcac3238414a41bfcbc4ea9',
+      //       relayerUrl: process.env.NEXT_PUBLIC_OPENZEPPELIN_URL,
+      //     },
+      //   },
+      // }}
+      >
       <ApolloProvider client={client}>
         <Head>
           <link href='bootstrap/dist/css/bootstrap.min.css' />
@@ -97,28 +103,22 @@ function MyApp({Component, pageProps}: AppProps) {
             }
 
             //fonts
-            .h6{
+            .h6 {
               font-size: 1.25rem;
             }
           `}
         </style>
 
-        <Provider session={pageProps.session} store={store}>
-         
-            <EnvironmentSelectorProvider>
-              {(connector: any): any => (
-                <SdkConnectionProvider connector={connector}>
-                  {/*TODO: Create Layout*/}
-                  <div id='tako' className='position-relative'>
-                    <Component {...pageProps} />
-                  </div>
-                  {/* <ConnectionStatus /> */}
-                </SdkConnectionProvider>
-              )}
-            </EnvironmentSelectorProvider>
+        <Provider store={store}>
+          <>
+            {/*TODO: Create Layout*/}
+            <div id='tako' className='position-relative'>
+              <Component {...pageProps} />
+            </div>
+          </>
         </Provider>
       </ApolloProvider>
-    </>
+    </ThirdwebProvider>
   );
 }
 

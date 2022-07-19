@@ -1,12 +1,20 @@
-import {useState} from 'react';
-import {truncateAddress} from '../lib/moiWeb3';
-import WalletButtonItem from './walletbuttonitem';
+import {useAddress, useDisconnect, useMetamask} from '@thirdweb-dev/react';
+ function truncateAddress(address) {
+  try {
+    return `${address.substring(0, 6).toLowerCase()}...${address
+      .substring(38, 42)
+      .toLowerCase()}`;
+  } catch (error) {
+    console.log(`truncateAddress(): ${error}`);
+    return `truncateAddress(): ${error}`;
+  }
+}
 function WalletButton({
   isConnected = false,
-  address = '',
   onPress = () => {},
-  onConnect = () => {},
 }) {
+    const connectWithMetamask = useMetamask();
+    const address = useAddress();
   return (
     <div className={`position-relative  wallet-button h-100`}>
       <style jsx>
@@ -17,7 +25,7 @@ function WalletButton({
           }
         `}
       </style>
-      {isConnected ? (
+      {address ? (
         <div
           className={`wallet-button-address hover-blackflame d-flex flex-column align-items-center justify-content-center px-3 h-100 w-100 cursor-pointer`}
           onClick={() => {
@@ -28,9 +36,7 @@ function WalletButton({
       ) : (
         <div
           className={`wallet-button-address hover-blackflame d-flex flex-column align-items-center justify-content-center px-3 h-100 w-100 cursor-pointer`}
-          onClick={() => {
-            onConnect();
-          }}>
+          onClick={() => connectWithMetamask()}>
           CONNECT
         </div>
       )}
@@ -38,3 +44,4 @@ function WalletButton({
   );
 }
 export default WalletButton;
+

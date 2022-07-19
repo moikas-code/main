@@ -1,21 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
-import {ConnectorContext} from './connector/sdk-connection-provider';
-import {truncateAddress} from '../lib/moiWeb3';
 import TakoLink from './TakoLink';
 import WalletButton from './walletbutton';
 import WalletButtonItem from './walletbuttonitem';
-function Navbar() {
+import {login}from '../helpers'
+
+function Navbar(props: any) {
   const [show, setShow] = useState(false);
-  const connection = React.useContext(ConnectorContext);
-  const blockchain = connection.sdk?.wallet?.blockchain;
+
   const router = useRouter();
-  const [address, setAddress] = React.useState('');
+  // const [address, setAddress] = React.useState('');
   const [status, setStatus] = React.useState('');
   const [err, setErr] = React.useState<any>('');
-  React.useEffect(() => {
-    setStatus(connection.state.status);
-  }, [connection]);
+
+
   return (
     <>
       <style jsx>{`
@@ -40,12 +38,15 @@ function Navbar() {
             </TakoLink>
           </span>
 
-          <div className='h-100' title={connection.walletAddress}>
+          <div className='h-100' title={props.address}>
             <WalletButton
-              isConnected={status !== 'disconnected'}
-              onConnect={() => router.push('/connect')}
+              isConnected={props.connected}
+              onConnect={() =>
+                login()
+                  .then(() => window.location.reload())
+              }
               onPress={() => setShow(!show)}
-              address={connection.walletAddress?.split(':')[1]}
+              // address={truncateAddress(props.address)}
             />
           </div>
         </div>
@@ -70,13 +71,6 @@ function Navbar() {
               text={`List NFT`}
               onPress={() => {
                 router.push('/list');
-                setShow(false);
-              }}
-            />
-            <WalletButtonItem
-              text={`Disconnect`}
-              onPress={() => {
-                router.push('/connect');
                 setShow(false);
               }}
             />

@@ -1,4 +1,15 @@
 import TAKO from '../../tako';
+const {DateTime} = require('luxon');
+//@ts-ignore
+import TEKRAM from 'tekram/index';
+import Web3 from 'web3';
+var BN: any = Web3.utils.hexToNumberString;
+// function hex2a(hex) {
+//   var str = '';
+//   for (var i = 0; i < hex.length; i += 2)
+//     str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+//   return str;
+// }
 export default {
   Query: {
     Query_Market_Sell_Orders: async (
@@ -7,43 +18,58 @@ export default {
       _context: any,
       info: object
     ) => {
-      const {
-        blockchains = [],
-        continuation,
-        cursor,
-        origins,
-        size,
-      }: {
-        blockchains: string[];
-        continuation: string;
-        cursor: string;
-        origins: [string];
-        size: number;
-      } = args.input;
       // console.log(args.input);
       let _continuations: string[] = [];
-      let _orders: any[] = [];
-      for (let i = 0; i < origins.length; i++) {
-        // origins[i] = origins[i].toLowerCase();
-        // console.log(origins[i])
-        const res = await TAKO.getSellOrdersWithNFT({
-          blockchains,
-          continuation,
-          cursor,
-          size,
-          origin: origins[i],
-        });
-        _continuations.push(res.continuation);
-        _orders.push(...res.nfts);
+      let arr: any[] = [];
+      const contract = new TEKRAM('POLYGON');
+      const active_listings = await contract.get_active_nft_listings();
+
+      // console.log('contract', active_listings);
+
+      for (const nft of active_listings) {
+        const _tokenId = nft.tokenId._hex;
+        // console.log('_tokenId', _tokenId);
+        const _quantity = BN(nft.quantity._hex);
+        // console.log('_supply', _supply);
+        const _price = BN(nft.buyoutPrice._hex);
+        // console.log('_price', _price);
+
+        const _startTimeInSeconds = BN(nft.startTimeInSeconds._hex);
+        // console.log('_startTimeInSeconds', _startTimeInSeconds);
+        const _secondsUntilEnd = BN(nft.secondsUntilEnd._hex);
+
+        // console.log('_secondsUntilEnd', _secondsUntilEnd);
+        let now = Date.now();
+        console.log('now', now + parseInt(_secondsUntilEnd));
+        const obj = {
+          ...nft,
+          id: nft.id,
+          tokenId: _tokenId,
+          quantity: _quantity,
+          contractAddress: nft.assetContractAddress,
+          buyOutPrice: _price.substr(0, _price.length - 18),
+          currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
+          sellerAddress: nft.sellerAddress,
+          startTime: DateTime.fromMillis(
+            now - parseInt(_startTimeInSeconds)
+          ).toLocaleString(DateTime.DATETIME_SHORT),
+          endTime: DateTime.fromMillis(
+            now + parseInt(_secondsUntilEnd)
+          ).toLocaleString(DateTime.DATETIME_SHORT),
+          asset: {
+            ...nft.asset,
+            id: BN(nft.asset.id._hex),
+          },
+        };
+        console.log('obj', obj);
+        arr.push(obj);
       }
 
-      // console.log({
-      //   continuations: _continuations,
-      //   nfts: _orders,
+      // console.log('nfts', {
+      //   nfts: arr,
       // });
       return {
-        continuations: _continuations,
-        nfts: _orders,
+        nfts: arr,
       };
     },
     Query_Address_NFTS: async (
@@ -56,7 +82,7 @@ export default {
       const res: any = await TAKO.get_items_by_owner(args.input.address);
       // console.log(res);
       let arr = [];
-      for await (let __nft of res.nfts) {
+      const data = res.nfts.map(async (__nft) => {
         const order_res = await TAKO.get_orders_by_nft_id(__nft.id);
         const isListed =
           order_res.orders
@@ -85,38 +111,7 @@ export default {
               );
             })
             .includes(true);
-        // console.log(
-        //   'res>>',
-        //   order_res.orders
-        //     .map((order) => {
-        //       let accounts = order.data.originFees.map((fee) => {
-        //         return fee.account;
-        //         ('POLYGON:0x877728846bFB8332B03ac0769B87262146D777f3');
-        //       });
-        //       return [...accounts];
-        //     })
-        //     .flat()
-        //     .map((acc) => {
-        //       let originFees=['0x877728846bFB8332B03ac0769B87262146D777f3'.toLowerCase()]
-        //       console.log(acc.split(':')[1]);
-        //       return originFees.includes(acc.split(':')[1].toLowerCase())
-
-        //         ? true
-        //         : false;
-        //     }),
-        //   //maker
-        //   order_res.orders
-        //     .map((order) => {
-        //       return (
-        //         order.maker.split(':')[1] === args.input.address.split(':')[1]
-        //       );
-        //     })
-        //     .includes(true)
-        // );
-        // orders.map(async (order) => {
-        //   console.log('order>>', await order);
-        //   return order;
-        // });
+        //  console.log(isListed);
         let nft = {
           ...(await __nft),
           orders: order_res.orders.length,
@@ -142,15 +137,13 @@ export default {
               ),
           },
         };
-        // console.log(nft.meta.content);
-        // typeof nft.collection !== 'undefined' &&
-        //   nft.meta.name.length > 0 &&
-          arr.push(nft);
-      }
-      console.log(arr);
+
+        return await nft;
+      });
+      console.log([...(await data)]);
       return {
-        ...res,
-        nfts: arr,
+        continuation: res.continuation,
+        nfts: data,
       };
     },
   },

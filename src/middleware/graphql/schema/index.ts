@@ -96,44 +96,37 @@ const typeDefs = gql`
     format: String
   }
   type MARKET_NFTS {
-    continuations: [String]
     nfts: [MARKET_NFT]
-  }
-  type ALL_SELL_ORDERS {
-    continuations: [String]
-    orders: [SELL_ORDER]
   }
   type MARKET_NFT {
     id: String
+    tokenId: String
     name: String
     description: String
     supply: String
-    creators: [Creators]
-    content: [META_CONTENT]
-    orders: [SELL_ORDER]
+    buyOutPrice: String
+    currencySymbol: String
+    sellerAddress: String
+    startTime: String
+    endTime: String
+    asset: NFT
   }
 
-  type SELL_ORDER {
+  type NFT {
     id: String
-    filled: Boolean
-    platform: String
-    status: String
-    startedAt: String
-    endedAt: String
-    makeStock: String
-    cancelled: Boolean
-    createdAt: String
-    lastUpdatedAt: String
-    makePrice: String
-    takerPrice: String
-    makePriceUsd: String
-    takerPriceUsd: String
-    maker: String
-    taker: String
-    make: TAKER_MAKER
-    take: TAKER_MAKER
-    salt: String
+    name: String
+    description: String
+    uri: String
+    image: String
+    animation_url: String
+    external_url: String
+    minted_by: String
+    background_color: String
+    youtbe_url: String
+    fee_recipient: String
+    seller_fee_basis_points: Int
   }
+
   type TAKER_MAKER {
     type: ASSET_TYPE
     value: String
@@ -146,19 +139,6 @@ const typeDefs = gql`
     uri: String
     creators: [Creators]
     royalties: [ROYALTIES]
-  }
-
-  type NFTOrderDataType {
-    id: String
-    platform: String
-    status: String
-    makeStock: String
-    createdAt: String
-    makePrice: String
-    makePriceUsd: String
-    maker: String
-    make: _DataType
-    supply: String
   }
 
   type _DataType {
@@ -177,104 +157,6 @@ const typeDefs = gql`
     value: Int
   }
 
-  type All_ACTIVITY {
-    continuation: String
-    cursor: String
-    activities: [ACTIVITY_ITEM]
-  }
-  type ACTIVITY {
-    continuation: String
-    cursor: String
-    activities: ACTIVITIES
-  }
-  type ACTIVITIES {
-    user: [ACTIVITY_ITEM]
-    contract: [ACTIVITY_ITEM]
-    nft: [ACTIVITY_ITEM]
-  }
-
-  type ACTIVITY_ITEM {
-    type: String
-    from: String
-    owner: String
-    contract: String
-    tokenId: String
-    itemId: String
-    value: String
-    purchase: Boolean
-    transactionHash: String
-    id: String
-    date: String
-    reverted: Boolean
-    left: LEFT_RIGHT
-    right: LEFT_RIGHT
-    source: String
-    nft: _activityNFT
-    payment: _activityPayment
-    buyer: String
-    seller: String
-    buyerOrderHash: String
-    sellerOrderHash: String
-    price: String
-    priceUsd: String
-    amountUsd: String
-    hash: String
-    make: _DataType
-    take: _DataType
-    auction: _activityAuction
-    bid: _activityBid
-  }
-  type _activityNFT {
-    type: _DataType
-    value: String
-  }
-  type _activityPayment {
-    type: _DataType
-    value: String
-  }
-  type _activityAuction {
-    id: String
-    contract: String
-    type: String
-    seller: String
-    sell: _DataType
-    buy: _DataType
-    endTime: String
-    minimalStep: String
-    minimalPrice: String
-    createdAt: String
-    lastUpdatedAt: String
-    buyPrice: String
-    buyPriceUsd: String
-    pending: [String]
-    status: String
-    ongoing: Boolean
-    hash: String
-    auctionId: String
-    data: _auctionData
-  }
-  type _auctionData {
-    dataType: String
-    originFees: [Creators]
-    payouts: [Creators]
-    startTime: String
-    duration: String
-    buyOutPrice: String
-  }
-
-  type LEFT_RIGHT {
-    maker: String
-    hash: String
-  }
-
-  type _activityBid {
-    type: String
-    data: _auctionData
-    buyer: String
-    amount: String
-    date: String
-    status: String
-  }
   type ROYALTIES {
     address: String
     value: Int

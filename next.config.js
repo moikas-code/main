@@ -41,6 +41,7 @@ const nextConfig = {
     ETHERSCAN_API: process.env.ETHERSCAN_API,
     DEV: process.env.DEV,
     AKKORO_ENV: process.env.AKKORO_ENV,
+    NEXT_PUBLIC_OPENZEPPELIN_URL: process.env.NEXT_PUBLIC_OPENZEPPELIN_URL,
   },
 };
 module.exports = withPWA(nextConfig);

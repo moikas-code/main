@@ -9,19 +9,9 @@ import {
 ///
 let appJWTToken: any;
 const httpLink = new HttpLink({uri: '/api/graphql/'});
-const authMiddleware = new ApolloLink((operation, forward) => {
-  if (appJWTToken) {
-    operation.setContext({
-      headers: {
-        Authorization: `Bearer ${appJWTToken}`,
-      },
-    });
-  }
-  return forward(operation);
-});
 
 var client = new ApolloClient({
-  link: from([authMiddleware, httpLink]),
+  link: from([ httpLink]),
   cache: new InMemoryCache(),
 });
 
