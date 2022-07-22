@@ -106,10 +106,12 @@ const typeDefs = gql`
     supply: String
     buyOutPrice: String
     currencySymbol: String
+    currencyContractAddress: String
     sellerAddress: String
     startTime: String
     endTime: String
     asset: NFT
+    decimals: Int
   }
 
   type NFT {

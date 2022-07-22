@@ -24,7 +24,7 @@ export default {
       const contract = new TEKRAM('POLYGON');
       const active_listings = await contract.get_active_nft_listings();
 
-      // console.log('contract', active_listings);
+      console.log('contract', active_listings);
 
       for (const nft of active_listings) {
         const _tokenId = nft.tokenId._hex;
@@ -49,6 +49,8 @@ export default {
           contractAddress: nft.assetContractAddress,
           buyOutPrice: _price.substr(0, _price.length - 18),
           currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
+          
+          decimals: nft.buyoutCurrencyValuePerToken.decimals,
           sellerAddress: nft.sellerAddress,
           startTime: DateTime.fromMillis(
             now - parseInt(_startTimeInSeconds)
