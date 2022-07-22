@@ -12,7 +12,8 @@ import Button from '@/src/components/Button';
 // @ts-ignore
 import TAKO from '@/src/tako';
 import {gql, useLazyQuery} from '@apollo/client';
-import Navbar from '../src/components/Navbar';
+// @ts-ignore
+import Navbar from '@/src/components/Navbar';
 import WalletProvider from '../src/components/WalletProvider';
 import TakoLink from '../src/components/TakoLink';
 import Web3 from 'web3';
@@ -1345,7 +1346,7 @@ const abi = [
   },
 ];
 export default function Dragon({address, connected}) {
-  async function buy(address) {
+  async function buy(address,id) {
 
     console.log(
       `${1*10**18}`,
@@ -1359,7 +1360,7 @@ export default function Dragon({address, connected}) {
 
     await Contract.methods
       .buy(
-        0,
+        id,
         '0x877728846bFB8332B03ac0769B87262146D777f3',
         1,
         '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -1373,7 +1374,7 @@ export default function Dragon({address, connected}) {
         console.log('Gas Spent',gasAmount);
         Contract.methods
           .buy(
-            0,
+            id,
             '0x877728846bFB8332B03ac0769B87262146D777f3',
             1,
             '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -1402,17 +1403,7 @@ export default function Dragon({address, connected}) {
       });
   }
   const _market = useMarketplace('0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded');
-  // const {
-  //   buyNow,
-  //   isLoading,
-  //   error,
-  // } = useBuyNow(_market);
 
-  // if (error) {
-  //   console.error('failed to buyout listing', error);
-  // }
-
-  // console.log(_market);
   const [complete, setComplete] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
@@ -1573,20 +1564,19 @@ export default function Dragon({address, connected}) {
                                     className='btn btn-dark'
                                     onClick={async () => {
                                       console.log('buy', id);
-                                      buy(address);
+                                      // buy(address,id);
                                       //@ts-ignore
-                                      // _market
-                                      //   ?.buyoutListing(
-                                      //     id,
-                                      //     1,
-                                      //     '0x877728846bFB8332B03ac0769B87262146D777f3'
-                                      //   )
-                                      //   .then((res: any) => {
-                                      //     console.log(res);
-                                      //   })
-                                      //   .catch((e) => {
-                                      //     console.log(e);
-                                      //   });
+                                      _market
+                                        ?.buyoutListing(
+                                          id,
+                                          1
+                                        )
+                                        .then((res: any) => {
+                                          console.log(res);
+                                        })
+                                        .catch((e) => {
+                                          console.log(e);
+                                        });
                                     }}>
                                     Quick Buy
                                   </Button>
