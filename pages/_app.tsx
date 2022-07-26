@@ -10,7 +10,7 @@ import {store} from '../src/store';
 import Head from 'next/head';
 import metrics from '../src/metrics';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import WalletProvider from '../tekram/WalletProvider';
+import WalletProvider from '../dabu/WalletProvider';
 import {ChainId, ThirdwebProvider, useAddress} from '@thirdweb-dev/react';
 import dynamic from 'next/dynamic';
 function MyApp({Component, pageProps}: AppProps) {
@@ -119,7 +119,8 @@ function MyApp({Component, pageProps}: AppProps) {
                 <div id='tako' className='position-relative'>
                   <Component
                     {...{
-                      ...pageProps, connected: connected,
+                      ...pageProps,
+                      connected: connected,
                     }}
                   />
                 </div>

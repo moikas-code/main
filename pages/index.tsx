@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import TEKRAM from '../tekram/index';
+import DABU from '../dabu/index';
 import {useRouter} from 'next/router';
 import Link from 'next/link';
 import {
@@ -24,9 +24,62 @@ import Web3 from 'web3';
 import {initWeb3} from '../src/helpers';
 
 export default function Dragon({connected}: any) {
-  console.log('props', connected);
-  var tekram = new TEKRAM('POLYGON');
   const connectWithMetamask = useMetamask();
+  const address = useAddress();
+  const [show, setShow] = useState<boolean>(false);
+  const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [site_message, setSiteMessage] = useState<string | string[]>('');
+  const [_error, setError] = useState<any>('');
+
+  return (
+    <>
+      <style jsx>
+        {`
+          .market {
+            max-width: 1228px;
+          }
+          .nft-wrapper {
+            min-width: 275px !important;
+            max-width: 285px !important;
+          }
+
+          .icon-wrapper img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+          }
+        `}
+      </style>
+      <SEO
+        title={`Tako Labs - MARKET`}
+        description='TAKOLABS.IO: Tako Labs is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content.'
+        twitter='takolabs'
+        keywords='gaming, nfts, web3'
+      />
+      <Navbar address={address} connected={connected} />
+      <div className='d-flex flex-row position-relative w-100'>
+        <div className='market d-flex flex-column p-3'>
+          <p>
+            Site Message:{' '}
+            {
+              'We are Currently in Open Alpha, so please use with discretion, and report any bugs'
+            }
+          </p>
+          <p>Site Fees: 0.05% - is used to keep the lights on ❤</p>
+          <ActiveListings current_address={address || ''} />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ActiveListings({current_address}: {current_address: string}) {
+  var dabu =
+    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+      ? new DABU('POLYGON', window.ethereum)
+      : new DABU('POLYGON');
+
   const address = useAddress();
 
   const [complete, setComplete] = useState<boolean>(false);
@@ -67,51 +120,31 @@ export default function Dragon({connected}: any) {
         let groupArr = [] as any;
         for (const nft of Query_Market_Sell_Orders.nfts) {
           i = i + 1;
-          console.log(
-            '?',
-            i == Query_Market_Sell_Orders.nfts.length,
-            i,
-            Query_Market_Sell_Orders.nfts.length,
-            nft
-          );
+
           if (arr.length < 4 && i !== Query_Market_Sell_Orders.nfts.length) {
             arr.push(nft);
           } else if (i == Query_Market_Sell_Orders.nfts.length) {
             arr.push(nft);
             groupArr.push(arr);
-            console.log('groupArr', arr, groupArr);
           } else if (arr.length == 4) {
             groupArr.push(arr);
             arr = [];
             arr.push(nft);
           }
         }
-        console.log(groupArr);
+        // console.log('setting index', groupArr);
         setMarketNFTS(groupArr);
         setComplete(true);
       }
     },
   });
 
-  useEffect(() => {
-    if (
-      typeof window !== 'undefined' &&
-      typeof window.ethereum !== 'undefined'
-    ) {
-      (async () => console.log(await tekram.get_active_nft_listings()))();
-      console.log(address);
-    }
-  }, []);
-
   useEffect((): any => {
     initWeb3();
     Query_Market_Sell_Orders({
       variables: {
         input: {
-          blockchains: [],
-          origins: [],
-          continuation: '',
-          size: 100,
+          blockChain: 'POLYGON',
         },
       },
     });
@@ -119,16 +152,11 @@ export default function Dragon({connected}: any) {
     return () => {
       setComplete(false);
     };
-  }, [connected]);
+  }, []);
 
   if (loading) {
     return (
       <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
-        {address ? (
-          <>{address}</>
-        ) : (
-          <button onClick={connectWithMetamask}>click</button>
-        )}
         <h1>Market | Tako Labs</h1>
         <hr />
         <p>Trade Your NFTs with Us ❤</p>
@@ -137,13 +165,69 @@ export default function Dragon({connected}: any) {
       </div>
     );
   }
+
   return (
     <>
+      {market_nfts.map((nfts: any, key: number) => {
+        return (
+          <div
+            className='d-flex flex-column flex-md-row flex-wrap w-100'
+            key={key}>
+            {nfts.map(
+              ({
+                id,
+                tokenId,
+                currencySymbol,
+                asset: {name, description, image},
+                buyOutPrice,
+                currencyContractAddress,
+                decimals,
+              }: any) => {
+                return (
+                  <NFTMARKETCARD
+                    id={id}
+                    tokenId={tokenId}
+                    currencySymbol={currencySymbol}
+                    name={name}
+                    description={description}
+                    image={image}
+                    buyOutPrice={buyOutPrice}
+                    currencyContractAddress={currencyContractAddress}
+                    decimals={decimals}
+                    current_address={current_address}
+                  />
+                );
+              }
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+const NFTMARKETCARD = ({
+  id,
+  tokenId,
+  currencySymbol,
+  name,
+  description,
+  image,
+  buyOutPrice,
+  currencyContractAddress,
+  decimals,
+  current_address,
+}: any) => {
+  var dabu =
+    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+      ? new DABU('POLYGON', window.ethereum)
+      : new DABU('POLYGON');
+  return (
+    <div
+      id={id}
+      className='nft-wrapper  border border-dark m-2 p-2 d-flex flex-column col justify-content-between'>
       <style jsx>
         {`
-          .market {
-            max-width: 1228px;
-          }
           .nft-wrapper {
             min-width: 275px !important;
             max-width: 285px !important;
@@ -157,83 +241,43 @@ export default function Dragon({connected}: any) {
           }
         `}
       </style>
-      <SEO
-        title={`Tako Labs - MARKET`}
-        description='TAKOLABS.IO: Tako Labs is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content.'
-        twitter='takolabs'
-        keywords='gaming, nfts, web3'
-      />
-      <Navbar address={address} connected={connected} />
-      <div className='d-flex flex-row position-relative'>
-        <div className='market d-flex flex-column p-3'>
-          <p>Site Message: {''}</p>
-          <p>Site Fees: 0.10% - is used to keep the lights on ❤</p>
-          {market_nfts.map((nfts: any, k) => {
-            return (
-              <div
-                className='d-flex flex-column flex-md-row flex-wrap w-100'
-                key={k}>
-                {nfts.map(
-                  ({
-                    id,
-                    tokenId,
-                    currencySymbol,
-                    asset: {name, description, image},
-                    buyOutPrice,
-                    currencyContractAddress,
-                    decimals,
-                  }: any) => {
-                    return (
-                      <div
-                        id={id}
-                        className='nft-wrapper  border border-dark m-2 p-2 d-flex flex-column col justify-content-between'>
-                        <div className='icon-wrapper mx-auto'>
-                          <img className='mx-auto' src={image} alt='' />
-                        </div>
-                        <div className='d-flex flex-column'>
-                          <hr />
-                          <p className='m-0'>{name}</p>
-                          <hr />
-                          <div className='d-flex flex-row'>
-                            <p>
-                              Price: {1} {currencySymbol}
-                            </p>
-                          </div>
-                          {true && (
-                            <Button
-                              className='btn btn-dark'
-                              onClick={async () => {
-                                return tekram
-                                  ?.buy_nft({
-                                    listingId: id,
-                                    quantity: 1,
-                                    address,
-                                    isGasless: currencySymbol !== 'MATIC',
-                                    price: buyOutPrice,
-                                    currencyContractAddress:
-                                      currencyContractAddress,
-                                    decimals: decimals,
-                                  })
-                                  .then((res: any) => {
-                                    console.log(res);
-                                  })
-                                  .catch((e) => {
-                                    console.log(e);
-                                  });
-                              }}>
-                              Quick Buy
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-            );
-          })}
-        </div>
+      <div className='icon-wrapper mx-auto'>
+        <img className='mx-auto' src={image} alt='' />
       </div>
-    </>
+      <div className='d-flex flex-column'>
+        <hr />
+        <p className='m-0'>{name}</p>
+        <hr />
+        <div className='d-flex flex-row'>
+          <p>
+            Price: {buyOutPrice} {currencySymbol}
+          </p>
+        </div>
+        {current_address && (
+          <Button
+            className='btn btn-dark'
+            onClick={async () => {
+              return dabu
+                ?.buy_nft({
+                  listingId: id,
+                  quantity: 1,
+                  address: current_address,
+                  isGasless: currencySymbol !== 'MATIC',
+                  price: buyOutPrice,
+                  currencyContractAddress: currencyContractAddress,
+                  decimals: decimals,
+                })
+                .then((res: any) => {
+                  console.log(res);
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            }}>
+            Quick Buy
+          </Button>
+        )}
+      </div>
+    </div>
   );
-}
+};

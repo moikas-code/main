@@ -23,7 +23,8 @@ const typeDefs = gql`
   }
 
   type Address_Data {
-    nfts: [COLLECTION_ITEM]
+    unlisted: [COLLECTION_ITEM]
+    listed: [COLLECTION_ITEM]
     totalSupply: Int
   }
 
@@ -166,6 +167,7 @@ const typeDefs = gql`
 
   type Query {
     Query_Market_Sell_Orders(input: QueryInput): MARKET_NFTS
+
     Query_Address_NFTS(input: QueryInput): Address_Data
   }
 `;

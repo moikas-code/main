@@ -168,30 +168,30 @@ const TAKO = {
     size: number;
   }) => {
     try {
-      var _blockchain = blockChain;
+      var _blockchain = blockChain === 'POLYGON' ? 'POLYGON' : blockChain;
       // base url
       const base = process.env.DEV === 'false' ? baseURL : dev_baseURL;
 
       if (typeof blockChain === 'undefined') {
-        throw new Error('blockChain is undefined');
+        console.log('blockChain is undefined');
       }
       if (typeof address === 'undefined') {
-        throw new Error('Address is undefined');
+        console.log('Address is undefined');
       }
-      //       if(typeof address.split(':')[1] === undefined){
-      // throw new Error('Address is undefined');
-      //       }
-      if (blockChain === 'POLYGON') {
-        _blockchain = 'ETHEREUM';
-      }
+
       //fetch
       return await fetch(
         `${base}${collections}/byOwner/?blockchains=${blockChain}&owner=${_blockchain}:${address}&${continuation}&${size}` as string,
         {
           method: 'GET',
         }
-      ).then(async (res) => res.json());
-    } catch (error) {}
+      ).then(async (res) => {
+        console.log('res', res);
+        return res.json();
+      });
+    } catch (error) {
+      return error;
+    }
   },
   getcollectionByAddress: async ({
     address,
@@ -736,16 +736,17 @@ const TAKO = {
   },
   get_items_by_owner: async (address: any) => {
     try {
-      const base = process.env.DEV !== 'true' ? baseURL : dev_baseURL;
+      const base = process.env.DEV !== 'true' ? baseURL : dev_baseURL
+      console.log(address)
       //
       let url = (base + items + '/byOwner/' + `?owner=${address}`) as string;
       //
       let data = await fetch(url, {
         method: 'GET',
       }).then(async (res) => res.json());
-      //
-      // console.log(address, data);
-      //
+      
+      console.log(address, data);
+      
       return {
         totalSupply: data.total,
         nfts: data.items,
