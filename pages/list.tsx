@@ -92,17 +92,18 @@ function ListPage() {
         let nfts: any = await Query_Address_NFTS.unlisted;
 
         var i = 0;
+        const rowSize = 4;
         let arr = [] as any;
         let groupArr = [] as any;
         for (const nft of nfts) {
           i = i + 1;
           console.log('?', i == nfts.length, i, nfts.length);
           if (!nft.isListed) {
-            if (arr.length < 4 && i !== nfts.length) {
+            if (arr.length < rowSize && i !== nfts.length) {
               arr.push(nft);
             } else if (i == nfts.length) {
               groupArr.push(arr);
-            } else if (arr.length == 4) {
+            } else if (arr.length == rowSize) {
               groupArr.push(arr);
               arr = [];
               arr.push(nft);
@@ -144,46 +145,60 @@ function ListPage() {
 
   return (
     <>
-       <style jsx>
+      <style jsx>
         {`
           .market {
             width: 100%;
-            max-width: 1228px !important;
+            max-width: 1400px !important;
           }
         `}
-      </style> 
+      </style>
 
       <Navbar />
       <div className='d-flex flex-column justify-content-center align-items-center mx-auto position-relative'>
-        <h4>Listing</h4>
+        <h4 className='mt-4'>List Your NFTs</h4>
         <div
           ref={marketRef}
-          className='market d-flex flex-row justify-content-center justify-content-md-start flex-wrap p-5'>
-          {nft_list.flat().map((nft_item: any, k) => {
-            if (!nft_item.isListed)
-              return (
-                <NFTListingCard
-                  key={k}
-                  address={address}
-                  ID={nft_item.id}
-                  Name={nft_item.meta?.name}
-                  Content={nft_item.meta.content}
-                  Type={
-                    typeof nft_item.meta.content[0] !== 'undefined'
-                      ? nft_item.meta.content[0].type
-                      : 'IMAGE'
+          className='market d-flex flex-column justify-content-center p-5'>
+          {nft_list.map((nft_row: any, k) => {
+            return (
+              <div
+                className={`d-flex flex-row flex-wrap ${
+                  nft_row.length > 1
+                    ? 'justify-content-between'
+                    : 'justify-content-start'
+                } mb-3`}>
+                {nft_row.map((nft_item: any, i) => {
+                  if (!nft_item.isListed) {
+                    return (
+                      <>
+                        <NFTListingCard
+                          key={k}
+                          address={address}
+                          ID={nft_item.id}
+                          Name={nft_item.meta?.name}
+                          Content={nft_item.meta.content}
+                          Type={
+                            typeof nft_item.meta.content[0] !== 'undefined'
+                              ? nft_item.meta.content[0].type
+                              : 'IMAGE'
+                          }
+                          Url={nft_item.meta.content[0]?.url}
+                          Orders={nft_item.orders}
+                          isListed={nft_item.isListed}
+                          onClick={() => {
+                            async () => {
+                              console.log('Bought', nft_item.id);
+                              setID(nft_item.id);
+                            };
+                          }}
+                        />
+                      </>
+                    );
                   }
-                  Url={nft_item.meta.content[0]?.url}
-                  Orders={nft_item.orders}
-                  isListed={nft_item.isListed}
-                  onClick={() => {
-                    async () => {
-                      console.log('Bought', nft_item.id);
-                      setID(nft_item.id);
-                    };
-                  }}
-                />
-              );
+                })}
+              </div>
+            );
           })}
         </div>
       </div>
@@ -203,9 +218,14 @@ function NFTListingCard({...props}) {
             width: 264px;
           }
 
+          .icon-wrapper  {
+            width: 100%;
+            height: 300px;
+          }
+
           .icon-wrapper img {
             width: 100%;
-            height: 100%;
+            max-height: 300px;
             object-fit: contain;
           }
 
@@ -219,17 +239,25 @@ function NFTListingCard({...props}) {
 
           // Large devices (desktops, 992px and up)
           @media (min-width: 992px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 4);
+              max-width: calc(95.5% / 4);
+            }
           }
 
           // X-Large devices (large desktops, 1200px and up)
           @media (min-width: 1200px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 4);
+              max-width: calc(95.5% / 4);
+            }
           }
 
           // XX-Large devices (larger desktops, 1400px and up)
           @media (min-width: 1400px) {
             .nft-wrapper {
-              min-width: 425px;
-              max-width: 425px;
+              min-width: calc(95.5% / 4);
+              max-width: calc(95.5% / 4);
             }
           }
         `}
@@ -237,9 +265,9 @@ function NFTListingCard({...props}) {
 
       <div
         id={props.ID}
-        className='nft-wrapper border border-dark m-2 p-2 d-flex flex-column col justify-content-between'>
-        <div className='icon-wrapper mx-auto'>
-          {props.Content.length > 0 && props.Type === 'IMAGE' ? (
+        className='nft-wrapper border border-dark m-1 p-2 d-flex flex-column justify-content-between'>
+        <div className='icon-wrapper d-flex flex-column justify-content-center align-items-center'>
+          {props.Content.length > 0 ? (
             <img
               className='mx-auto'
               src={props.Url || 'https:via.placeholder.com/350'}
