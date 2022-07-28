@@ -3,7 +3,7 @@ import React from 'react';
 import {ApolloProvider} from '@apollo/client';
 import client from '../src/middleware/graphql/apollo-client';
 import type {AppProps /*, AppContext */, NextWebVitalsMetric} from 'next/app';
-
+import Navbar from '../src/components/Navbar';
 import {Provider} from 'react-redux';
 // @ts-ignore
 import {store} from '../src/store';
@@ -50,7 +50,7 @@ function MyApp({Component, pageProps}: AppProps) {
                 }
 
                 #tako {
-                  height: calc(100% - 80px);
+                  height: calc(100% - 100px);
                 }
                 .bg-white {
                   background-color: #fff;
@@ -110,11 +110,21 @@ function MyApp({Component, pageProps}: AppProps) {
                 .h6 {
                   font-size: 1.25rem;
                 }
+                // sections
+                .wrapper {
+                  width: 100%;
+                  max-width: 1400px !important;
+                }
+
+                .s1 {
+                  min-height: 800px;
+                }
               `}
             </style>
 
             <Provider store={store}>
               <>
+                <Navbar/>
                 {/*TODO: Create Layout*/}
                 <div id='tako' className='position-relative'>
                   <Component

@@ -1,6 +1,5 @@
-import {gql, useLazyQuery} from '@apollo/client';
 import React, {useRef, useState} from 'react';
-import Navbar from '../src/components/Navbar';
+import {gql, useLazyQuery} from '@apollo/client';
 //@ts-ignore
 import TAKO from '@/src/tako';
 import DABU from '../dabu';
@@ -14,6 +13,16 @@ import WalletProvider from '@/src/components/WalletProvider';
 import {useAddress} from '@thirdweb-dev/react';
 import Web3 from 'web3';
 import {ChainId, NATIVE_TOKEN_ADDRESS} from '@thirdweb-dev/sdk';
+function truncateAddress(address) {
+  try {
+    return `${address.substring(0, 6).toLowerCase()}...${address
+      .substring(38, 42)
+      .toLowerCase()}`;
+  } catch (error) {
+    console.log(`truncateAddress(): ${error}`);
+    return `truncateAddress(): ${error}`;
+  }
+}
 
 function ListPage() {
   const marketRef = useRef(null);
@@ -23,7 +32,7 @@ function ListPage() {
 
   const [viewWidth, setViewWidth] = React.useState(285);
   const address = useAddress();
-
+  const [blockchain, setBlockchain] = useState('POLYGON');
   const query = gql`
     query Query_Address_NFTS($input: QueryInput) {
       Query_Address_NFTS(input: $input) {
@@ -80,25 +89,26 @@ function ListPage() {
       }
     }
   `;
+  var dabu =
+    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+      ? new DABU(blockchain, window.ethereum)
+      : new DABU(blockchain);
 
   const [Query_Address_NFTS, {loading, refetch}] = useLazyQuery(query, {
     onCompleted: async ({Query_Address_NFTS}) => {
-      console.log(Query_Address_NFTS);
       if (
         Query_Address_NFTS !== null &&
         Query_Address_NFTS !== undefined &&
         Query_Address_NFTS.items !== null
       ) {
         let nfts: any = await Query_Address_NFTS.unlisted;
-
+        // console.log(Query_Address_NFTS.listed.length);
         var i = 0;
         const rowSize = 4;
         let arr = [] as any;
         let groupArr = [] as any;
-        for (const nft of nfts) {
-          i = i + 1;
-          console.log('?', i == nfts.length, i, nfts.length);
-          if (!nft.isListed) {
+        if (nfts.length > 4) {
+          for (const nft of nfts) {
             if (arr.length < rowSize && i !== nfts.length) {
               arr.push(nft);
             } else if (i == nfts.length) {
@@ -108,58 +118,63 @@ function ListPage() {
               arr = [];
               arr.push(nft);
             }
-          }
-        }
 
-        console.log(Query_Address_NFTS, 'clean', groupArr);
+            i = i + 1;
+          }
+        } else {
+          groupArr.push(nfts);
+        }
+        console.log('setting index', groupArr);
         set_nft_list(groupArr);
-        // setCollectionNfts([...collectionNfts, ...clean]);
-        // setContinuation(Collection_NFTS.continuation);
-        // setComplete(true);
       }
     },
   });
 
   React.useEffect(() => {
-    Query_Address_NFTS({
-      variables: {
-        input: {
-          address: `${'ETHEREUM'}:${address}`,
-          blockChain: 'POLYGON',
-        },
-      },
-    });
+    dabu
+      .getNetwork()
+      .then((network) => {
+        console.log('network', network);
+        setBlockchain(network);
+        Query_Address_NFTS({
+          variables: {
+            input: {
+              address: `${'ETHEREUM'}:${address}`,
+              blockChain: network,
+            },
+          },
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [address]);
 
   if (loading) {
     return (
       <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
-        <h1>Market | Tako Labs</h1>
-        <hr />
-        <p>Trade Your NFTs with Us ❤</p>
-        <br />
-        Loading NFTS
+        Walking Dog...
       </div>
     );
   }
 
   return (
     <>
-      <style jsx>
-        {`
-          .market {
-            width: 100%;
-            max-width: 1400px !important;
-          }
-        `}
-      </style>
-
-      <Navbar />
       <div className='d-flex flex-column justify-content-center align-items-center mx-auto position-relative'>
-        <h4 className='mt-4'>List Your NFTs</h4>
+        {address ? (
+          <h4 className='mt-5'>
+            Welcome{' '}
+            <span className='border-bottom border-dark' title={address}>
+              {truncateAddress(address)}
+            </span>
+          </h4>
+        ) : (
+          'Please Connect'
+        )}
+        {blockchain}
         <div
           ref={marketRef}
-          className='market d-flex flex-column justify-content-center p-5'>
+          className='wrapper d-flex flex-column justify-content-center p-5'>
           {nft_list.map((nft_row: any, k) => {
             return (
               <div
@@ -169,7 +184,7 @@ function ListPage() {
                     : 'justify-content-start'
                 } mb-3`}>
                 {nft_row.map((nft_item: any, i) => {
-                  if (!nft_item.isListed) {
+                  if (true) {
                     return (
                       <>
                         <NFTListingCard
@@ -209,7 +224,6 @@ export default ListPage;
 
 function NFTListingCard({...props}) {
   const [show, setShow] = useState<boolean>(false);
-  console.log(props.Type);
   return (
     <>
       <style jsx>
@@ -218,7 +232,7 @@ function NFTListingCard({...props}) {
             width: 264px;
           }
 
-          .icon-wrapper  {
+          .icon-wrapper {
             width: 100%;
             height: 300px;
           }
@@ -295,11 +309,11 @@ function NFTListingCard({...props}) {
               </Button>
             </>
           )}
-          {true && (
+          {/* {true && (
             <p className='mx-auto'>
               Please Switch Networks to {props.ID.split(':')[0]}
             </p>
-          )}
+          )} */}
           {show && (
             <ListSection
               ID={props.ID}
@@ -315,10 +329,7 @@ function NFTListingCard({...props}) {
 
 function ListSection({ID, onsubmit, onClose}: any) {
   const [price, setPrice] = useState(0);
-  var dabu =
-    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-      ? new DABU('POLYGON', window.ethereum)
-      : new DABU('POLYGON');
+
   return (
     <div className=''>
       <form
@@ -352,15 +363,6 @@ function ListSection({ID, onsubmit, onClose}: any) {
             onClick={async (e) => {
               // e.preventDefault();
               const date = Date.now();
-              console.log('submit', {
-                tokenId: ID.split(':')[2],
-                assetContractAddress: ID.split(':')[1],
-                startTimestamp: date.toString(),
-                buyoutPricePerToken: price,
-                quantity: 1,
-                currencyContractAddress: NATIVE_TOKEN_ADDRESS,
-                listingDurationInSeconds: (86400).toString(),
-              });
               return dabu
                 .create_direct_listing({
                   tokenId: ID.split(':')[2],

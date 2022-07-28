@@ -737,7 +737,7 @@ const TAKO = {
   get_items_by_owner: async (address: any) => {
     try {
       const base = process.env.DEV !== 'true' ? baseURL : dev_baseURL
-      console.log(address)
+      // console.log(address)
       //
       let url = (base + items + '/byOwner/' + `?owner=${address}`) as string;
       //
@@ -745,7 +745,7 @@ const TAKO = {
         method: 'GET',
       }).then(async (res) => res.json());
       
-      console.log(address, data);
+      // console.log(address, data);
       
       return {
         totalSupply: data.total,

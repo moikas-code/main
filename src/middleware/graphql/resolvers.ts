@@ -16,11 +16,9 @@ export default {
       let arr: any[] = [];
       const contract = new DABU(args.input.blockChain);
       const active_listings: any = await contract.get_active_nft_listings();
-
-      console.log('contract', active_listings);
-
+      // console.log(active_listings);
       for (const nft of active_listings) {
-        const _tokenId = nft.tokenId._hex;
+        const _tokenId = BN(nft.tokenId._hex);
         // console.log('_tokenId', _tokenId);
         const _quantity = BN(nft.quantity._hex);
         // console.log('_supply', _supply);
@@ -32,13 +30,17 @@ export default {
         const _secondsUntilEnd = BN(nft.secondsUntilEnd._hex);
 
         let now = Date.now();
+        // console.log('assets',nft.asset);
         arr.push({
           ...nft,
           id: nft.id,
           tokenId: _tokenId,
           quantity: _quantity,
           contractAddress: nft.assetContractAddress,
-          buyOutPrice: _price.substr(0, _price.length - 18),
+          buyOutPrice: _price.substr(
+            0,
+            _price.length - nft.buyoutCurrencyValuePerToken.decimals
+          ),
           currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
 
           decimals: nft.buyoutCurrencyValuePerToken.decimals,
@@ -70,19 +72,43 @@ export default {
       const contract = new DABU(args.input.blockChain);
       // Get Owned NFTs
       const res: any = await TAKO.get_items_by_owner(args.input.address);
+
       // Get Market NFTs
       const active_listings_as_raible_id: any = await contract
         .get_active_nft_listings()
         .then((res: any) => {
-          return `${res.assetContractAddress}:${res.id}`;
+          return res.map((nft: any) => {
+            const _tokenId = BN(nft.tokenId._hex);
+            return `${
+              args.input.blockChain
+            }:${nft.assetContractAddress.toLowerCase()}:${_tokenId}`;
+          });
         });
-      // GET
-      console.log(active_listings_as_raible_id);
+      // GET Listed NFTs
+
+      var listed: any[] = [];
+      var unlisted: any[] = [];
+
+      for (var nft of res.nfts) {
+      
+        if (
+          active_listings_as_raible_id.includes(nft.id) &&
+          nft.blockchain === args.input.blockChain
+        ) {
+          listed.push(nft);
+        }
+      }
+
+      for (var nft of res.nfts) {
+        if (!listed.includes(nft) && nft.blockchain === args.input.blockChain) {
+          unlisted.push(nft);
+        }
+      }
 
       return {
         continuation: res.continuation,
-        unlisted: res.nfts,
-        listed: res.nfts,
+        unlisted,
+        listed,
       };
     },
   },

@@ -1,207 +1,103 @@
 import React, {useEffect, useState} from 'react';
 import DABU from '../dabu/index';
-import {useRouter} from 'next/router';
-import Link from 'next/link';
-import {
-  useMarketplace,
-  useAddress,
-  useMetamask,
-  useConnect,
-} from '@thirdweb-dev/react';
-import Select from 'react-select';
+
+import {useAddress} from '@thirdweb-dev/react';
 //@ts-ignore
 import SEO from '@/src/components/SEO';
 // @ts-ignore
 import Button from '@/src/components/Button';
-// @ts-ignore
-import TAKO from '@/src/tako';
-import {gql, useLazyQuery} from '@apollo/client';
-// @ts-ignore
-import Navbar from '@/src/components/Navbar';
-import WalletProvider from '../src/components/WalletProvider';
-import TakoLink from '../src/components/TakoLink';
-import Web3 from 'web3';
-import {initWeb3} from '../src/helpers';
+import ActiveListings from '@/src/hooks/getActiveListings';
 
 export default function Dragon({connected}: any) {
-  const connectWithMetamask = useMetamask();
   const address = useAddress();
-  const [show, setShow] = useState<boolean>(false);
-  const [showOptions, setShowOptions] = useState<boolean>(false);
-  const [site_message, setSiteMessage] = useState<string | string[]>('');
+  const [blockchain, setBlockchain] = useState('POLYGON');
+  const {market_nfts, complete, loading} = ActiveListings(blockchain);
   const [_error, setError] = useState<any>('');
+  var dabu =
+    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+      ? new DABU(blockchain, window.ethereum)
+      : new DABU(blockchain);
+  useEffect(() => {
+    dabu
+      .getNetwork()
+      .then((network: any) => {
+        setBlockchain(network);
+      })
+      .catch((err: any) => {
+        setError(err);
+      });
+  }, []);
 
   return (
     <>
-      <style jsx>
-        {`
-          .market {
-            max-width: 1228px;
-          }
-          .nft-wrapper {
-            min-width: 275px !important;
-            max-width: 285px !important;
-          }
-
-          .icon-wrapper img {
-            width: 100%;
-            height: 100%;
-
-            object-fit: contain;
-          }
-        `}
-      </style>
       <SEO
         title={`Tako Labs - MARKET`}
         description='TAKOLABS.IO: Tako Labs is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content.'
         twitter='takolabs'
         keywords='gaming, nfts, web3'
       />
-      <Navbar address={address} connected={connected} />
-      <div className='d-flex flex-row position-relative w-100'>
-        <div className='market d-flex flex-column p-3'>
-          <p>
-            Site Message:{' '}
-            {
-              'We are Currently in Open Alpha, so please use with discretion, and report any bugs'
-            }
-          </p>
-          <p>Site Fees: 0.05% - is used to keep the lights on ❤</p>
-          <ActiveListings current_address={address || ''} />
+
+      <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
+        <div className='wrapper d-flex flex-column p-3'>
+          <div className='s1 d-flex flex-column justify-content-center align-items-center text-center'>
+            <h2 className='display-1'>Welcome MOIAN!</h2>
+            <h4>We are Currently in Open Alpha</h4>
+            <h5>Site Fees: 0.05%</h5>
+          </div>
+          <p>Listed on {blockchain}:</p>
+          <hr />
+          {loading ? (
+            <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
+              Loading NFTS
+            </div>
+          ) : (
+            complete &&
+            market_nfts.map((nfts: any, key: number) => {
+              return (
+                <div
+                  className={`d-flex flex-row flex-wrap ${
+                    nfts.length > 1
+                      ? 'justify-content-between'
+                      : 'justify-content-start'
+                  } mb-3`}
+                  key={key}>
+                  {nfts.map(
+                    (
+                      {
+                        id,
+                        tokenId,
+                        currencySymbol,
+                        asset: {name, description, image},
+                        buyOutPrice,
+                        currencyContractAddress,
+                        decimals,
+                      }: any,
+                      _key: number
+                    ) => {
+                      return (
+                        <NFTMARKETCARD
+                          id={id}
+                          key={_key}
+                          tokenId={tokenId}
+                          currencySymbol={currencySymbol}
+                          name={name}
+                          description={description}
+                          image={image}
+                          buyOutPrice={buyOutPrice}
+                          currencyContractAddress={currencyContractAddress}
+                          decimals={decimals}
+                          current_address={address}
+                        />
+                      );
+                    }
+                  )}
+                </div>
+              );
+            })
+          )}
+          <hr />
         </div>
       </div>
-    </>
-  );
-}
-
-function ActiveListings({current_address}: {current_address: string}) {
-  var dabu =
-    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-      ? new DABU('POLYGON', window.ethereum)
-      : new DABU('POLYGON');
-
-  const address = useAddress();
-
-  const [complete, setComplete] = useState<boolean>(false);
-  const [show, setShow] = useState<boolean>(false);
-  const [showOptions, setShowOptions] = useState<boolean>(false);
-  const [site_message, setSiteMessage] = useState<string | string[]>('');
-  const [market_nfts, setMarketNFTS] = useState<Array<any>>([]);
-  const [_error, setError] = useState<any>('');
-  const query = gql`
-    query Query_Market_Sell_Orders($input: QueryInput) {
-      Query_Market_Sell_Orders(input: $input) {
-        nfts {
-          id
-          asset {
-            id
-            name
-            description
-            image
-          }
-          currencyContractAddress
-          currencySymbol
-          buyOutPrice
-          decimals
-        }
-      }
-    }
-  `;
-  const [Query_Market_Sell_Orders, {loading}] = useLazyQuery(query, {
-    onCompleted: async ({Query_Market_Sell_Orders}) => {
-      // console.log(Query_Market_Sell_Orders);
-      if (
-        Query_Market_Sell_Orders !== null &&
-        Query_Market_Sell_Orders !== undefined
-      ) {
-        let cleanCollections: Array<any> = [];
-        var i = 0;
-        let arr = [] as any;
-        let groupArr = [] as any;
-        for (const nft of Query_Market_Sell_Orders.nfts) {
-          i = i + 1;
-
-          if (arr.length < 4 && i !== Query_Market_Sell_Orders.nfts.length) {
-            arr.push(nft);
-          } else if (i == Query_Market_Sell_Orders.nfts.length) {
-            arr.push(nft);
-            groupArr.push(arr);
-          } else if (arr.length == 4) {
-            groupArr.push(arr);
-            arr = [];
-            arr.push(nft);
-          }
-        }
-        // console.log('setting index', groupArr);
-        setMarketNFTS(groupArr);
-        setComplete(true);
-      }
-    },
-  });
-
-  useEffect((): any => {
-    initWeb3();
-    Query_Market_Sell_Orders({
-      variables: {
-        input: {
-          blockChain: 'POLYGON',
-        },
-      },
-    });
-
-    return () => {
-      setComplete(false);
-    };
-  }, []);
-
-  if (loading) {
-    return (
-      <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
-        <h1>Market | Tako Labs</h1>
-        <hr />
-        <p>Trade Your NFTs with Us ❤</p>
-        <br />
-        Loading NFTS
-      </div>
-    );
-  }
-
-  return (
-    <>
-      {market_nfts.map((nfts: any, key: number) => {
-        return (
-          <div
-            className='d-flex flex-column flex-md-row flex-wrap w-100'
-            key={key}>
-            {nfts.map(
-              ({
-                id,
-                tokenId,
-                currencySymbol,
-                asset: {name, description, image},
-                buyOutPrice,
-                currencyContractAddress,
-                decimals,
-              }: any) => {
-                return (
-                  <NFTMARKETCARD
-                    id={id}
-                    tokenId={tokenId}
-                    currencySymbol={currencySymbol}
-                    name={name}
-                    description={description}
-                    image={image}
-                    buyOutPrice={buyOutPrice}
-                    currencyContractAddress={currencyContractAddress}
-                    decimals={decimals}
-                    current_address={current_address}
-                  />
-                );
-              }
-            )}
-          </div>
-        );
-      })}
     </>
   );
 }
@@ -225,19 +121,62 @@ const NFTMARKETCARD = ({
   return (
     <div
       id={id}
-      className='nft-wrapper  border border-dark m-2 p-2 d-flex flex-column col justify-content-between'>
+      className='nft-wrapper  border border-dark m-2 p-2 d-flex flex-column justify-content-between'>
       <style jsx>
         {`
           .nft-wrapper {
-            min-width: 275px !important;
-            max-width: 285px !important;
+            width: 100%;
+          }
+
+          .icon-wrapper {
+            width: 100%;
+            height: 300px;
           }
 
           .icon-wrapper img {
             width: 100%;
-            height: 100%;
-
+            max-height: 300px;
             object-fit: contain;
+          }
+
+          // Small devices (landscape phones, 576px and up)
+          @media (min-width: 576px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 1);
+              max-width: 100%;
+            }
+          }
+
+          // Medium devices (tablets, 768px and up)
+          @media (min-width: 768px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 2);
+              max-width: calc(95.5% / 2);
+            }
+          }
+
+          // Large devices (desktops, 992px and up)
+          @media (min-width: 992px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 2);
+              max-width: calc(95.5% / 3);
+            }
+          }
+
+          // X-Large devices (large desktops, 1200px and up)
+          @media (min-width: 1200px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 4);
+              max-width: calc(95.5% / 4);
+            }
+          }
+
+          // XX-Large devices (larger desktops, 1400px and up)
+          @media (min-width: 1400px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 4);
+              max-width: calc(95.5% / 4);
+            }
           }
         `}
       </style>
