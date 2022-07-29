@@ -79,6 +79,7 @@ export default function Dragon({connected}: any) {
             <h2 className='display-1'>Welcome MOIAN!</h2>
             <h4>We are Currently in Open Alpha</h4>
             <h5>Site Fees: 0.05%</h5>
+            <p>We Support Ethereum and Polygon</p>
           </div>
           <p>Connected To {blockchain}</p>
           <hr />
