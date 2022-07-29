@@ -55,14 +55,15 @@ export default function Dragon({connected}: any) {
       ? new DABU(blockchain, window.ethereum)
       : new DABU(blockchain);
   useEffect(() => {
-    dabu
-      .getNetwork()
-      .then((network: any) => {
-        setBlockchain(network);
-      })
-      .catch((err: any) => {
-        setError(err);
-      });
+    connected &&
+      dabu
+        .getNetwork()
+        .then((network: any) => {
+          setBlockchain(network);
+        })
+        .catch((err: any) => {
+          setError(err);
+        });
   }, []);
 
   return (

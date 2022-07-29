@@ -34,11 +34,14 @@ class DABU {
 
     if (typeof window !== 'undefined' && typeof PROVIDER !== 'undefined') {
       this.Web3 = new Web3(this.provider);
+    } else {
+       this.Web3 = new Web3.providers.HttpProvider(
+         'https://mainnet.infura.io/v3/5fe95d0d3fdc4330a17a622a19f2ce86'
+       );
     }
-    this.sdk =
-      typeof this.Web3 !== 'undefined'
-        ? new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3)
-        : new ThirdwebSDK(NETWORK.toLowerCase());
+    console.log(NETWORK,this.Web3);
+    this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3)
+        
 
     switch (NETWORK) {
       case 'ETHEREUM':

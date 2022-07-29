@@ -11,7 +11,7 @@ import Button from '@/src/components/Button';
 
 import {useAddress} from '@thirdweb-dev/react';
 
-import { NATIVE_TOKEN_ADDRESS} from '@thirdweb-dev/sdk';
+import {NATIVE_TOKEN_ADDRESS} from '@thirdweb-dev/sdk';
 
 function truncateAddress(address) {
   try {
@@ -24,7 +24,7 @@ function truncateAddress(address) {
   }
 }
 
-function ListPage() {
+function ListPage({connected}) {
   const marketRef = useRef(null);
   const [nft_list, set_nft_list] = React.useState([]);
 
@@ -131,23 +131,24 @@ function ListPage() {
   });
 
   React.useEffect(() => {
-    dabu
-      .getNetwork()
-      .then((network) => {
-        console.log('network', network);
-        setBlockchain(network);
-        Query_Address_NFTS({
-          variables: {
-            input: {
-              address: `${'ETHEREUM'}:${address}`,
-              blockChain: network,
+    connected &&
+      dabu
+        .getNetwork()
+        .then((network) => {
+          console.log('network', network);
+          setBlockchain(network);
+          Query_Address_NFTS({
+            variables: {
+              input: {
+                address: `${'ETHEREUM'}:${address}`,
+                blockChain: network,
+              },
             },
-          },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }, [address]);
 
   if (loading) {
@@ -230,7 +231,6 @@ function NFTListingCard({...props}) {
         {`
           .nft-wrapper {
             width: 100%;
-
           }
 
           .icon-wrapper {
