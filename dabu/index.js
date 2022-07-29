@@ -35,7 +35,10 @@ class DABU {
     if (typeof window !== 'undefined' && typeof PROVIDER !== 'undefined') {
       this.Web3 = new Web3(this.provider);
     }
-    this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3);
+    this.sdk =
+      typeof this.Web3 !== 'undefined'
+        ? new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3)
+        : new ThirdwebSDK(NETWORK.toLowerCase());
 
     switch (NETWORK) {
       case 'ETHEREUM':
