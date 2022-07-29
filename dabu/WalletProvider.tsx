@@ -1,0 +1,40 @@
+import { ThirdwebProvider } from '@thirdweb-dev/react';
+import React, { useState, useEffect } from 'react';
+export default function WalletProvider({
+  desiredChainId,
+  chainRpc,
+  supportedChains,
+  sdkOptions,
+  children,
+}: any) {
+  const [connected, setConnected] = useState(false);
+
+  useEffect(() => {
+    if (typeof window.ethereum !== 'undefined') {
+      console.log('MetaMask is installed!');
+      window.ethereum.on('accountsChanged', async (accounts: Array<string>) => {
+        if (accounts.length === 0) {
+          window.location.reload();
+          setConnected(false);
+        }
+        setConnected(true);
+        setAddress(accounts[0]);
+      });
+      window.ethereum.on('chainChanged', async (network: Array<string>) => {
+        window.location.reload();
+      });
+    }
+  }, []);
+
+  return (
+    <ThirdwebProvider
+      desiredChainId={desiredChainId}
+      chainRpc={chainRpc}
+      supportedChains={supportedChains}
+      sdkOptions={sdkOptions}>
+      {children({
+        connected: connected,
+      })}
+    </ThirdwebProvider>
+  );
+}
