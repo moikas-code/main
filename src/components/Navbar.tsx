@@ -3,16 +3,18 @@ import {useRouter} from 'next/router';
 import TakoLink from './TakoLink';
 import WalletButton from './walletbutton';
 import WalletButtonItem from './walletbuttonitem';
-import {login}from '../helpers'
-
+import {login} from '../helpers';
+import Button from './Button';
+import Link from 'next/link';
+import {useAddress, useDisconnect, useMetamask} from '@thirdweb-dev/react';
 function Navbar(props: any) {
+  const address = useAddress();
   const [show, setShow] = useState(false);
 
   const router = useRouter();
   // const [address, setAddress] = React.useState('');
   const [status, setStatus] = React.useState('');
   const [err, setErr] = React.useState<any>('');
-
 
   return (
     <>
@@ -28,56 +30,74 @@ function Navbar(props: any) {
           width: 175px;
         }
       `}</style>
-      <div className='position-relative bg-white z-3'>
+      <div className='position-relative bg-white z-3 d-flex flex-column'>
         <div className='navbar d-flex flex-row justify-content-between align-items-center border border-dark'>
-          <span onClick={() => setShow(false)}>
-            <TakoLink href={'/'} as={'/'}>
-              <a className='d-flex flex-column justify-content-center h-100 fnt-color-black text-decoration-none text-center nav-brand width-10rem'>
-                <span className='text-uppercase'>Tako Labs</span>
-              </a>
-            </TakoLink>
-          </span>
+          <Link href={'/'}>
+            <a className='d-flex flex-column justify-content-center h-100 fnt-color-black text-decoration-none text-center nav-brand width-10rem'>
+              <span className='text-uppercase'>Tako Labs</span>
+            </a>
+          </Link>
 
-          <div className='h-100' title={props.address}>
+          <div className='h-100 d-flex flex-row'>
             <WalletButton
               isConnected={props.connected}
-              onConnect={() =>
-                login()
-                  .then(() => window.location.reload())
-              }
               onPress={() => setShow(!show)}
               // address={truncateAddress(props.address)}
             />
           </div>
         </div>
-        {show && (
-          <div
-            className={`wallet-button-items d-flex flex-column bg-grey position-absolute end-0`}>
-            <WalletButtonItem
-              text={`Create Contract`}
-              onPress={() => {
-                router.push('https://deploy.takolabs.io');
-                setShow(false);
-              }}
-            />
-            <WalletButtonItem
-              text={`Create`}
-              onPress={() => {
-                router.push('https://mint.takolabs.io');
-                setShow(false);
-              }}
-            />
-            <WalletButtonItem
-              text={`List NFT`}
-              onPress={() => {
-                router.push('/list');
-                setShow(false);
-              }}
-            />
-          </div>
-        )}
+        <div className='d-flex flex-row align-items-center border-bottom border-dark bg-white px-4 py-2'>
+          <Button
+            onClick={() => {
+              router.push('/');
+            }}>
+            Home
+          </Button>
+          |
+          <Button
+            onClick={() => {
+              router.push('/explore');
+            }}>
+            Explore
+          </Button>
+          |
+          <Button
+            onClick={() => {
+              router.push('/about');
+            }}>
+            About
+          </Button>
+          |
+          {address && (
+            <Button
+              onClick={() => {
+                router.push('/profile');
+              }}>
+              My NFT
+            </Button>
+          )}
+        </div>
       </div>
     </>
   );
 }
+// {show && (
+//   <div
+//     className={`wallet-button-items d-flex flex-column bg-grey position-absolute end-0`}>
+//     <WalletButtonItem
+//       text={`Create Contract`}
+//       onPress={() => {
+//         router.push('https://deploy.takolabs.io');
+//         setShow(false);
+//       }}
+//     />
+//     <WalletButtonItem
+//       text={`Create`}
+//       onPress={() => {
+//         router.push('https://mint.takolabs.io');
+//         setShow(false);
+//       }}
+//     />
+//   </div>
+// )}
 export default Navbar;

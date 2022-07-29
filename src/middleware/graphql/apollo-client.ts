@@ -8,7 +8,7 @@ import {
 } from '@apollo/client';
 ///
 let appJWTToken: any;
-const httpLink = new HttpLink({uri: '/api/graphql/'});
+const httpLink = new HttpLink({uri: '/api/graphql'});
 
 var client = new ApolloClient({
   link: from([ httpLink]),

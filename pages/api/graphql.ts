@@ -68,7 +68,7 @@ const handler = async ({
     ///
   }
   //
-  return await apolloServerHandler.createHandler({path: '/api/graphql/'})(_req, _res);
+  return await apolloServerHandler.createHandler({path: '/api/graphql'})(_req, _res);
 };
 
 export const config = {

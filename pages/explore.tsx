@@ -6,6 +6,7 @@ import {useAddress} from '@thirdweb-dev/react';
 import SEO from '@/src/components/SEO';
 // @ts-ignore
 import Button from '@/src/components/Button';
+// @ts-ignore
 import ActiveListings from '@/src/hooks/getActiveListings';
 
 async function formatListings(listings: any) {
@@ -49,7 +50,10 @@ async function formatListings(listings: any) {
 export default function Dragon({connected}: any) {
   const address = useAddress();
   const [blockchain, setBlockchain] = useState('POLYGON');
+  const {market_nfts, complete, loading} = ActiveListings(blockchain);
   const [_error, setError] = useState<any>('');
+  const [page, setPage] = useState<any>(0);
+  const [listed_nfts, setNFTS] = useState<any>([[]]);
   var dabu =
     typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
       ? new DABU(blockchain, window.ethereum)
@@ -65,22 +69,88 @@ export default function Dragon({connected}: any) {
       });
   }, []);
 
+  useEffect(() => {
+    formatListings(market_nfts).then((nfts) => {
+      console.log(nfts);
+      setNFTS(nfts);
+    });
+  }, [market_nfts]);
+
   return (
     <>
       <SEO
-        title={`Tako Labs - MARKET`}
+        title={`Tako Labs - EXPLORE`}
         description='TAKOLABS.IO: Tako Labs is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content.'
         twitter='takolabs'
         keywords='gaming, nfts, web3'
       />
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
-          <div className='s1 d-flex flex-column justify-content-center align-items-center text-center'>
-            <h2 className='display-1'>Welcome MOIAN!</h2>
-            <h4>We are Currently in Open Alpha</h4>
-            <h5>Site Fees: 0.05%</h5>
+          
+          <p className='mt-3'>Connected To {blockchain}</p>
+          <hr />
+          {loading ? (
+            <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
+              Loading NFTS
+            </div>
+          ) : (
+            complete &&
+            typeof listed_nfts[page] !== 'undefined' &&
+            listed_nfts[page].map((nfts: any, key: number) => {
+              return (
+                <div
+                  className={`d-flex flex-row flex-wrap ${
+                    nfts.length > 1
+                      ? 'justify-content-between'
+                      : 'justify-content-start'
+                  } mb-3`}
+                  key={key}>
+                  {nfts.map(
+                    (
+                      {
+                        id,
+                        tokenId,
+                        currencySymbol,
+                        asset: {name, description, image},
+                        buyOutPrice,
+                        currencyContractAddress,
+                        decimals,
+                      }: any,
+                      _key: number
+                    ) => {
+                      return (
+                        <NFTMARKETCARD
+                          id={id}
+                          key={_key}
+                          tokenId={tokenId}
+                          currencySymbol={currencySymbol}
+                          name={name}
+                          description={description}
+                          image={image}
+                          buyOutPrice={buyOutPrice}
+                          currencyContractAddress={currencyContractAddress}
+                          decimals={decimals}
+                          current_address={address}
+                        />
+                      );
+                    }
+                  )}
+                </div>
+              );
+            })
+          )}
+          <hr />
+          <div className='d-flex flex-row justify-content-between'>
+            <Button disabled={page === 0} onClick={() => setPage(page - 1)}>
+              Previous
+            </Button>
+            {`Page ${page + 1} of ${listed_nfts.length}`}
+            <Button
+              disabled={!(page < listed_nfts.length - 1)}
+              onClick={() => setPage(page + 1)}>
+              Next
+            </Button>
           </div>
-          <p>Connected To {blockchain}</p>
           <hr />
         </div>
       </div>
