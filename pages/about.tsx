@@ -19,7 +19,7 @@ export default function about({connected}): ReactNode {
         twitter='takolabs'
         keywords='gaming, nfts, web3'
       />
-      <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
+      <div className={`d-flex flex-row justify-content-center position-relative w-100 px-3 px-lg-0`}>
         <div className='wrapper d-flex flex-column p-3'>
           {/* Header */}
           <div>
@@ -51,7 +51,7 @@ export default function about({connected}): ReactNode {
               deploy and create their own NFT contracts.
             </p>
             <p>
-              A simple Dream to create an open-source and decentralized game.
+              I would like to create a game, but its almost as if everyone is doing so these day XD
             </p>
           </div>
 

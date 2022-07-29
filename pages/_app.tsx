@@ -117,7 +117,7 @@ function MyApp({Component, pageProps}: AppProps) {
                 }
 
                 .s1 {
-                  min-height: 800px;
+                  min-height: 850px;
                 }
               `}
             </style>

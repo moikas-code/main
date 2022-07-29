@@ -8,11 +8,11 @@ import DABU from '../dabu';
 import SEO from '@/src/components/SEO';
 //@ts-ignore
 import Button from '@/src/components/Button';
-//@ts-ignore
-import WalletProvider from '@/src/components/WalletProvider';
+
 import {useAddress} from '@thirdweb-dev/react';
-import Web3 from 'web3';
-import {ChainId, NATIVE_TOKEN_ADDRESS} from '@thirdweb-dev/sdk';
+
+import { NATIVE_TOKEN_ADDRESS} from '@thirdweb-dev/sdk';
+
 function truncateAddress(address) {
   try {
     return `${address.substring(0, 6).toLowerCase()}...${address
@@ -30,7 +30,6 @@ function ListPage() {
 
   const [_ID, setID] = React.useState(0);
 
-  const [viewWidth, setViewWidth] = React.useState(285);
   const address = useAddress();
   const [blockchain, setBlockchain] = useState('POLYGON');
   const query = gql`
@@ -89,6 +88,7 @@ function ListPage() {
       }
     }
   `;
+
   var dabu =
     typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
       ? new DABU(blockchain, window.ethereum)
@@ -229,7 +229,8 @@ function NFTListingCard({...props}) {
       <style jsx>
         {`
           .nft-wrapper {
-            width: 264px;
+            width: 100%;
+
           }
 
           .icon-wrapper {
@@ -245,17 +246,25 @@ function NFTListingCard({...props}) {
 
           // Small devices (landscape phones, 576px and up)
           @media (min-width: 576px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 1);
+              max-width: 100%;
+            }
           }
 
           // Medium devices (tablets, 768px and up)
           @media (min-width: 768px) {
+            .nft-wrapper {
+              min-width: calc(95.5% / 2);
+              max-width: calc(95.5% / 2);
+            }
           }
 
           // Large devices (desktops, 992px and up)
           @media (min-width: 992px) {
             .nft-wrapper {
-              min-width: calc(95.5% / 4);
-              max-width: calc(95.5% / 4);
+              min-width: calc(95.5% / 2);
+              max-width: calc(95.5% / 3);
             }
           }
 
@@ -279,7 +288,7 @@ function NFTListingCard({...props}) {
 
       <div
         id={props.ID}
-        className='nft-wrapper border border-dark m-1 p-2 d-flex flex-column justify-content-between'>
+        className='nft-wrapper border border-dark m-1 p-2 d-flex flex-column justify-content-between rounded'>
         <div className='icon-wrapper d-flex flex-column justify-content-center align-items-center'>
           {props.Content.length > 0 ? (
             <img

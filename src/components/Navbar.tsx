@@ -56,6 +56,13 @@ function Navbar(props: any) {
           |
           <Button
             onClick={() => {
+              router.push('/explore');
+            }}>
+            Explore
+          </Button>
+          |
+          <Button
+            onClick={() => {
               router.push('/about');
             }}>
             About
@@ -64,7 +71,7 @@ function Navbar(props: any) {
           {address && (
             <Button
               onClick={() => {
-                router.push('/list');
+                router.push('/profile');
               }}>
               My NFT
             </Button>
