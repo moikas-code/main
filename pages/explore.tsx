@@ -9,11 +9,19 @@ import Button from '@/src/components/Button';
 // @ts-ignore
 import ActiveListings from '@/src/hooks/getActiveListings';
 
-async function formatListings(listings: any) {
+async function formatListings(listings: any, sort: string = 'latest') {
   var i = 0;
   let rowarr = [] as any;
   let groupArr = [] as any;
-  for (const nft of listings) {
+  for (const nft of [...listings].sort((a: any, b: any) => {
+    switch (sort) {
+      case 'oldest':
+        return a.id - b.id;
+      case 'latest':
+      default:
+        return b.id - a.id;
+    }
+  })) {
     i = i + 1;
     if (rowarr.length < 4 && i !== listings.length - 1) {
       rowarr.push(nft);
@@ -165,7 +173,7 @@ export default function Dragon({connected}: any) {
             </Button>
             {`Page ${page + 1} of ${listed_nfts.length}`}
             <Button
-              disabled={!(page < listed_nfts.length-1)}
+              disabled={!(page < listed_nfts.length - 1)}
               onClick={() => setPage(page + 1)}>
               Next
             </Button>
