@@ -46,7 +46,7 @@ function Navbar(props: any) {
             />
           </div>
         </div>
-        <div className='d-flex flex-row align-items-center border-start border-end border-bottom border-dark bg-white px-4 py-2'>
+        <div className='d-flex flex-row justify-content-center align-items-center border-start border-end border-bottom border-dark bg-white px-4 py-2'>
           <Button
             onClick={() => {
               router.push('/');

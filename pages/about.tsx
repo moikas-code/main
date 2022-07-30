@@ -25,13 +25,10 @@ export default function about({connected}): ReactNode {
             <h1>About</h1>
             <hr />
             <p>
-              Moika's Lookout was developed to provide a home for a Community
-              built around Gaming, Technology, and Memes. Our goal is create a
-              place where our users feel safe and secure while providing tools
-              and resources to assist those interested in using and learning
-              about blockchain technologies.
+              Moika's Lookout was developed to provide a Home for my smol
+              Community built around Gaming, Technology, and Memes.
             </p>
-            <p>To do this we have created a small ecosystem starting with:</p>
+            <p>To do this a small ecosystem was put into development starting with:</p>
             <p>
               {' '}
               A simple Marketplace to allow users to trade their data at a low
@@ -93,7 +90,7 @@ export default function about({connected}): ReactNode {
           <hr />
           {/* Our Socials Section */}
           <div>
-            <h4>Our Socials:</h4>
+            <h4>The Socials:</h4>
             <p>
               Discord:{' '}
               <a target={'_blank'} href='https://discord.gg/DnbkrC8 '>
@@ -106,6 +103,12 @@ export default function about({connected}): ReactNode {
                 {' '}
                 Follow
               </a>{' '}
+            </p>
+            <p>
+              Twitch:{' '}
+              <a target={'_blank'} href='https://twitch.tv/moikapy'>
+                Follow
+              </a>
             </p>
           </div>
         </div>
