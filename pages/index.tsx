@@ -54,37 +54,35 @@ export default function Dragon({connected}: any) {
     typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
       ? new DABU(blockchain, window.ethereum)
       : new DABU(blockchain);
-  useEffect(() => {
-    typeof window.ethereum !== 'undefined' &&
-      dabu.getNetwork().then((network: any) => {
-        try {
-          ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{chainId: '0x89'}],
-          });
-        } catch (switchError) {
-          // This error code indicates that the chain has not been added to MetaMask.
-          if (switchError.code === 4902) {
-            try {
-              ethereum.request({
-                method: 'wallet_addEthereumChain',
-                params: [
-                  {
-                    chainId: '0x89',
-                    chainName: '...',
-                    rpcUrls: ['https://polygon-rpc.com/'] /* ... */,
-                  },
-                ],
-              });
-            } catch (addError) {
-              // handle "add" error
-            }
+  React.useEffect(() => {
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{chainId: '0x89'}],
+        });
+      } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        if (switchError.code === 4902) {
+          try {
+            ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: '0x89',
+                  chainName: 'Polygon',
+                  rpcUrls: ['https://polygon-rpc.com/'] /* ... */,
+                },
+              ],
+            });
+          } catch (addError) {
+            // handle "add" error
           }
-          // handle other "switch" errors
         }
-      });
+        // handle other "switch" errors
+      }
+    }
   }, []);
-
   return (
     <>
       <SEO
@@ -101,7 +99,6 @@ export default function Dragon({connected}: any) {
             <h5>Site Fees: 0.05%</h5>
             <p>We Support Polygon</p>
           </div>
-          <p>Connected To {blockchain}</p>
           <hr />
         </div>
       </div>

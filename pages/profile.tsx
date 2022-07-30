@@ -150,36 +150,33 @@ function ListPage({connected}) {
         });
   }, [address, connected]);
   React.useEffect(() => {
-    typeof window.ethereum !== 'undefined' &&
-      dabu.getNetwork().then((network: any) => {
-    
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{chainId: '0x89'}],
+        });
+      } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        if (switchError.code === 4902) {
           try {
             ethereum.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{chainId: '0x89'}],
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: '0x89',
+                  chainName: 'Polygon',
+                  rpcUrls: ['https://polygon-rpc.com/'] /* ... */,
+                },
+              ],
             });
-          } catch (switchError) {
-            // This error code indicates that the chain has not been added to MetaMask.
-            if (switchError.code === 4902) {
-              try {
-                ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                  params: [
-                    {
-                      chainId: '0x89',
-                      chainName: '...',
-                      rpcUrls: ['https://polygon-rpc.com/'] /* ... */,
-                    },
-                  ],
-                });
-              } catch (addError) {
-                // handle "add" error
-              }
-            }
-            // handle other "switch" errors
+          } catch (addError) {
+            // handle "add" error
           }
-        
-      });
+        }
+        // handle other "switch" errors
+      }
+    }
   }, []);
   if (loading) {
     return (
