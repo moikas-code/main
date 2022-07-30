@@ -55,15 +55,34 @@ export default function Dragon({connected}: any) {
       ? new DABU(blockchain, window.ethereum)
       : new DABU(blockchain);
   useEffect(() => {
-    connected &&
-      dabu
-        .getNetwork()
-        .then((network: any) => {
-          setBlockchain(network);
-        })
-        .catch((err: any) => {
-          setError(err);
-        });
+    typeof window.ethereum !== 'undefined' &&
+      dabu.getNetwork().then((network: any) => {
+        try {
+          ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{chainId: '0x89'}],
+          });
+        } catch (switchError) {
+          // This error code indicates that the chain has not been added to MetaMask.
+          if (switchError.code === 4902) {
+            try {
+              ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId: '0x89',
+                    chainName: '...',
+                    rpcUrls: ['https://polygon-rpc.com/'] /* ... */,
+                  },
+                ],
+              });
+            } catch (addError) {
+              // handle "add" error
+            }
+          }
+          // handle other "switch" errors
+        }
+      });
   }, []);
 
   return (
@@ -80,7 +99,7 @@ export default function Dragon({connected}: any) {
             <h2 className='display-1'>Welcome MOIAN!</h2>
             <h4>We are Currently in Open Alpha</h4>
             <h5>Site Fees: 0.05%</h5>
-            <p>We Support Ethereum and Polygon</p>
+            <p>We Support Polygon</p>
           </div>
           <p>Connected To {blockchain}</p>
           <hr />

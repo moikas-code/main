@@ -19,7 +19,9 @@ export default function WalletProvider({
     });
     if (typeof window.ethereum !== 'undefined') {
       console.log('MetaMask is installed!');
+
       window.ethereum.on('accountsChanged', async (accounts: Array<string>) => {
+
         if (accounts.length === 0) {
           window.location.reload();
           setConnected(false);

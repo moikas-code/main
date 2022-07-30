@@ -136,12 +136,11 @@ function ListPage({connected}) {
         .getNetwork()
         .then((network) => {
           console.log('network', network);
-          setBlockchain(network);
           Query_Address_NFTS({
             variables: {
               input: {
                 address: `${'ETHEREUM'}:${address}`,
-                blockChain: network,
+                blockChain: blockchain,
               },
             },
           });
@@ -149,8 +148,39 @@ function ListPage({connected}) {
         .catch((error) => {
           console.log(error);
         });
-  }, [address, connected                       ]);
-
+  }, [address, connected]);
+  React.useEffect(() => {
+    typeof window.ethereum !== 'undefined' &&
+      dabu.getNetwork().then((network: any) => {
+    
+          try {
+            ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{chainId: '0x89'}],
+            });
+          } catch (switchError) {
+            // This error code indicates that the chain has not been added to MetaMask.
+            if (switchError.code === 4902) {
+              try {
+                ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [
+                    {
+                      chainId: '0x89',
+                      chainName: '...',
+                      rpcUrls: ['https://polygon-rpc.com/'] /* ... */,
+                    },
+                  ],
+                });
+              } catch (addError) {
+                // handle "add" error
+              }
+            }
+            // handle other "switch" errors
+          }
+        
+      });
+  }, []);
   if (loading) {
     return (
       <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
@@ -225,6 +255,7 @@ export default ListPage;
 
 function NFTListingCard({...props}) {
   const [show, setShow] = useState<boolean>(false);
+
   return (
     <>
       <style jsx>
@@ -336,9 +367,13 @@ function NFTListingCard({...props}) {
   );
 }
 
-function ListSection({ID, onsubmit, onClose}: any) {
+function ListSection({ID, onsubmit, onClose, connected}: any) {
   const [price, setPrice] = useState(0);
-
+  const [blockchain, setBlockchain] = useState('POLYGON');
+  var dabu =
+    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+      ? new DABU(blockchain, window.ethereum)
+      : new DABU(blockchain);
   return (
     <div className=''>
       <form

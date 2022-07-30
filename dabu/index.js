@@ -29,7 +29,7 @@ import abi from './abi.js';
  */
 
 class DABU {
-  constructor(NETWORK = 'POLYGON', PROVIDER) {
+  constructor(NETWORK, PROVIDER) {
     this.provider = PROVIDER;
 
     if (typeof window !== 'undefined' && typeof PROVIDER !== 'undefined') {
