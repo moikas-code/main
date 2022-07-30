@@ -734,12 +734,16 @@ const TAKO = {
       console.log(error);
     }
   },
-  get_items_by_owner: async (address: any) => {
+  get_items_by_owner: async (address: any,blockchain:any
+    ) => {
     try {
       const base = process.env.DEV !== 'true' ? baseURL : dev_baseURL
       // console.log(address)
       //
-      let url = (base + items + '/byOwner/' + `?owner=${address}`) as string;
+      let url = (base +
+        items +
+        '/byOwner/' +
+        `?owner=${address}&blockchains=${blockchain}`) as string;
       //
       let data = await fetch(url, {
         method: 'GET',

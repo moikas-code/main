@@ -71,7 +71,10 @@ export default {
       // INIT DABU
       const contract = new DABU(args.input.blockChain);
       // Get Owned NFTs
-      const res: any = await TAKO.get_items_by_owner(args.input.address);
+      const res: any = await TAKO.get_items_by_owner(
+        args.input.address,
+        args.input.blockChain
+      );
 
       // Get Market NFTs
       const active_listings_as_raible_id: any = await contract
