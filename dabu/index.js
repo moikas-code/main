@@ -39,7 +39,7 @@ class DABU {
          'https://mainnet.infura.io/v3/5fe95d0d3fdc4330a17a622a19f2ce86'
        );
     }
-    console.log(NETWORK,this.Web3);
+    // console.log(NETWORK,this.Web3);
     this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3)
         
 
