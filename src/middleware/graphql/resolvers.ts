@@ -93,14 +93,19 @@ export default {
       
         if (
           active_listings_as_raible_id.includes(nft.id) &&
-          nft.blockchain === args.input.blockChain
+          nft.blockchain === args.input.blockChain && nft.lazySupply === '0'
         ) {
           listed.push(nft);
         }
       }
 
       for (var nft of res.nfts) {
-        if (!listed.includes(nft) && nft.blockchain === args.input.blockChain) {
+        if (
+          !listed.includes(nft) &&
+          nft.blockchain === args.input.blockChain &&
+          nft.lazySupply === '0'
+        ) {
+          console.log(nft);
           unlisted.push(nft);
         }
       }

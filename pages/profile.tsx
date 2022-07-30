@@ -149,7 +149,7 @@ function ListPage({connected}) {
         .catch((error) => {
           console.log(error);
         });
-  }, [address]);
+  }, [address, connected                       ]);
 
   if (loading) {
     return (
