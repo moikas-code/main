@@ -33,6 +33,13 @@ export default function Dragon({connected}: any) {
   }, []);
   return (
     <>
+    <style>
+      {`
+      .neg-m-5rem{
+        margin-top: -5rem;
+      }
+      `}
+    </style>
       <SEO
         title={`Moka's Lookout`}
         description="moikaslookout.com: Moika's Lookout is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content."
@@ -41,7 +48,7 @@ export default function Dragon({connected}: any) {
       />
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
-          <div className='s1 d-flex flex-column justify-content-center align-items-center text-center'>
+          <div className='s1 d-flex flex-column justify-content-center text-center neg-m-5rem'>
             <h2 className='display-1'>Welcome to Moika's Lookout!</h2>
             <h4>We are Currently in Open Alpha</h4>
             <h5>Site Fees: 0.05%</h5>
