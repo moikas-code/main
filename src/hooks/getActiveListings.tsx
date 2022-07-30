@@ -22,7 +22,7 @@ export default function ActiveListings(blockChain: string = 'POLYGON') {
       }
     }
   `;
-  const {loading, error} = useQuery(query, {
+  const {loading, error, refetch} = useQuery(query, {
     variables: {
       input: {
         blockChain: blockChain,
@@ -39,5 +39,5 @@ export default function ActiveListings(blockChain: string = 'POLYGON') {
     },
   });
 
-  return {market_nfts, complete, loading, error};
+  return {market_nfts, complete, loading, error, refetch};
 }

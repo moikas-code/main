@@ -34,7 +34,7 @@ function Navbar(props: any) {
         <div className='navbar d-flex flex-row justify-content-between align-items-center border border-dark'>
           <Link href={'/'}>
             <a className='d-flex flex-column justify-content-center h-100 fnt-color-black text-decoration-none text-center nav-brand width-10rem'>
-              <span className='text-uppercase'>Tako Labs</span>
+              <span className='text-uppercase'>Moika's Lookout</span>
             </a>
           </Link>
 
@@ -46,7 +46,7 @@ function Navbar(props: any) {
             />
           </div>
         </div>
-        <div className='d-flex flex-row align-items-center border-bottom border-dark bg-white px-4 py-2'>
+        <div className='d-flex flex-row align-items-center border-start border-end border-bottom border-dark bg-white px-4 py-2'>
           <Button
             onClick={() => {
               router.push('/');

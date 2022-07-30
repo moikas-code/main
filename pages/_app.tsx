@@ -50,7 +50,7 @@ function MyApp({Component, pageProps}: AppProps) {
                 }
 
                 #tako {
-                  height: calc(100% - 100px);
+                  height: calc(100% - 110px);
                 }
                 .bg-white {
                   background-color: #fff;
@@ -117,7 +117,7 @@ function MyApp({Component, pageProps}: AppProps) {
                 }
 
                 .s1 {
-                  min-height: 850px;
+                  min-height: 800px;
                 }
               `}
             </style>

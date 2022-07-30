@@ -188,6 +188,12 @@ function ListPage({connected}) {
 
   return (
     <>
+      <SEO
+        title={`Profile of ${address} - Moika's Lookout`}
+        description="moikaslookout.com: Moika's Lookout is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content."
+        twitter='takolabsio'
+        keywords='gaming, nfts, web3'
+      />
       <div className='d-flex flex-column justify-content-center align-items-center mx-auto position-relative'>
         {address ? (
           <h4 className='mt-5'>

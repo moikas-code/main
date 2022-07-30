@@ -107,9 +107,9 @@ export default function Dragon({connected}: any) {
   return (
     <>
       <SEO
-        title={`Tako Labs - EXPLORE`}
-        description='TAKOLABS.IO: Tako Labs is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content.'
-        twitter='takolabs'
+        title={`Explore - Moika's Lookout`}
+        description="moikaslookout.com: Moika's Lookout is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content."
+        twitter='takolabsio'
         keywords='gaming, nfts, web3'
       />
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
@@ -118,7 +118,7 @@ export default function Dragon({connected}: any) {
           <hr />
           {loading ? (
             <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
-              Loading NFTS
+              Washing Dishes...
             </div>
           ) : (
             complete &&

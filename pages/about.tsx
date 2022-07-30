@@ -7,29 +7,29 @@ import {
 } from '@thirdweb-dev/react';
 //@ts-ignore
 import SEO from '@/src/components/SEO';
-// @ts-ignore
-import Navbar from '@/src/components/Navbar';
 export default function about({connected}): ReactNode {
   const address = useAddress();
   return (
     <>
       <SEO
-        title={`About Us - Tako Labs`}
-        description='TAKOLABS.IO: Tako Labs is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content.'
-        twitter='takolabs'
+        title={`About - Moika's Lookout`}
+        description="moikaslookout.com: Moika's Lookout is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content."
+        twitter='takolabsio'
         keywords='gaming, nfts, web3'
       />
-      <div className={`d-flex flex-row justify-content-center position-relative w-100 px-3 px-lg-0`}>
+      <div
+        className={`d-flex flex-row justify-content-center position-relative w-100 px-3 px-lg-0`}>
         <div className='wrapper d-flex flex-column p-3'>
           {/* Header */}
           <div>
             <h1>About</h1>
             <hr />
             <p>
-              Tako Labs is a Community built around Gaming and Technology. Our
-              goal is create a place where our users feel safe and secure while
-              providing tools and resources to assist those interested in
-              blockchain technologies.
+              Moika's Lookout was developed to provide a home for a Community
+              built around Gaming, Technology, and Memes. Our goal is create a
+              place where our users feel safe and secure while providing tools
+              and resources to assist those interested in using and learning
+              about blockchain technologies.
             </p>
             <p>To do this we have created a small ecosystem starting with:</p>
             <p>
@@ -51,7 +51,8 @@ export default function about({connected}): ReactNode {
               deploy and create their own NFT contracts.
             </p>
             <p>
-              I would like to create a game, but its almost as if everyone is doing so these day XD
+              I would like to create a game, but its almost as if everyone is
+              doing so these day XD
             </p>
           </div>
 
