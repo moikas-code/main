@@ -106,7 +106,6 @@ export default function Dragon({connected}: any) {
       />
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
-          
           <p className='mt-3'>Connected To {blockchain}</p>
           <hr />
           {loading ? (
@@ -166,7 +165,7 @@ export default function Dragon({connected}: any) {
             </Button>
             {`Page ${page + 1} of ${listed_nfts.length}`}
             <Button
-              disabled={!(page < listed_nfts.length - 1)}
+              disabled={!(page < listed_nfts.length-1)}
               onClick={() => setPage(page + 1)}>
               Next
             </Button>

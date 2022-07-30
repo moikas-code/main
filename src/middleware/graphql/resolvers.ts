@@ -17,7 +17,9 @@ export default {
       const contract = new DABU(args.input.blockChain);
       const active_listings: any = await contract.get_active_nft_listings();
       // console.log(active_listings);
-      for (const nft of active_listings) {
+      for (const nft of active_listings.filter((item: any) => {
+        return item.asset.name !== 'Failed to load NFT metadata';
+      })) {
         const _tokenId = BN(nft.tokenId._hex);
         // console.log('_tokenId', _tokenId);
         const _quantity = BN(nft.quantity._hex);
