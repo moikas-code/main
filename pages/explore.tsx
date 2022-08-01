@@ -99,7 +99,7 @@ export default function Dragon({connected}: any) {
 
   useEffect(() => {
     formatListings(market_nfts).then((nfts) => {
-      console.log(nfts);
+      // console.log(nfts);
       setNFTS(nfts);
     });
   }, [market_nfts]);
