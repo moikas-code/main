@@ -119,12 +119,18 @@ function MyApp({Component, pageProps}: AppProps) {
                 .s1 {
                   min-height: 800px;
                 }
+                .s2 {
+                  min-height: 600px;
+                }
+                .s3 {
+                  min-height: 400px;
+                }
               `}
             </style>
 
             <Provider store={store}>
               <>
-                <Navbar/>
+                <Navbar />
                 {/*TODO: Create Layout*/}
                 <div id='tako' className='position-relative'>
                   <Component

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import DABU from '../dabu/index';
 
-import {useAddress} from '@thirdweb-dev/react';
+import {useAddress, MediaRenderer} from '@thirdweb-dev/react';
 //@ts-ignore
 import SEO from '@/src/components/SEO';
 // @ts-ignore
@@ -62,10 +62,10 @@ export default function Dragon({connected}: any) {
   const [_error, setError] = useState<any>('');
   const [page, setPage] = useState<any>(0);
   const [listed_nfts, setNFTS] = useState<any>([[]]);
-  var dabu =
-    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-      ? new DABU(blockchain, window.ethereum)
-      : new DABU(blockchain);
+  var dabu = new DABU();
+  typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+    ? dabu.init(blockchain, window.ethereum)
+    : dabu.init(blockchain);
   useEffect(() => {
     if (typeof window.ethereum !== 'undefined') {
       try {
@@ -198,10 +198,10 @@ const NFTMARKETCARD = ({
   decimals,
   current_address,
 }: any) => {
-  var dabu =
-    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-      ? new DABU('POLYGON', window.ethereum)
-      : new DABU('POLYGON');
+  var dabu = new DABU();
+  typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+    ? dabu.init('POLYGON', window.ethereum)
+    : dabu.init('POLYGON');
   return (
     <div
       id={id}
@@ -265,7 +265,8 @@ const NFTMARKETCARD = ({
         `}
       </style>
       <div className='icon-wrapper mx-auto'>
-        <img className='mx-auto' src={image} alt='' />
+        <MediaRenderer className='mx-auto h-100 w-100' src={image} />
+        {/* <img className='mx-auto' src={image} alt='' /> */}
       </div>
       <div className='d-flex flex-column'>
         <hr />
