@@ -14,8 +14,11 @@ export default {
       info: object
     ) => {
       let arr: any[] = [];
-      const contract = new DABU(args.input.blockChain);
-      const active_listings: any = await contract.get_active_nft_listings();
+      var dabu = new DABU();
+      typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+        ? dabu.init(args.input.blockChain, window.ethereum)
+        : dabu.init(args.input.blockChain);
+      const active_listings: any = await dabu.get_active_nft_listings();
       // console.log(active_listings);
       for (const nft of active_listings.filter((item: any) => {
         return item.asset.name !== 'Failed to load NFT metadata';
@@ -71,7 +74,10 @@ export default {
       info: object
     ) => {
       // INIT DABU
-      const contract = new DABU(args.input.blockChain);
+      var dabu = new DABU();
+      typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+        ? dabu.init(args.input.blockChain, window.ethereum)
+        : dabu.init(args.input.blockChain);
       // Get Owned NFTs
       const res: any = await TAKO.get_items_by_owner(
         args.input.address,
@@ -79,7 +85,7 @@ export default {
       );
 
       // Get Market NFTs
-      const active_listings_as_raible_id: any = await contract
+      const active_listings_as_raible_id: any = await dabu
         .get_active_nft_listings()
         .then((res: any) => {
           return res.map((nft: any) => {
@@ -95,10 +101,10 @@ export default {
       var unlisted: any[] = [];
 
       for (var nft of res.nfts) {
-      
         if (
           active_listings_as_raible_id.includes(nft.id) &&
-          nft.blockchain === args.input.blockChain && nft.lazySupply === '0'
+          nft.blockchain === args.input.blockChain &&
+          nft.lazySupply === '0'
         ) {
           listed.push(nft);
         }
@@ -110,7 +116,6 @@ export default {
           nft.blockchain === args.input.blockChain &&
           nft.lazySupply === '0'
         ) {
-          console.log(nft);
           unlisted.push(nft);
         }
       }

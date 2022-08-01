@@ -9,7 +9,7 @@ import SEO from '@/src/components/SEO';
 //@ts-ignore
 import Button from '@/src/components/Button';
 
-import {useAddress} from '@thirdweb-dev/react';
+import {MediaRenderer, useAddress} from '@thirdweb-dev/react';
 
 import {NATIVE_TOKEN_ADDRESS} from '@thirdweb-dev/sdk';
 
@@ -89,10 +89,10 @@ function ListPage({connected}) {
     }
   `;
 
-  var dabu =
-    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-      ? new DABU(blockchain, window.ethereum)
-      : new DABU(blockchain);
+  var dabu = new DABU();
+  typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
+    ? dabu.init(blockchain, window.ethereum)
+    : dabu.init(blockchain);
 
   const [Query_Address_NFTS, {loading, refetch}] = useLazyQuery(query, {
     onCompleted: async ({Query_Address_NFTS}) => {
@@ -131,53 +131,16 @@ function ListPage({connected}) {
   });
 
   React.useEffect(() => {
-    connected &&
-      dabu
-        .getNetwork()
-        .then((network) => {
-          console.log('network', network);
-          Query_Address_NFTS({
-            variables: {
-              input: {
-                address: `${'ETHEREUM'}:${address}`,
-                blockChain: blockchain,
-              },
-            },
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    address &&
+      Query_Address_NFTS({
+        variables: {
+          input: {
+            address: `${'ETHEREUM'}:${address}`,
+            blockChain: blockchain,
+          },
+        },
+      });
   }, [address, connected]);
-  React.useEffect(() => {
-    if (typeof window.ethereum !== 'undefined') {
-      try {
-        ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{chainId: '0x89'}],
-        });
-      } catch (switchError) {
-        // This error code indicates that the chain has not been added to MetaMask.
-        if (switchError.code === 4902) {
-          try {
-            ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId: '0x89',
-                  chainName: 'Polygon',
-                  rpcUrls: ['https://polygon-rpc.com/'] /* ... */,
-                },
-              ],
-            });
-          } catch (addError) {
-            // handle "add" error
-          }
-        }
-        // handle other "switch" errors
-      }
-    }
-  }, []);
   if (loading) {
     return (
       <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
@@ -324,17 +287,7 @@ function NFTListingCard({...props}) {
         id={props.ID}
         className='nft-wrapper border border-dark m-1 p-2 d-flex flex-column justify-content-between rounded'>
         <div className='icon-wrapper d-flex flex-column justify-content-center align-items-center'>
-          {props.Content.length > 0 ? (
-            <img
-              className='mx-auto'
-              src={props.Url || 'https:via.placeholder.com/350'}
-              alt=''
-            />
-          ) : props.Type === 'VIDEO' ? (
-            <video src={props.Url} />
-          ) : (
-            <></>
-          )}
+          <MediaRenderer className='mx-auto h-100 w-100' src={props.Url} />
         </div>
         <div className='d-flex flex-column'>
           <hr />
