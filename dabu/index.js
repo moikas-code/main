@@ -4,6 +4,8 @@ import {
   useAddress,
   useDisconnect,
   useMetamask,
+  useNetwork,
+  useNetworkMismatch,
   useMarketplace,
 } from '@thirdweb-dev/react';
 import abi from './abi.js';
@@ -30,42 +32,92 @@ import abi from './abi.js';
 
 class DABU {
   constructor(NETWORK, PROVIDER) {
-    this.provider = PROVIDER;
-
-    if (typeof window !== 'undefined' && typeof PROVIDER !== 'undefined') {
-      this.Web3 = new Web3(this.provider);
-    } else {
-       this.Web3 = new Web3.providers.HttpProvider(
-         'https://mainnet.infura.io/v3/5fe95d0d3fdc4330a17a622a19f2ce86'
-       );
-    }
+    this.dabu;
+    this.provider;
+    this.Web3;
     // console.log(NETWORK,this.Web3);
-    this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3)
-        
+    this.sdk;
+    this.contract_address;
+    this.currency_address;
 
-    switch (NETWORK) {
-      case 'ETHEREUM':
-        this.contract_address = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
-        if (typeof window === 'undefined') {
-          console.log('ETHEREUM');
-          // this.Web3 = new Web3(this.provider);
-          this.dabu = this.sdk.getMarketplace(this.contract_address);
-        } else if (typeof window !== 'undefined') {
-          this.dabu = useMarketplace(this.contract_address);
-        }
+    // switch (NETWORK) {
+    //   case 'ETHEREUM':
+    //     if (typeof window === 'undefined') {
+    //       console.log('ETHEREUM');
+    //       // this.Web3 = new Web3(this.provider);
+    //       this.dabu = this.sdk.getMarketplace(this.contract_address);
+    //     } else if (typeof window !== 'undefined') {
+    //       this.dabu = useMarketplace(this.contract_address);
+    //     }
 
-        this.currency = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
-        return;
-      case 'POLYGON':
-        this.contract_address = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
-        if (typeof window === 'undefined') {
-          // this.Web3 = new Web3(this.provider);
+    //     this.currency_address = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
+    //     return;
+    //   case 'POLYGON':
+    //     this.contract_address = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
+    //     if (typeof window === 'undefined') {
+    //       // this.Web3 = new Web3(this.provider);
+    //       this.dabu = this.sdk.getMarketplace(this.contract_address);
+    //     } else if (typeof window !== 'undefined') {
+    //       this.dabu = useMarketplace(this.contract_address);
+    //     }
+    //     this.currency_address =
+    //       NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
+    //     return;
+    // }
+  }
+
+  async init(NETWORK, PROVIDER) {
+    const SSR = typeof window === 'undefined';
+    if (SSR) {
+      this.Web3 = new Web3.providers.HttpProvider(
+        'https://mainnet.infura.io/v3/5fe95d0d3fdc4330a17a622a19f2ce86'
+      );
+      this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3);
+      switch (NETWORK) {
+        case 'ETHEREUM':
+          this.contract_address = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
           this.dabu = this.sdk.getMarketplace(this.contract_address);
-        } else if (typeof window !== 'undefined') {
-          this.dabu = useMarketplace(this.contract_address);
-        }
-        this.currency = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
+          this.currency_address =
+            NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
+          return;
+        case 'POLYGON':
+          this.contract_address = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
+          this.dabu = this.sdk.getMarketplace(this.contract_address);
+
+          this.currency_address =
+            NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
+          return;
+      }
+    } else {
+      // Ensure user is on the correct network
+      const networkMismatch = useNetworkMismatch();
+
+      const [, switchNetwork] = useNetwork();
+      if (networkMismatch) {
+        // console.log('Network mismatch', networkMismatch);
+        switchNetwork && switchNetwork(ChainId.Polygon);
         return;
+      }
+      this.Web3 = new Web3(this.provider);
+
+      this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3);
+      switch (NETWORK) {
+        case 'ETHEREUM':
+          this.contract_address = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
+
+          this.dabu = useMarketplace(this.contract_address);
+
+          this.currency_address =
+            NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
+          return;
+        case 'POLYGON':
+          this.contract_address = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
+          this.dabu = useMarketplace(this.contract_address);
+
+          this.currency_address =
+            NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
+          return;
+      }
     }
   }
 
@@ -245,6 +297,40 @@ class DABU {
       };
     }
   }
+
+  // async createBidOrOffer() {
+  //   try {
+  //     // Ensure user is on the correct network
+  //     if (networkMismatch) {
+  //       switchNetwork && switchNetwork(ChainId.Mumbai);
+  //       return;
+  //     }
+
+  //     // If the listing type is a direct listing, then we can create an offer.
+  //     if (listing?.type === ListingType.Direct) {
+  //       await marketplace?.direct.makeOffer(
+  //         listingId, // The listingId of the listing we want to make an offer for
+  //         1, // Quantity = 1
+  //         NATIVE_TOKENS[ChainId.Polygon].wrapped.address, // Wrapped Ether address on Rinkeby
+  //         bidAmount // The offer amount the user entered
+  //       );
+  //     }
+
+  //     // If the listing type is an auction listing, then we can create a bid.
+  //     if (listing?.type === ListingType.Auction) {
+  //       await marketplace?.auction.makeBid(listingId, bidAmount);
+  //     }
+
+  //     alert(
+  //       `${
+  //         listing?.type === ListingType.Auction ? 'Bid' : 'Offer'
+  //       } created successfully!`
+  //     );
+  //   } catch (error) {
+  //     console.error(error.message || 'something went wrong');
+  //     alert(error.message || 'something went wrong');
+  //   }
+  // }
 
   async accept_offer({ listingId, offeror }) {
     try {
