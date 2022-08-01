@@ -28,7 +28,11 @@ export default function about({connected}): ReactNode {
               Moika's Lookout was developed to provide a Home for my smol
               Community built around Gaming, Technology, and Memes.
             </p>
-            <p>To do this a small ecosystem was put into development starting with:</p>
+            <p>
+              To do this I decided to put my skills to the test and learn what I
+              could, a soon small ecosystem was put into development starting
+              with:
+            </p>
             <p>
               {' '}
               A simple Marketplace to allow users to trade their data at a low
