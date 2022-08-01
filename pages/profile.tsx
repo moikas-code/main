@@ -180,35 +180,31 @@ function ListPage({connected}) {
                     ? 'justify-content-between'
                     : 'justify-content-start'
                 } mb-3`}>
-                {nft_row.map((nft_item: any, i) => {
-                  if (true) {
-                    return (
-                      <>
-                        <NFTListingCard
-                          key={k}
-                          address={address}
-                          ID={nft_item.id}
-                          Name={nft_item.meta?.name}
-                          Content={nft_item.meta.content}
-                          Type={
-                            typeof nft_item.meta.content[0] !== 'undefined'
-                              ? nft_item.meta.content[0].type
-                              : 'IMAGE'
-                          }
-                          Url={nft_item.meta.content[0]?.url}
-                          Orders={nft_item.orders}
-                          isListed={nft_item.isListed}
-                          onClick={() => {
-                            async () => {
-                              console.log('Bought', nft_item.id);
-                              setID(nft_item.id);
-                            };
-                          }}
-                        />
-                      </>
-                    );
-                  }
-                })}
+                {nft_row.map((nft_item: any, i) => (
+                  <>
+                    <NFTListingCard
+                      key={k}
+                      address={address}
+                      ID={nft_item.id}
+                      Name={nft_item.meta?.name}
+                      Content={nft_item.meta.content}
+                      Type={
+                        typeof nft_item.meta.content[0] !== 'undefined'
+                          ? nft_item.meta.content[0].type
+                          : 'IMAGE'
+                      }
+                      Url={nft_item.meta.content[0]?.url}
+                      Orders={nft_item.orders}
+                      isListed={nft_item.isListed}
+                      onClick={() => {
+                        async () => {
+                          console.log('Bought', nft_item.id);
+                          setID(nft_item.id);
+                        };
+                      }}
+                    />
+                  </>
+                ))}
               </div>
             );
           })}
