@@ -30,8 +30,11 @@ export default function about({connected}): ReactNode {
             </p>
             <p>
               To do this I decided to put my skills to the test and learn what I
-              could, a soon small ecosystem was put into development starting
+              could, as a result a small ecosystem was put into development starting
               with:
+            </p>
+            <p>
+              A Community Site to host le content and projects currently in development.
             </p>
             <p>
               {' '}
