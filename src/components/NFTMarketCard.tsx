@@ -39,7 +39,7 @@ const NFTMARKETCARD = ({
             Price: {buyOutPrice} {currencySymbol}
           </p>
         </div>
-        {current_address && (
+        {address && (
           <Button
             className='btn btn-dark'
             onClick={async () => {
