@@ -25,21 +25,9 @@ const query = gql`
     }
   }
 `;
-const getApolloClient = () => {
-  const isLocalHost = process.env.NOW_URL?.includes('localhost');
-  return new ApolloClient({
-    cache: new InMemoryCache(),
-    link: new HttpLink({
-      uri:
-        process.env.AKKORO_ENV !== 'prod'
-          ? `'http://localhost:3000/api/graphql`
-          : 'https://moikaslookout.com/api/graphql',
-      fetch,
-    }),
-  });
-};
+
 export const getServerSideProps: GetServerSideProps = async () => {
-  const apolloClient = getApolloClient();
+  const apolloClient = client;
   const {data} = await apolloClient.query({
     query: query,
     variables: {
@@ -48,8 +36,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
       },
     },
   });
-  // console.log(data);
-  // const transactions: Transaction[] = data.transactionsByProductId;
   return {props: {latest_nft: data.Query_Latest_Market_Sell_Order}};
 };
 export default function Dragon({
