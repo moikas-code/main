@@ -33,7 +33,7 @@ function Navbar(props: any) {
       <div className='position-relative bg-white z-3 d-flex flex-column'>
         <div className='navbar d-flex flex-row justify-content-between align-items-center border border-dark'>
           <Link href={'/'}>
-            <a className='d-flex flex-column justify-content-center h-100 fnt-color-black text-decoration-none text-center nav-brand width-10rem'>
+            <a className='d-flex flex-column justify-content-center h-100 fnt-color-black text-decoration-none text-center nav-brand width-10rem ms-5'>
               <span className='text-uppercase'>Moika's Lookout</span>
             </a>
           </Link>
