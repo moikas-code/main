@@ -25,9 +25,20 @@ const query = gql`
     }
   }
 `;
-
+const getApolloClient = () => {
+  return new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+      uri:
+        process.env.AKKORO_ENV !== 'prod'
+          ? `'http://localhost:3000/api/graphql`
+          : 'https://moikaslookout.com/api/graphql',
+      fetch,
+    }),
+  });
+};
 export const getServerSideProps: GetServerSideProps = async () => {
-  const apolloClient = client;
+  const apolloClient = getApolloClient();
   const {data} = await apolloClient.query({
     query: query,
     variables: {
