@@ -137,6 +137,7 @@ function MyApp({Component, pageProps}: AppProps) {
                     {...{
                       ...pageProps,
                       connected: connected,
+                      client: client,
                     }}
                   />
                 </div>

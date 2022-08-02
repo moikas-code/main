@@ -89,16 +89,7 @@ class DABU {
           return;
       }
     } else {
-      // Ensure user is on the correct network
-      const networkMismatch = useNetworkMismatch();
-
-      const [, switchNetwork] = useNetwork();
-      if (networkMismatch) {
-        // console.log('Network mismatch', networkMismatch);
-        switchNetwork && switchNetwork(ChainId.Polygon);
-        return;
-      }
-      this.Web3 = new Web3(this.provider);
+      this.Web3 = new Web3(PROVIDER);
 
       this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3);
       switch (NETWORK) {
@@ -116,6 +107,25 @@ class DABU {
 
           this.currency_address =
             NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
+          return;
+      }
+    }
+  }
+
+  async setNetwork(blockchain) {
+    // Ensure user is on the correct network
+    const networkMismatch = useNetworkMismatch();
+
+    const [, switchNetwork] = useNetwork();
+    if (networkMismatch) {
+      // console.log('Network mismatch', networkMismatch);
+      switch (blockchain) {
+        case 'ETHEREUM':
+          switchNetwork && switchNetwork(ChainId.Mainnet);
+          return;
+        case 137:
+        default:
+          switchNetwork && switchNetwork(ChainId.Polygon);
           return;
       }
     }

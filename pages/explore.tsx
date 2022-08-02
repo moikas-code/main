@@ -8,6 +8,8 @@ import SEO from '@/src/components/SEO';
 import Button from '@/src/components/Button';
 // @ts-ignore
 import ActiveListings from '@/src/hooks/getActiveListings';
+// @ts-ignore
+import NFTMARKETCARD from '@/src/components/NFTMarketCard';
 
 async function formatListings(listings: any, sort: string = 'latest') {
   var i = 0;
@@ -66,6 +68,9 @@ export default function Dragon({connected}: any) {
   typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
     ? dabu.init(blockchain, window.ethereum)
     : dabu.init(blockchain);
+
+  dabu.setNetwork('POLYGON');
+
   useEffect(() => {
     if (typeof window.ethereum !== 'undefined') {
       try {
@@ -106,106 +111,6 @@ export default function Dragon({connected}: any) {
 
   return (
     <>
-      <SEO
-        title={`Explore - Moika's Lookout`}
-        description="moikaslookout.com: Moika's Lookout is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content."
-        twitter='takolabsio'
-        keywords='gaming, nfts, web3'
-      />
-      <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
-        <div className='wrapper d-flex flex-column p-3'>
-          <h5>Service Fees: 0.05%</h5>
-          <p className='mt-3'>Connected To {blockchain}</p>
-          <hr />
-          {loading ? (
-            <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
-              Washing Dishes...
-            </div>
-          ) : (
-            complete &&
-            typeof listed_nfts[page] !== 'undefined' &&
-            listed_nfts[page].map((nfts: any, key: number) => {
-              return (
-                <div
-                  className={`d-flex flex-row flex-wrap ${
-                    nfts.length > 1
-                      ? 'justify-content-between'
-                      : 'justify-content-start'
-                  } mb-3`}
-                  key={key}>
-                  {nfts.map(
-                    (
-                      {
-                        id,
-                        tokenId,
-                        currencySymbol,
-                        asset: {name, description, image},
-                        buyOutPrice,
-                        currencyContractAddress,
-                        decimals,
-                      }: any,
-                      _key: number
-                    ) => {
-                      return (
-                        <NFTMARKETCARD
-                          id={id}
-                          key={_key}
-                          tokenId={tokenId}
-                          currencySymbol={currencySymbol}
-                          name={name}
-                          description={description}
-                          image={image}
-                          buyOutPrice={buyOutPrice}
-                          currencyContractAddress={currencyContractAddress}
-                          decimals={decimals}
-                          current_address={address}
-                        />
-                      );
-                    }
-                  )}
-                </div>
-              );
-            })
-          )}
-          <hr />
-          <div className='d-flex flex-row justify-content-between'>
-            <Button disabled={page === 0} onClick={() => setPage(page - 1)}>
-              Previous
-            </Button>
-            {`Page ${page + 1} of ${listed_nfts.length}`}
-            <Button
-              disabled={!(page < listed_nfts.length - 1)}
-              onClick={() => setPage(page + 1)}>
-              Next
-            </Button>
-          </div>
-          <hr />
-        </div>
-      </div>
-    </>
-  );
-}
-
-const NFTMARKETCARD = ({
-  id,
-  tokenId,
-  currencySymbol,
-  name,
-  description,
-  image,
-  buyOutPrice,
-  currencyContractAddress,
-  decimals,
-  current_address,
-}: any) => {
-  var dabu = new DABU();
-  typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-    ? dabu.init('POLYGON', window.ethereum)
-    : dabu.init('POLYGON');
-  return (
-    <div
-      id={id}
-      className='nft-wrapper rounded border border-dark m-2 p-2 d-flex flex-column justify-content-between'>
       <style jsx>
         {`
           .nft-wrapper {
@@ -264,44 +169,86 @@ const NFTMARKETCARD = ({
           }
         `}
       </style>
-      <div className='icon-wrapper mx-auto'>
-        <MediaRenderer className='mx-auto h-100 w-100' src={image} />
-        {/* <img className='mx-auto' src={image} alt='' /> */}
-      </div>
-      <div className='d-flex flex-column'>
-        <hr />
-        <p className='m-0'>{name}</p>
-        <hr />
-        <div className='d-flex flex-row'>
-          <p>
-            Price: {buyOutPrice} {currencySymbol}
-          </p>
+      <SEO
+        title={`Explore - Moika's Lookout`}
+        description="moikaslookout.com: Moika's Lookout is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content."
+        twitter='takolabsio'
+        keywords='gaming, nfts, web3'
+      />
+      <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
+        <div className='wrapper d-flex flex-column p-3'>
+          <h5>Service Fees: 0.05%</h5>
+          <p className='mt-3'>Connected To {blockchain}</p>
+          <hr />
+          {loading ? (
+            <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
+              Washing Dishes...
+            </div>
+          ) : (
+            complete &&
+            typeof listed_nfts[page] !== 'undefined' &&
+            listed_nfts[page].map((nfts: any, key: number) => {
+              return (
+                <div
+                  className={`d-flex flex-row flex-wrap ${
+                    nfts.length > 1
+                      ? 'justify-content-between'
+                      : 'justify-content-start'
+                  } mb-3`}
+                  key={key}>
+                  {nfts.map(
+                    (
+                      {
+                        id,
+                        tokenId,
+                        currencySymbol,
+                        asset: {name, description, image},
+                        buyOutPrice,
+                        currencyContractAddress,
+                        decimals,
+                      }: any,
+                      _key: number
+                    ) => {
+                      return (
+                        <span className='nft-wrapper'>
+                          <NFTMARKETCARD
+                            id={id}
+                            key={_key}
+                            tokenId={tokenId}
+                            currencySymbol={currencySymbol}
+                            name={name}
+                            description={description}
+                            image={image}
+                            buyOutPrice={buyOutPrice}
+                            currencyContractAddress={currencyContractAddress}
+                            decimals={decimals}
+                            current_address={address}
+                          />
+                        </span>
+                      );
+                    }
+                  )}
+                </div>
+              );
+            })
+          )}
+          <hr />
+          <div className='d-flex flex-row justify-content-between'>
+            <Button disabled={page === 0} onClick={() => setPage(page - 1)}>
+              Previous
+            </Button>
+            {`Page ${page + 1} of ${listed_nfts.length}`}
+            <Button
+              disabled={!(page < listed_nfts.length - 1)}
+              onClick={() => setPage(page + 1)}>
+              Next
+            </Button>
+          </div>
+          <hr />
         </div>
-        {current_address && (
-          <Button
-            className='btn btn-dark'
-            onClick={async () => {
-              return dabu
-                ?.buy_nft({
-                  listingId: id,
-                  quantity: 1,
-                  address: current_address,
-                  isGasless: currencySymbol !== 'MATIC',
-                  price: buyOutPrice,
-                  currencyContractAddress: currencyContractAddress,
-                  decimals: decimals,
-                })
-                .then((res: any) => {
-                  console.log(res);
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
-            }}>
-            Quick Buy
-          </Button>
-        )}
       </div>
-    </div>
+    </>
   );
-};
+}
+
+

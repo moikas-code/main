@@ -94,6 +94,8 @@ function ListPage({connected}) {
     ? dabu.init(blockchain, window.ethereum)
     : dabu.init(blockchain);
 
+    dabu.setNetwork(blockchain);
+
   const [Query_Address_NFTS, {loading, refetch}] = useLazyQuery(query, {
     onCompleted: async ({Query_Address_NFTS}) => {
       if (

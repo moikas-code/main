@@ -166,6 +166,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    Query_Latest_Market_Sell_Order(input: QueryInput): MARKET_NFT
     Query_Market_Sell_Orders(input: QueryInput): MARKET_NFTS
 
     Query_Address_NFTS(input: QueryInput): Address_Data
