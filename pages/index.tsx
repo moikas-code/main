@@ -88,7 +88,7 @@ export default function Dragon({
 
               <p>Building on Polygon</p>
             </div>
-            <div className='col-5'>
+            <div className='col-md-5'>
               <span className='nft-wrapper'>
                 <NFTMARKETCARD
                   id={id}
