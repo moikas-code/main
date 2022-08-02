@@ -82,7 +82,7 @@ export default function Dragon({
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
           <div className='s2 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
-            <div className='d-flex flex-column m-5'>
+            <div className='d-flex flex-column m-5 text-center'>
               <h2 className='display-1'>Welcome to The Lookout!</h2>
               <h4>Open Alpha</h4>
 
