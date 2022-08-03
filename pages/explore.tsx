@@ -72,37 +72,6 @@ export default function Dragon({connected}: any) {
   dabu.setNetwork('POLYGON');
 
   useEffect(() => {
-    if (typeof window.ethereum !== 'undefined') {
-      try {
-        ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{chainId: '0x89'}],
-        });
-      } catch (switchError) {
-        // This error code indicates that the chain has not been added to MetaMask.
-        if (switchError.code === 4902) {
-          try {
-            ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId: '0x89',
-                  chainName: 'Polygon',
-                  rpcUrls: ['https://polygon-rpc.com/'] /* ... */,
-                },
-              ],
-            });
-          } catch (addError) {
-            // handle "add" error
-          }
-        }
-        // handle other "switch" errors
-      }
-      return;
-    }
-  }, []);
-
-  useEffect(() => {
     formatListings(market_nfts).then((nfts) => {
       // console.log(nfts);
       setNFTS(nfts);

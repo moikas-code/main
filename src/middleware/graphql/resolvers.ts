@@ -63,12 +63,6 @@ export default {
         });
       }
 
-      console.log(
-        arr.sort((a: any, b: any) => {
-          return b.id - a.id;
-        })[0]
-      );
-
       return arr.sort((a: any, b: any) => {
         return b.id - a.id;
       })[0];
@@ -147,7 +141,8 @@ export default {
       // Get Owned NFTs
       const res: any = await TAKO.get_items_by_owner(
         args.input.address,
-        args.input.blockChain
+        args.input.blockChain,
+        args.input.continuation
       );
 
       // Get Market NFTs
@@ -165,24 +160,22 @@ export default {
 
       var listed: any[] = [];
       var unlisted: any[] = [];
-
-      for (var nft of res.nfts) {
-        if (
-          active_listings_as_raible_id.includes(nft.id) &&
-          nft.blockchain === args.input.blockChain &&
-          nft.lazySupply === '0'
-        ) {
-          listed.push(nft);
-        }
-      }
-
-      for (var nft of res.nfts) {
-        if (
-          !listed.includes(nft) &&
-          nft.blockchain === args.input.blockChain &&
-          nft.lazySupply === '0'
-        ) {
-          unlisted.push(nft);
+      if (Array.isArray(res.nfts)) {
+        for (var nft of res.nfts) {
+          if (
+            active_listings_as_raible_id.includes(nft.id) &&
+            nft.blockchain === args.input.blockChain &&
+            nft.lazySupply === '0'
+          ) {
+            listed.push(nft);
+          }
+          if (
+            !listed.includes(nft) &&
+            nft.blockchain === args.input.blockChain &&
+            nft.lazySupply === '0'
+          ) {
+            unlisted.push(nft);
+          }
         }
       }
 

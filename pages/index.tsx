@@ -25,27 +25,32 @@ const query = gql`
     }
   }
 `;
-const getApolloClient = () => {
+const getApolloClient = (host:string|undefined) => {
+  // console.log('getApolloClient',window.location.host);
+  if(typeof host === 'undefined'){
+    throw new Error('host is undefined');
+  }
   return new ApolloClient({
     cache: new InMemoryCache(),
     link: new HttpLink({
       uri:
         process.env.AKKORO_ENV !== 'prod'
-          ? `'http://localhost:3000/api/graphql`
-          : 'https://moikaslookout.com/api/graphql',
+          ? `http://${host}/api/graphql`
+          : `https://${host}/api/graphql`,
       fetch,
     }),
   });
 };
-export const getServerSideProps: GetServerSideProps = async () => {
-  const apolloClient = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  console.log('getServerSideProps', context.req.headers.host);
+  const apolloClient = getApolloClient(context.req.headers.host);
   const {data} = await apolloClient.query({
     query: query,
     variables: {
       input: {
         blockChain: 'POLYGON',
-      },
-    },
+      }
+    }
   });
   return {props: {latest_nft: data.Query_Latest_Market_Sell_Order}};
 };
@@ -92,7 +97,7 @@ export default function Dragon({
       />
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100 mt-5 mt-lg-0'>
         <div className='wrapper d-flex flex-column p-3'>
-          <div className='s2 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
+          <div className='s1 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
             <div className='d-flex flex-column m-5 text-center'>
               <h2 className='display-1'>Welcome to The Lookout!</h2>
               <h4>Open Alpha</h4>

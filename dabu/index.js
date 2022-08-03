@@ -66,7 +66,7 @@ class DABU {
     // }
   }
 
-  async init(NETWORK, PROVIDER) {
+  async init(NETWORK='POLYGON', PROVIDER) {
     const SSR = typeof window === 'undefined';
     if (SSR) {
       this.Web3 = new Web3.providers.HttpProvider(

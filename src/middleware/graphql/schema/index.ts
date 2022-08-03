@@ -26,6 +26,7 @@ const typeDefs = gql`
     unlisted: [COLLECTION_ITEM]
     listed: [COLLECTION_ITEM]
     totalSupply: Int
+    continuation: String
   }
 
   type COLLECTION_OBJ {
