@@ -24,17 +24,66 @@ function truncateAddress(address) {
   }
 }
 
+async function formatListings(listings: any, sort: string = 'latest') {
+  var i = 0;
+  let rowarr = [] as any;
+  let groupArr = [] as any;
+  for (const nft of [...listings].sort((a: any, b: any) => {
+    switch (sort) {
+      case 'oldest':
+        return a.id - b.id;
+      case 'latest':
+      default:
+        return b.id - a.id;
+    }
+  })) {
+    i = i + 1;
+    if (rowarr.length < 4 && i !== listings.length - 1) {
+      rowarr.push(nft);
+    } else if (i == listings.length - 1) {
+      rowarr.push(nft);
+      groupArr.push(rowarr);
+    } else if (rowarr.length == 4) {
+      groupArr.push(rowarr);
+      rowarr = [];
+      rowarr.push(nft);
+    }
+  }
+
+  let row = 1;
+  const rowSize = 3;
+  let arr: any[] = [];
+  let arr2: any[] = [];
+  await groupArr.map((_nft: any, key: number) => {
+    if (arr.length == rowSize) {
+      arr2.push(arr);
+      arr = [];
+    }
+    if (groupArr.length == key + 1 && !arr.includes(_nft)) {
+      arr.push(_nft);
+      arr2.push(arr);
+    } else {
+      arr.push(_nft);
+    }
+  });
+
+  return arr2;
+}
+
 function ListPage({connected}) {
   const marketRef = useRef(null);
-  const [nft_list, set_nft_list] = React.useState([]);
+  const [nft_list, set_nft_list] = React.useState([[]]);
 
+  const [page, setPage] = useState<any>(0);
   const [_ID, setID] = React.useState(0);
 
   const address = useAddress();
   const [blockchain, setBlockchain] = useState('POLYGON');
+  const [continuation, setContinuation] = useState('POLYGON');
   const query = gql`
     query Query_Address_NFTS($input: QueryInput) {
       Query_Address_NFTS(input: $input) {
+        continuation
         unlisted {
           id
           blockchain
@@ -94,49 +143,58 @@ function ListPage({connected}) {
     ? dabu.init(blockchain, window.ethereum)
     : dabu.init(blockchain);
 
-    dabu.setNetwork(blockchain);
+  dabu.setNetwork(blockchain);
 
   const [Query_Address_NFTS, {loading, refetch}] = useLazyQuery(query, {
     onCompleted: async ({Query_Address_NFTS}) => {
       if (
         Query_Address_NFTS !== null &&
         Query_Address_NFTS !== undefined &&
-        Query_Address_NFTS.items !== null
+        Query_Address_NFTS.unlisted !== null
       ) {
         let nfts: any = await Query_Address_NFTS.unlisted;
-        // console.log(Query_Address_NFTS.listed.length);
-        var i = 0;
-        const rowSize = 4;
-        let arr = [] as any;
-        let groupArr = [] as any;
-        if (nfts.length > 4) {
-          for (const nft of nfts) {
-            if (arr.length < rowSize && i !== nfts.length) {
-              arr.push(nft);
-            } else if (i == nfts.length) {
-              groupArr.push(arr);
-            } else if (arr.length == rowSize) {
-              groupArr.push(arr);
-              arr = [];
-              arr.push(nft);
-            }
-
-            i = i + 1;
-          }
-        } else {
-          groupArr.push(nfts);
-        }
-        console.log('setting index', groupArr);
-        set_nft_list(groupArr);
+        formatListings(nfts).then((arr: any) => {
+          set_nft_list(arr);
+          setContinuation(Query_Address_NFTS.continuation);
+        });
       }
     },
   });
+
+  const fetchMoreNFTS = async () => {
+    // if (complete) {
+    const res: any = await refetch({
+      input: {
+        continuation: continuation,
+        address: `${'ETHEREUM'}:${address}`,
+        blockChain: blockchain,
+        size: 50,
+      },
+    });
+    // console.log(data,data.Query_Address_NFTS);
+    const {Query_Address_NFTS} = res.data;
+    if (
+      Query_Address_NFTS !== null &&
+      Query_Address_NFTS !== undefined
+      // data.Query_Address_NFTS.unlisted !== null
+    ) {
+      let nfts: any = await Query_Address_NFTS.unlisted;
+      // console.log(nfts);
+      nfts.length > 0 &&
+        formatListings(nfts).then((arr: any) => {
+          console.log([...nft_list, ...arr]);
+          set_nft_list([...nft_list, ...arr]);
+          setContinuation(Query_Address_NFTS.continuation);
+        });
+    }
+  };
 
   React.useEffect(() => {
     address &&
       Query_Address_NFTS({
         variables: {
           input: {
+            continuation: continuation,
             address: `${'ETHEREUM'}:${address}`,
             blockChain: blockchain,
           },
@@ -174,18 +232,18 @@ function ListPage({connected}) {
         <div
           ref={marketRef}
           className='wrapper d-flex flex-column justify-content-center p-5'>
-          {nft_list.map((nft_row: any, k) => {
-            return (
-              <div
-                className={`d-flex flex-row flex-wrap ${
-                  nft_row.length > 1
-                    ? 'justify-content-between'
-                    : 'justify-content-start'
-                } mb-3`}>
-                {nft_row.map((nft_item: any, i) => (
-                  <>
+          {typeof nft_list[page] !== 'undefined' &&
+            nft_list[page].map((nft_row: any, k) => {
+              return (
+                <div
+                  className={`d-flex flex-row flex-wrap ${
+                    nft_row.length > 1
+                      ? 'justify-content-between'
+                      : 'justify-content-start'
+                  } mb-3`}>
+                  {nft_row.map((nft_item: any, i) => (
                     <NFTListingCard
-                      key={k}
+                      key={i}
                       address={address}
                       ID={nft_item.id}
                       Name={nft_item.meta?.name}
@@ -205,11 +263,36 @@ function ListPage({connected}) {
                         };
                       }}
                     />
-                  </>
-                ))}
-              </div>
-            );
-          })}
+                  ))}
+                </div>
+              );
+            })}
+          <hr />
+          <div className='d-flex flex-row justify-content-between'>
+            <Button disabled={page === 0} onClick={() => setPage(page - 1)}>
+              Previous
+            </Button>
+            {`Page ${page + 1} of ${nft_list.length}`}
+            <div>
+              <Button
+                disabled={!(page < nft_list.length - 1)}
+                onClick={() => {
+                  setPage(page + 1);
+                  fetchMoreNFTS();
+                }}>
+                Next
+              </Button>
+              <Button
+                disabled={page < nft_list.length - 1}
+                onClick={() => {
+                  // setPage(page + 1);
+                  fetchMoreNFTS();
+                }}>
+                LoadMore
+              </Button>
+            </div>
+          </div>
+          <hr />
         </div>
       </div>
     </>

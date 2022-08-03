@@ -4,7 +4,7 @@ import SEO from '@/src/components/SEO';
 // @ts-ignore
 import NFTMARKETCARD from '@/src/components/NFTMarketCard';
 import DABU from '../dabu';
-// import getLatestListing from '@/src/hooks/getLatestListing';
+import getLatestListing from '@/src/hooks/getLatestListing';
 import {GetServerSideProps} from 'next';
 import client from '../src/middleware/graphql/apollo-client';
 import {ApolloClient, gql, HttpLink, InMemoryCache} from '@apollo/client';
@@ -25,35 +25,35 @@ const query = gql`
     }
   }
 `;
-const getApolloClient = (host:string|undefined) => {
-  // console.log('getApolloClient',window.location.host);
-  if(typeof host === 'undefined'){
-    throw new Error('host is undefined');
-  }
-  return new ApolloClient({
-    cache: new InMemoryCache(),
-    link: new HttpLink({
-      uri:
-        process.env.AKKORO_ENV !== 'prod'
-          ? `http://${host}/api/graphql`
-          : `https://${host}/api/graphql`,
-      fetch,
-    }),
-  });
-};
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log('getServerSideProps', context.req.headers.host);
-  const apolloClient = getApolloClient(context.req.headers.host);
-  const {data} = await apolloClient.query({
-    query: query,
-    variables: {
-      input: {
-        blockChain: 'POLYGON',
-      }
-    }
-  });
-  return {props: {latest_nft: data.Query_Latest_Market_Sell_Order}};
-};
+// const getApolloClient = (host:string|undefined) => {
+//   // console.log('getApolloClient',window.location.host);
+//   if(typeof host === 'undefined'){
+//     throw new Error('host is undefined');
+//   }
+//   return new ApolloClient({
+//     cache: new InMemoryCache(),
+//     link: new HttpLink({
+//       uri:
+//         process.env.AKKORO_ENV !== 'prod'
+//           ? `http://${host}/api/graphql`
+//           : `https://${host}/api/graphql`,
+//       fetch,
+//     }),
+//   });
+// };
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   console.log('getServerSideProps', context.req.headers.host);
+//   const apolloClient = getApolloClient(context.req.headers.host);
+//   const {data} = await apolloClient.query({
+//     query: query,
+//     variables: {
+//       input: {
+//         blockChain: 'POLYGON',
+//       }
+//     }
+//   });
+//   return {props: {latest_nft: data.Query_Latest_Market_Sell_Order}};
+// };
 export default function Dragon({
   connected,
   latest_nft: {
