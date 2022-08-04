@@ -394,7 +394,7 @@ function NFTListingCard({...props}) {
 
       <div
         id={props.ID}
-        className='nft-wrapper border border-dark m-1 p-2 d-flex flex-column justify-content-between rounded'>
+        className='nft-wrapper border border-dark m-1 p-2 d-flex flex-column justify-content-between rounded bg-white'>
         <div className='icon-wrapper d-flex flex-column justify-content-center align-items-center'>
           <MediaRenderer className='mx-auto h-100 w-100' src={props.Url} />
         </div>
