@@ -8,64 +8,8 @@ import getLatestListing from '@/src/hooks/getLatestListing';
 import {GetServerSideProps} from 'next';
 import client from '../src/middleware/graphql/apollo-client';
 import {ApolloClient, gql, HttpLink, InMemoryCache} from '@apollo/client';
-const query = gql`
-  query Query_Latest_Market_Sell_Order($input: QueryInput) {
-    Query_Latest_Market_Sell_Order(input: $input) {
-      id
-      asset {
-        id
-        name
-        description
-        image
-      }
-      currencyContractAddress
-      currencySymbol
-      buyOutPrice
-      decimals
-    }
-  }
-`;
-// const getApolloClient = (host:string|undefined) => {
-//   // console.log('getApolloClient',window.location.host);
-//   if(typeof host === 'undefined'){
-//     throw new Error('host is undefined');
-//   }
-//   return new ApolloClient({
-//     cache: new InMemoryCache(),
-//     link: new HttpLink({
-//       uri:
-//         process.env.AKKORO_ENV !== 'prod'
-//           ? `http://${host}/api/graphql`
-//           : `https://${host}/api/graphql`,
-//       fetch,
-//     }),
-//   });
-// };
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   console.log('getServerSideProps', context.req.headers.host);
-//   const apolloClient = getApolloClient(context.req.headers.host);
-//   const {data} = await apolloClient.query({
-//     query: query,
-//     variables: {
-//       input: {
-//         blockChain: 'POLYGON',
-//       }
-//     }
-//   });
-//   return {props: {latest_nft: data.Query_Latest_Market_Sell_Order}};
-// };
-export default function Dragon({
-  connected,
-  latest_nft: {
-    id,
-    tokenId,
-    currencySymbol,
-    asset,
-    buyOutPrice,
-    currencyContractAddress,
-    decimals,
-  },
-}: any) {
+import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
+export default function Dragon({connected}: any) {
   const [blockchain, setBlockchain] = useState('POLYGON');
 
   var dabu = new DABU();
@@ -74,7 +18,17 @@ export default function Dragon({
     : dabu.init(blockchain);
 
   dabu.setNetwork(blockchain);
-
+  const {latest_nft, loading,complete} = getLatestListing();
+  console.log(latest_nft);
+  const {
+    id,
+    tokenId,
+    currencySymbol,
+    asset,
+    buyOutPrice,
+    currencyContractAddress,
+    decimals,
+  } = latest_nft;
   return (
     <>
       <style jsx global>
@@ -95,34 +49,42 @@ export default function Dragon({
         twitter='takolabsio'
         keywords='gaming, nfts, web3'
       />
-      <div className='d-flex flex-row justify-content-center position-relative w-100 h-100 mt-5 mt-lg-0'>
-        <div className='wrapper d-flex flex-column p-3'>
-          <div className='s1 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
-            <div className='d-flex flex-column m-5 text-center'>
-              <h2 className='display-1'>Welcome to The Lookout!</h2>
-              <h4>Open Alpha</h4>
+      {!loading && complete ? (
+        <div className='d-flex flex-row justify-content-center position-relative w-100 h-100 mt-5 mt-lg-0'>
+          <div className='wrapper d-flex flex-column p-3'>
+            <div className='s1 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
+              <div className='d-flex flex-column m-5 text-center'>
+                <h2 className='display-1'>Welcome to The Lookout!</h2>
+                <h4>Open Alpha</h4>
 
-              <p>Building on Polygon</p>
-            </div>
-            <div className='col-md-5'>
-              <h4 className='border-bottom border-dark mb-3'>Latest Listed</h4>
-              <span className='nft-wrapper'>
-                <NFTMARKETCARD
-                  id={id}
-                  tokenId={tokenId}
-                  currencySymbol={currencySymbol}
-                  name={asset?.name}
-                  description={asset.description}
-                  image={asset.image}
-                  buyOutPrice={buyOutPrice}
-                  currencyContractAddress={currencyContractAddress}
-                  decimals={decimals}
-                />
-              </span>
+                <p>Building on Polygon</p>
+              </div>
+              <div className='col-md-5'>
+                <h4 className='border-bottom border-dark mb-3'>
+                  Latest Listed
+                </h4>
+                <span className='nft-wrapper'>
+                  <NFTMARKETCARD
+                    id={id}
+                    tokenId={tokenId}
+                    currencySymbol={currencySymbol}
+                    name={asset?.name}
+                    description={asset?.description}
+                    image={asset?.image}
+                    buyOutPrice={buyOutPrice}
+                    currencyContractAddress={currencyContractAddress}
+                    decimals={decimals}
+                  />
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className='d-flex flex-column justify-content-center align-items-center h-100'>
+          <h4>Feeding the Birds<ANIM_Ellipsis/></h4>
+        </div>
+      )}
     </>
   );
 }

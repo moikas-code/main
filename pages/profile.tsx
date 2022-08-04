@@ -8,7 +8,8 @@ import DABU from '../dabu';
 import SEO from '@/src/components/SEO';
 //@ts-ignore
 import Button from '@/src/components/Button';
-
+// @ts-ignore
+import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
 import {MediaRenderer, useAddress} from '@thirdweb-dev/react';
 
 import {NATIVE_TOKEN_ADDRESS} from '@thirdweb-dev/sdk';
@@ -203,8 +204,8 @@ function ListPage({connected}) {
   }, [address, connected]);
   if (loading) {
     return (
-      <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
-        Walking Dog...
+      <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
+        Walking Dog<ANIM_Ellipsis/>
       </div>
     );
   }

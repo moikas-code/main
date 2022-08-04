@@ -10,7 +10,8 @@ import Button from '@/src/components/Button';
 import ActiveListings from '@/src/hooks/getActiveListings';
 // @ts-ignore
 import NFTMARKETCARD from '@/src/components/NFTMarketCard';
-
+// @ts-ignore
+import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
 async function formatListings(listings: any, sort: string = 'latest') {
   var i = 0;
   let rowarr = [] as any;
@@ -150,8 +151,9 @@ export default function Dragon({connected}: any) {
           <p className='mt-3'>Connected To {blockchain}</p>
           <hr />
           {loading ? (
-            <div className='h-100 w-100 d-flex flex-column justify-content-center align-items-center'>
-              Washing Dishes...
+            <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
+              Washing Dishes
+              <ANIM_Ellipsis />
             </div>
           ) : (
             complete &&
