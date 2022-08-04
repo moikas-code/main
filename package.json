@@ -1,6 +1,6 @@
 {
   "name": "tako-labs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -14,9 +14,9 @@
     "@graphql-tools/schema": "^8.5.0",
     "@metamask/detect-provider": "^1.2.0",
     "@metamask/onboarding": "^1.0.1",
-    "@rarible/sdk": "^0.9.13-beta.imx.2",
+    "@rarible/sdk": "^0.8.16",
     "@thirdweb-dev/react": "^2.5.1",
-    "@thirdweb-dev/sdk": "^2.3.32",
+    "@thirdweb-dev/sdk": "^2.3.33",
     "apollo-server-core": "^3.10.0",
     "apollo-server-micro": "^3.10.0",
     "bignumber.js": "^9.0.2",
