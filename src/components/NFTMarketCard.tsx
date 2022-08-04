@@ -25,7 +25,7 @@ const NFTMARKETCARD = ({
   return (
     <div
       id={id}
-      className='rounded border border-dark m-2 p-2 d-flex flex-column justify-content-between'>
+      className='rounded border border-dark m-2 p-2 d-flex flex-column justify-content-between bg-white'>
       <div className='icon-wrapper mx-auto'>
         <MediaRenderer className='mx-auto h-100 w-100' src={image} />
         {/* <img className='mx-auto' src={image} alt='' /> */}

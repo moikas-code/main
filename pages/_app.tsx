@@ -49,6 +49,16 @@ function MyApp({Component, pageProps}: AppProps) {
                   font-family: monospace;
                 }
 
+                body {
+                  background: url('lookoutbg.png');
+                  background-size: cover;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  background-attachment: fixed;
+                  background-color: rgba(255, 255, 255, 0.8);
+                  background-blend-mode: lighten;
+                }
+
                 #tako {
                   height: calc(100% - 110px);
                 }
