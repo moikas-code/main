@@ -35,15 +35,7 @@ export default function Dragon({connected}: any) {
     <>
       <style jsx global>
         {`
-          body {
-            background: url('lookoutbg.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-attachment: fixed;
-            background-color: rgba(255, 255, 255, 0.8);
-            background-blend-mode: lighten;
-          }
+
           .neg-m-5rem {
             margin-top: -5rem;
           }
