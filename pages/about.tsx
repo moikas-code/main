@@ -7,6 +7,8 @@ import {
 } from '@thirdweb-dev/react';
 //@ts-ignore
 import SEO from '@/src/components/SEO';
+// @ts-ignore
+import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
 export default function about({connected}): ReactNode {
   const address = useAddress();
   return (
@@ -19,27 +21,29 @@ export default function about({connected}): ReactNode {
       />
       <div
         className={`d-flex flex-row justify-content-center position-relative w-100 px-3 px-lg-0`}>
-        <div className='wrapper d-flex flex-column p-3'>
+        <div className='wrapper d-flex flex-column p-3 pt-5 px-md-5 lh-lg'>
           {/* Header */}
-          <div>
-            <h1>About</h1>
-            <hr />
+          <div className=' mb-5'>
+            <h1>
+              <span className='border-bottom border-dark pe-5'>About</span>
+            </h1>
+
             <p>
-              Moika's Lookout was developed to provide a Home for my smol
-              Community built around Gaming, Technology, and Memes.
+              Home to my smol Community built around Gaming, Technology, and
+              Memes alwhile being a way to showcase what all I'm working on.
             </p>
             <p>
-              To do this I decided to put my skills to the test and learn what I
-              could, as a result a small ecosystem was put into development starting
-              with:
+              To do this I decided to put my skills to the test, learn what I
+              could, and as a result a small ecosystem was put into development
+              <ANIM_Ellipsis />
             </p>
+            {/* <p>
+              A Community Site to host le content and projects currently in
+              development.
+            </p> */}
             <p>
-              A Community Site to host le content and projects currently in development.
-            </p>
-            <p>
-              {' '}
-              A simple Marketplace to allow users to trade their data at a low
-              fee (0.05%). We honor{' '}
+              A simple Marketplace to allow users to trade community drops as
+              well as their own data at a low fee (0.05%). We honor{' '}
               <a target='_blank' href='https://eips.ethereum.org/EIPS/eip-2981'>
                 EIP-2981
               </a>{' '}
@@ -60,10 +64,13 @@ export default function about({connected}): ReactNode {
             </p>
           </div>
 
-          <hr />
           {/* Our Contract Section */}
-          <div>
-            <h4>Our Contracts:</h4>
+          <div className=' mb-5'>
+            <h4>
+              <span className='border-bottom border-dark pe-5'>
+                Our Contracts
+              </span>
+            </h4>
             {/* <p>
               Ethereum Exchange Contract:{' '}
               <a
@@ -81,23 +88,48 @@ export default function about({connected}): ReactNode {
               </a>
             </p>
           </div>
-          <hr />
+
           {/* Our Team Section */}
-          <div>
-            <h4>Our Team:</h4>
-            <p>
-              Lead Dev -{' '}
+          <div className=' mb-5'>
+            <h4>
+              <span className='border-bottom border-dark pe-5'>Our Team</span>
+            </h4>
+            <div className='d-flex flex-row'>
+              <p>
+                Lead Dev: -{' '}
+                <span className='border-bottom border-dark'>moika.eth</span> -
+                <a
+                  className='mx-2'
+                  target={'_blank'}
+                  href='https://etherscan.io/address/0x877728846bfb8332b03ac0769b87262146d777f3'>
+                  Etherscan
+                </a>
+                -
+                <a
+                  className='mx-2'
+                  target={'_blank'}
+                  href='https://polygonscan.com/address/0x877728846bfb8332b03ac0769b87262146d777f3'>
+                  Polygonscan
+                </a>
+              </p>
+              -{' '}
               <a
+                className='mx-2'
                 target={'_blank'}
-                href='https://etherscan.io/address/0x877728846bfb8332b03ac0769b87262146d777f3'>
-                moika.eth
+                href='https://twitter.com/0xmoika'>
+                {' '}
+                Twitter
               </a>
-            </p>
+            </div>
           </div>
-          <hr />
+
           {/* Our Socials Section */}
-          <div>
-            <h4>The Socials:</h4>
+          <div className=' mb-5'>
+            <h4>
+              <span className='border-bottom border-dark pe-5'>
+                The Socials
+              </span>
+            </h4>
             <p>
               Discord:{' '}
               <a target={'_blank'} href='https://discord.gg/DnbkrC8 '>
