@@ -24,12 +24,20 @@ function truncateAddress(address) {
     return `truncateAddress(): ${error}`;
   }
 }
+function removeDuplicateObjectFromArray(array, key) {
+  return array.filter(
+    (obj, index, self) => index === self.findIndex((el) => el[key] === obj[key])
+  );
+}
 
 async function formatListings(listings: any, sort: string = 'latest') {
   var i = 0;
   let rowarr = [] as any;
   let groupArr = [] as any;
-  for (const nft of [...listings].sort((a: any, b: any) => {
+
+  const cleantListings = removeDuplicateObjectFromArray(listings, 'id');
+  // console.log(cleantListings);
+  for (const nft of cleantListings.sort((a: any, b: any) => {
     switch (sort) {
       case 'oldest':
         return a.id - b.id;
@@ -73,6 +81,7 @@ async function formatListings(listings: any, sort: string = 'latest') {
 
 function ListPage({connected}) {
   const marketRef = useRef(null);
+  const [unclean_unlisted, set_unclean_unlisted] = React.useState([]);
   const [nft_list, set_nft_list] = React.useState([[]]);
 
   const [page, setPage] = useState<any>(0);
@@ -154,6 +163,7 @@ function ListPage({connected}) {
         Query_Address_NFTS.unlisted !== null
       ) {
         let nfts: any = await Query_Address_NFTS.unlisted;
+        set_unclean_unlisted(nfts);
         formatListings(nfts).then((arr: any) => {
           set_nft_list(arr);
           setContinuation(Query_Address_NFTS.continuation);
@@ -180,11 +190,28 @@ function ListPage({connected}) {
       // data.Query_Address_NFTS.unlisted !== null
     ) {
       let nfts: any = await Query_Address_NFTS.unlisted;
-      // console.log(nfts);
+      const flatten = function (arr, result = []) {
+        for (let i = 0, length = arr.length; i < length; i++) {
+          const value:any = arr[i];
+          if (Array.isArray(value)) {
+            flatten(value, result);
+          } else {
+            result.push(value);
+          }
+        }
+        return result;
+      };
+      let vault = flatten(nft_list);
+      // console.log(vault);
+      const cleantListings = removeDuplicateObjectFromArray(
+        [...vault, ...nfts],
+        'id'
+      );
       nfts.length > 0 &&
-        formatListings(nfts).then((arr: any) => {
-          console.log([...nft_list, ...arr]);
-          set_nft_list([...nft_list, ...arr]);
+        formatListings(cleantListings).then((arr: any) => {
+          // console.log([...nft_list, ...arr]);
+
+          set_nft_list(arr);
           setContinuation(Query_Address_NFTS.continuation);
         });
     }
@@ -205,7 +232,8 @@ function ListPage({connected}) {
   if (loading) {
     return (
       <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
-        Walking Dog<ANIM_Ellipsis/>
+        Walking Dog
+        <ANIM_Ellipsis />
       </div>
     );
   }
@@ -279,7 +307,6 @@ function ListPage({connected}) {
                 disabled={!(page < nft_list.length - 1)}
                 onClick={() => {
                   setPage(page + 1);
-                  fetchMoreNFTS();
                 }}>
                 Next
               </Button>

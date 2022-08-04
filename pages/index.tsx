@@ -18,27 +18,43 @@ export default function Dragon({connected}: any) {
     : dabu.init(blockchain);
 
   dabu.setNetwork(blockchain);
-  const {latest_nft, loading,complete} = getLatestListing();
-  console.log(latest_nft);
   const {
-    id,
-    tokenId,
-    currencySymbol,
-    asset,
-    buyOutPrice,
-    currencyContractAddress,
-    decimals,
-  } = latest_nft;
+    latest_nft: {
+      id,
+      tokenId,
+      currencySymbol,
+      asset,
+      buyOutPrice,
+      currencyContractAddress,
+      decimals,
+    },
+    loading,
+    complete,
+  } = getLatestListing();
   return (
     <>
       <style jsx global>
         {`
+          body {
+            background: url('lookoutbg.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: lighten;
+          }
           .neg-m-5rem {
             margin-top: -5rem;
           }
           .nft-wrapper {
             min-width: calc(95.5% / 3);
             max-width: calc(95.5% / 3);
+          }
+          .strokeme {
+            color: #000;
+            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+              1px 1px 0 #fff;
           }
         `}
       </style>
@@ -53,14 +69,14 @@ export default function Dragon({connected}: any) {
         <div className='d-flex flex-row justify-content-center position-relative w-100 h-100 mt-5 mt-lg-0'>
           <div className='wrapper d-flex flex-column p-3'>
             <div className='s1 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
-              <div className='d-flex flex-column m-5 text-center'>
+              <div className='d-flex flex-column m-5 text-center strokeme'>
                 <h2 className='display-1'>Welcome to The Lookout!</h2>
                 <h4>Open Alpha</h4>
 
                 <p>Building on Polygon</p>
               </div>
               <div className='col-md-5'>
-                <h4 className='border-bottom border-dark mb-3'>
+                <h4 className='border-bottom border-dark mb-3 strokeme'>
                   Latest Listed
                 </h4>
                 <span className='nft-wrapper'>
@@ -82,7 +98,10 @@ export default function Dragon({connected}: any) {
         </div>
       ) : (
         <div className='d-flex flex-column justify-content-center align-items-center h-100'>
-          <h4>Feeding the Birds<ANIM_Ellipsis/></h4>
+          <h4>
+            Feeding the Birds
+            <ANIM_Ellipsis />
+          </h4>
         </div>
       )}
     </>

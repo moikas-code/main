@@ -53,7 +53,7 @@ function MyApp({Component, pageProps}: AppProps) {
                   height: calc(100% - 110px);
                 }
                 .bg-white {
-                  background-color: #fff;
+                  background-color: rgba(255, 255, 255, 0.6);
                 }
                 .fnt-color-black {
                   color: #000;
