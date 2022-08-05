@@ -145,7 +145,6 @@ export default function Dragon({connected}: any) {
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
           <h5>Service Fees: 0.05%</h5>
-          <p className='mt-3'>Connected To {blockchain}</p>
           <hr />
           {loading ? (
             <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
