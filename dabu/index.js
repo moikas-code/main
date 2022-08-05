@@ -65,69 +65,36 @@ class DABU {
     //     return;
     // }
   }
-
-  async init(NETWORK='POLYGON', PROVIDER) {
+  // SETUP
+  async init(PROVIDER) {
     const SSR = typeof window === 'undefined';
     if (SSR) {
       this.Web3 = new Web3.providers.HttpProvider(
         'https://mainnet.infura.io/v3/5fe95d0d3fdc4330a17a622a19f2ce86'
       );
-      this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3);
-      switch (NETWORK) {
-        case 'ETHEREUM':
-          this.contract_address = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
-          this.dabu = this.sdk.getMarketplace(this.contract_address);
-          this.currency_address =
-            NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
-          return;
-        case 'POLYGON':
-          this.contract_address = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
-          this.dabu = this.sdk.getMarketplace(this.contract_address);
+      this.ethSDK = new ThirdwebSDK('ethereum', this.Web3);
+      this.polygonSDK = new ThirdwebSDK('polygon', this.Web3);
 
-          this.currency_address =
-            NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
-          return;
-      }
+      this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
+      this.polygon_market = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
+
+      this.dabu_eth = this.ethSDK.getMarketplace(this.eth_market);
+      this.dabu_polygon = this.polygonSDK.getMarketplace(this.polygon_market);
+
+      this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
+      this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
     } else {
-      this.Web3 = new Web3(PROVIDER);
+      this.ethSDK = new ThirdwebSDK('ethereum', this.Web3);
+      this.polygonSDK = new ThirdwebSDK('polygon', this.Web3);
 
-      this.sdk = new ThirdwebSDK(NETWORK.toLowerCase(), this.Web3);
-      switch (NETWORK) {
-        case 'ETHEREUM':
-          this.contract_address = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
+      this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
+      this.polygon_market = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
 
-          this.dabu = useMarketplace(this.contract_address);
+      this.dabu_eth = useMarketplace(this.eth_market);
+      this.dabu_polygon = useMarketplace(this.polygon_market);
 
-          this.currency_address =
-            NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
-          return;
-        case 'POLYGON':
-          this.contract_address = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
-          this.dabu = useMarketplace(this.contract_address);
-
-          this.currency_address =
-            NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
-          return;
-      }
-    }
-  }
-
-  async setNetwork(blockchain) {
-    // Ensure user is on the correct network
-    const networkMismatch = useNetworkMismatch();
-
-    const [, switchNetwork] = useNetwork();
-    if (networkMismatch) {
-      // console.log('Network mismatch', networkMismatch);
-      switch (blockchain) {
-        case 'ETHEREUM':
-          switchNetwork && switchNetwork(ChainId.Mainnet);
-          return;
-        case 137:
-        default:
-          switchNetwork && switchNetwork(ChainId.Polygon);
-          return;
-      }
+      this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
+      this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
     }
   }
 
@@ -159,11 +126,18 @@ class DABU {
 
   async get_active_nft_listings() {
     try {
-      return await this.dabu.getActiveListings().catch((error) => {
-        return {
-          error: error.message,
-        };
-      });
+      const _listings = await Promise.all([
+        this.dabu_eth.getActiveListings(),
+        this.dabu_polygon.getActiveListings(),
+      ]);
+      return [
+        ..._listings[0].map((listing) => {
+          return { ...listing, network: 'ethereum' };
+        }),
+        ..._listings[1].map((listing) => {
+          return { ...listing, network: 'polygon' };
+        }),
+      ];
     } catch (error) {
       return {
         error: error.message,
@@ -173,7 +147,18 @@ class DABU {
 
   async get_all_nft_listings() {
     try {
-      return await this.dabu.getAllListings();
+      const _listings = await Promise.all([
+        this.dabu_eth.getAllListings(),
+        this.dabu_polygon.getAllListings(),
+      ]);
+      return [
+        ..._listings[0].map((listing) => {
+          return { ...listing, network: 'ethereum' };
+        }),
+        ..._listings[1].map((listing) => {
+          return { ...listing, network: 'polygon' };
+        }),
+      ];
     } catch (error) {
       return {
         error: error.message,
@@ -210,6 +195,7 @@ class DABU {
     price,
     currencyContractAddress,
     decimals,
+    network,
   }) {
     try {
       if (!isGasless) {
@@ -275,7 +261,14 @@ class DABU {
             });
         }
       }
-      return await this.dabu.buyoutListing(listingId, quantity);
+      switch (network) {
+        case 'ethereum':
+          return await this.dabu_eth.buyoutListing(listingId, quantity);
+        case 'polygon':
+          return await this.dabu_polygon.buyoutListing(listingId, quantity);
+        default:
+          break;
+      }
     } catch (error) {
       return {
         error: error.message,
@@ -283,9 +276,16 @@ class DABU {
     }
   }
 
-  async create_bid({ listingId, price }) {
+  async create_bid({ listingId, price, network }) {
     try {
-      return await this.dabu.auction.makeBid(listingId, price);
+      switch (network) {
+        case 'ethereum':
+          return await this.dabu_eth.auction.makeBid(listingId, price);
+        case 'polygon':
+          return await this.dabu_polygon.auction.makeBid(listingId, price);
+        default:
+          break;
+      }
     } catch (error) {
       return {
         error: error.message,
@@ -295,12 +295,24 @@ class DABU {
 
   async place_offer({ listingId, price, quantity }) {
     try {
-      return await this.dabu.direct.makeOffer(
-        listingId,
-        quantity,
-        this.currency,
-        price
-      );
+      switch (network) {
+        case 'ethereum':
+          return await this.dabu_eth.direct.makeOffer(
+            listingId,
+            quantity,
+            this.currency,
+            price
+          );
+        case 'polygon':
+          return await this.dabu_polygon.direct.makeOffer(
+            listingId,
+            quantity,
+            this.currency,
+            price
+          );
+        default:
+          break;
+      }
     } catch (error) {
       return {
         error: error.message,
@@ -344,7 +356,14 @@ class DABU {
 
   async accept_offer({ listingId, offeror }) {
     try {
-      return await this.dabu.direct.acceptOffer(listingId, offeror);
+      switch (network) {
+        case 'ethereum':
+          return await this.dabu_eth.direct.acceptOffer(listingId, offeror);
+        case 'polygon':
+          return await this.dabu_polygon.direct.acceptOffer(listingId, offeror);
+        default:
+          break;
+      }
     } catch (error) {
       return {
         error: error.message,
@@ -370,28 +389,57 @@ class DABU {
   }) {
     try {
       // Data of the listing you want to create
-
-      const tx = await this.dabu.direct
-        .createListing({
-          // address of the NFT contract the asset you want to list is on
-          assetContractAddress,
-          // token ID of the asset you want to list
-          tokenId,
-          // when should the listing open up for offers
-          startTimestamp, // new Date(),
-          // how long the listing will be open for
-          listingDurationInSeconds, // 86400,
-          // how many of the asset you want to list
-          quantity,
-          // address of the currency contract that will be used to pay for the listing
-          currencyContractAddress: this.currency,
-          // how much the asset will be sold for
-          buyoutPricePerToken,
-        })
-        .catch((err) => {
-          console.log(err);
-          return err;
-        });
+      var tx;
+      switch (network) {
+        case 'ethereum':
+          var tx = await this.dabu_eth.direct
+            .createListing({
+              // address of the NFT contract the asset you want to list is on
+              assetContractAddress,
+              // token ID of the asset you want to list
+              tokenId,
+              // when should the listing open up for offers
+              startTimestamp, // new Date(),
+              // how long the listing will be open for
+              listingDurationInSeconds, // 86400,
+              // how many of the asset you want to list
+              quantity,
+              // address of the currency contract that will be used to pay for the listing
+              currencyContractAddress: this.currency,
+              // how much the asset will be sold for
+              buyoutPricePerToken,
+            })
+            .catch((err) => {
+              console.log(err);
+              return err;
+            });
+          return;
+        case 'polygon':
+          var tx = await this.dabu_polygon.direct
+            .createListing({
+              // address of the NFT contract the asset you want to list is on
+              assetContractAddress,
+              // token ID of the asset you want to list
+              tokenId,
+              // when should the listing open up for offers
+              startTimestamp, // new Date(),
+              // how long the listing will be open for
+              listingDurationInSeconds, // 86400,
+              // how many of the asset you want to list
+              quantity,
+              // address of the currency contract that will be used to pay for the listing
+              currencyContractAddress: this.currency,
+              // how much the asset will be sold for
+              buyoutPricePerToken,
+            })
+            .catch((err) => {
+              console.log(err);
+              return err;
+            });
+          return;
+        default:
+          break;
+      }
       const receipt = tx.receipt; // the transaction receipt
       const listingId = tx.id; // the id of the newly created listing
       return {

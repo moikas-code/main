@@ -13,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import WalletProvider from '../dabu/WalletProvider';
 import {ChainId, ThirdwebProvider, useAddress} from '@thirdweb-dev/react';
 import dynamic from 'next/dynamic';
+import Footer from '@/src/components/Footer';
 function MyApp({Component, pageProps}: AppProps) {
   return (
     <WalletProvider
@@ -45,6 +46,8 @@ function MyApp({Component, pageProps}: AppProps) {
                 html,
                 body,
                 #__next {
+                  display: flex;
+                  flex-direction: column;
                   height: 100%;
                   font-family: monospace;
                 }
@@ -147,10 +150,10 @@ function MyApp({Component, pageProps}: AppProps) {
                     {...{
                       ...pageProps,
                       connected: connected,
-                      client: client,
                     }}
                   />
                 </div>
+                  <Footer />
               </>
             </Provider>
           </ApolloProvider>

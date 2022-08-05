@@ -18,6 +18,7 @@ export default function ActiveListings(blockChain: string = 'POLYGON') {
           currencySymbol
           buyOutPrice
           decimals
+          network
         }
       }
     }

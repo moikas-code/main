@@ -65,16 +65,15 @@ export default function Dragon({connected}: any) {
   const [_error, setError] = useState<any>('');
   const [page, setPage] = useState<any>(0);
   const [listed_nfts, setNFTS] = useState<any>([[]]);
+
   var dabu = new DABU();
   typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
     ? dabu.init(blockchain, window.ethereum)
     : dabu.init(blockchain);
 
-  dabu.setNetwork('POLYGON');
-
   useEffect(() => {
     formatListings(market_nfts).then((nfts) => {
-      // console.log(nfts);
+      console.log(nfts);
       setNFTS(nfts);
     });
   }, [market_nfts]);
@@ -177,11 +176,13 @@ export default function Dragon({connected}: any) {
                         buyOutPrice,
                         currencyContractAddress,
                         decimals,
+                        network
                       }: any,
                       _key: number
                     ) => {
                       return (
                         <span className='nft-wrapper'>
+                   
                           <NFTMARKETCARD
                             id={id}
                             key={_key}
@@ -194,6 +195,7 @@ export default function Dragon({connected}: any) {
                             currencyContractAddress={currencyContractAddress}
                             decimals={decimals}
                             current_address={address}
+                            network={network}
                           />
                         </span>
                       );

@@ -153,7 +153,6 @@ function ListPage({connected}) {
     ? dabu.init(blockchain, window.ethereum)
     : dabu.init(blockchain);
 
-  dabu.setNetwork(blockchain);
 
   const [Query_Address_NFTS, {loading, refetch}] = useLazyQuery(query, {
     onCompleted: async ({Query_Address_NFTS}) => {
@@ -178,7 +177,7 @@ function ListPage({connected}) {
       input: {
         continuation: continuation,
         address: `${'ETHEREUM'}:${address}`,
-        blockChain: blockchain,
+        blockchains: ['ETHEREUM', 'POLYGON'],
         size: 50,
       },
     });
@@ -224,7 +223,7 @@ function ListPage({connected}) {
           input: {
             continuation: continuation,
             address: `${'ETHEREUM'}:${address}`,
-            blockChain: blockchain,
+            blockchains: ['ETHEREUM','POLYGON'],
           },
         },
       });

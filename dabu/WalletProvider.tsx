@@ -22,14 +22,14 @@ export default function WalletProvider({
 
       window.ethereum.on('accountsChanged', async (accounts: Array<string>) => {
         if (accounts.length === 0) {
-          window.location.reload();
+          // window.location.reload();
           setConnected(false);
         }
         setConnected(true);
       });
-      window.ethereum.on('chainChanged', async (network: Array<string>) => {
-        window.location.reload();
-      });
+      // window.ethereum.on('chainChanged', async (network: Array<string>) => {
+      //   window.location.reload();
+      // });
     }
   }, []);
 

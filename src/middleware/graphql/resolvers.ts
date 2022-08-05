@@ -137,12 +137,12 @@ export default {
       // INIT DABU
       var dabu = new DABU();
       typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-        ? dabu.init(args.input.blockChain, window.ethereum)
-        : dabu.init(args.input.blockChain);
+        ? dabu.init(window.ethereum)
+        : dabu.init();
       // Get Owned NFTs
       const res: any = await TAKO.get_items_by_owner(
         args.input.address,
-        args.input.blockChain,
+        args.input.blockchains,
         args.input.continuation
       );
 
@@ -152,8 +152,9 @@ export default {
         .then((res: any) => {
           return res.map((nft: any) => {
             const _tokenId = BN(nft.tokenId._hex);
+            // console.log(nft.network);
             return `${
-              args.input.blockChain
+              nft.network.toUpperCase()
             }:${nft.assetContractAddress.toLowerCase()}:${_tokenId}`;
           });
         });
@@ -165,14 +166,12 @@ export default {
         for (var nft of res.nfts) {
           if (
             active_listings_as_raible_id.includes(nft.id) &&
-            nft.blockchain === args.input.blockChain &&
             nft.lazySupply === '0'
           ) {
             listed.push(nft);
           }
           if (
             !listed.includes(nft) &&
-            nft.blockchain === args.input.blockChain &&
             nft.lazySupply === '0'
           ) {
             unlisted.push(nft);

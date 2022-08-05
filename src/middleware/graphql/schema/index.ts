@@ -113,6 +113,7 @@ const typeDefs = gql`
     startTime: String
     endTime: String
     asset: NFT
+    network: String
     decimals: Int
   }
 

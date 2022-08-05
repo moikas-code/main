@@ -56,25 +56,27 @@ function Navbar(props: any) {
           |
           <Button
             onClick={() => {
-              router.push('/explore');
-            }}>
-            Explore
-          </Button>
-          |
-          <Button
-            onClick={() => {
               router.push('/about');
             }}>
             About
           </Button>
           |
+          <Button
+            onClick={() => {
+              router.push('/explore');
+            }}>
+            Explore
+          </Button>
           {address && (
-            <Button
-              onClick={() => {
-                router.push('/profile');
-              }}>
-              My NFT
-            </Button>
+            <>
+              |
+              <Button
+                onClick={() => {
+                  router.push('/profile');
+                }}>
+                My NFT
+              </Button>
+            </>
           )}
         </div>
       </div>
