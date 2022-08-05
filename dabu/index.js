@@ -66,7 +66,7 @@ class DABU {
     // }
   }
   // SETUP
-  async init(PROVIDER) {
+  async init() {
     const SSR = typeof window === 'undefined';
     if (SSR) {
       this.Web3 = new Web3.providers.HttpProvider(
@@ -84,6 +84,7 @@ class DABU {
       this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
       this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
     } else {
+      this.Web3 = new Web3(window.ethereum);
       this.ethSDK = new ThirdwebSDK('ethereum', this.Web3);
       this.polygonSDK = new ThirdwebSDK('polygon', this.Web3);
 
@@ -92,7 +93,6 @@ class DABU {
 
       this.dabu_eth = useMarketplace(this.eth_market);
       this.dabu_polygon = useMarketplace(this.polygon_market);
-
       this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
       this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
     }
@@ -386,60 +386,75 @@ class DABU {
     currencyContractAddress,
     // how much the asset will be sold for
     buyoutPricePerToken,
+    network,
   }) {
     try {
       // Data of the listing you want to create
+      console.log(network, {
+        // address of the NFT contract the asset you want to list is on
+        assetContractAddress,
+        // token ID of the asset you want to list
+        tokenId,
+        // when should the listing open up for offers
+        startTimestamp, // new Date(),
+        // how long the listing will be open for
+        listingDurationInSeconds, // 86400,
+        // how many of the asset you want to list
+        quantity,
+        // address of the currency contract that will be used to pay for the listing
+        currencyContractAddress,
+        // how much the asset will be sold for
+        buyoutPricePerToken,
+        network,
+      });
       var tx;
-      switch (network) {
-        case 'ethereum':
-          var tx = await this.dabu_eth.direct
-            .createListing({
-              // address of the NFT contract the asset you want to list is on
-              assetContractAddress,
-              // token ID of the asset you want to list
-              tokenId,
-              // when should the listing open up for offers
-              startTimestamp, // new Date(),
-              // how long the listing will be open for
-              listingDurationInSeconds, // 86400,
-              // how many of the asset you want to list
-              quantity,
-              // address of the currency contract that will be used to pay for the listing
-              currencyContractAddress: this.currency,
-              // how much the asset will be sold for
-              buyoutPricePerToken,
-            })
-            .catch((err) => {
-              console.log(err);
-              return err;
-            });
-          return;
-        case 'polygon':
-          var tx = await this.dabu_polygon.direct
-            .createListing({
-              // address of the NFT contract the asset you want to list is on
-              assetContractAddress,
-              // token ID of the asset you want to list
-              tokenId,
-              // when should the listing open up for offers
-              startTimestamp, // new Date(),
-              // how long the listing will be open for
-              listingDurationInSeconds, // 86400,
-              // how many of the asset you want to list
-              quantity,
-              // address of the currency contract that will be used to pay for the listing
-              currencyContractAddress: this.currency,
-              // how much the asset will be sold for
-              buyoutPricePerToken,
-            })
-            .catch((err) => {
-              console.log(err);
-              return err;
-            });
-          return;
-        default:
-          break;
+      if (network === 'ethereum') {
+        tx = await this.dabu_eth.direct
+          .createListing({
+            // address of the NFT contract the asset you want to list is on
+            assetContractAddress,
+            // token ID of the asset you want to list
+            tokenId,
+            // when should the listing open up for offers
+            startTimestamp, // new Date(),
+            // how long the listing will be open for
+            listingDurationInSeconds, // 86400,
+            // how many of the asset you want to list
+            quantity,
+            // address of the currency contract that will be used to pay for the listing
+            currencyContractAddress: this.native_eth,
+            // how much the asset will be sold for
+            buyoutPricePerToken,
+          })
+          .catch((err) => {
+            console.log(err);
+            return err;
+          });
       }
+      if (network === 'polygon') {
+        tx = await this.dabu_polygon.direct
+          .createListing({
+            // address of the NFT contract the asset you want to list is on
+            assetContractAddress,
+            // token ID of the asset you want to list
+            tokenId,
+            // when should the listing open up for offers
+            startTimestamp, // new Date(),
+            // how long the listing will be open for
+            listingDurationInSeconds, // 86400,
+            // how many of the asset you want to list
+            quantity,
+            // address of the currency contract that will be used to pay for the listing
+            currencyContractAddress: this.native_polygon,
+            // how much the asset will be sold for
+            buyoutPricePerToken,
+          })
+          .catch((err) => {
+            console.log(err);
+            return err;
+          });
+      }
+      console.log(tx);
       const receipt = tx.receipt; // the transaction receipt
       const listingId = tx.id; // the id of the newly created listing
       return {

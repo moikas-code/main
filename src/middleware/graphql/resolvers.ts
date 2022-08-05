@@ -16,9 +16,7 @@ export default {
       // INIT Dabu
       var dabu = new DABU();
       //
-      typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-        ? dabu.init(args.input.blockChain, window.ethereum)
-        : dabu.init(args.input.blockChain);
+       dabu.init();
       //Get Active Listings
       const active_listings: any = await dabu.get_active_nft_listings();
       //Filter and Sort Active Listings
@@ -76,9 +74,7 @@ export default {
     ) => {
       let arr: any[] = [];
       var dabu = new DABU();
-      typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-        ? dabu.init(args.input.blockChain, window.ethereum)
-        : dabu.init(args.input.blockChain);
+       dabu.init();
       const active_listings: any = await dabu.get_active_nft_listings();
       // console.log(active_listings);
       for (const nft of active_listings.filter((item: any) => {
@@ -102,6 +98,7 @@ export default {
           id: nft.id,
           tokenId: _tokenId,
           quantity: _quantity,
+          network: nft.network,
           contractAddress: nft.assetContractAddress,
           buyOutPrice: _price.substr(
             0,

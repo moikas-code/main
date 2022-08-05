@@ -23,9 +23,7 @@ const NFTMARKETCARD = ({
 }: any) => {
   const address = useAddress();
   var dabu = new DABU();
-  typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-    ? dabu.init(network, window.ethereum)
-    : dabu.init(network);
+  dabu.init();
   // Ensure user is on the correct network
   const networkMismatch = useNetworkMismatch();
 
@@ -54,12 +52,9 @@ const NFTMARKETCARD = ({
           <Button
             className='btn btn-dark'
             onClick={async (e) => {
-              if (networkMismatch) {
-                // console.log('Network mismatch', networkMismatch);
-                network === 'ethereum' && switchNetwork(ChainId.Mainnet);
-                network === 'polygon' && switchNetwork(ChainId.Polygon);
-                return;
-              }
+              console.log('Network mismatch', networkMismatch,network);
+              network === 'ethereum' && switchNetwork(ChainId.Mainnet);
+              network === 'polygon' && switchNetwork(ChainId.Polygon);
 
               // Prevent page from refreshing
               e.preventDefault();

@@ -10,7 +10,13 @@ import SEO from '@/src/components/SEO';
 import Button from '@/src/components/Button';
 // @ts-ignore
 import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
-import {MediaRenderer, useAddress} from '@thirdweb-dev/react';
+import {
+  useAddress,
+  MediaRenderer,
+  useNetworkMismatch,
+  useNetwork,
+  ChainId,
+} from '@thirdweb-dev/react';
 
 import {NATIVE_TOKEN_ADDRESS} from '@thirdweb-dev/sdk';
 
@@ -149,10 +155,7 @@ function ListPage({connected}) {
   `;
 
   var dabu = new DABU();
-  typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-    ? dabu.init(blockchain, window.ethereum)
-    : dabu.init(blockchain);
-
+  dabu.init();
 
   const [Query_Address_NFTS, {loading, refetch}] = useLazyQuery(query, {
     onCompleted: async ({Query_Address_NFTS}) => {
@@ -191,7 +194,7 @@ function ListPage({connected}) {
       let nfts: any = await Query_Address_NFTS.unlisted;
       const flatten = function (arr, result = []) {
         for (let i = 0, length = arr.length; i < length; i++) {
-          const value:any = arr[i];
+          const value: any = arr[i];
           if (Array.isArray(value)) {
             flatten(value, result);
           } else {
@@ -223,7 +226,7 @@ function ListPage({connected}) {
           input: {
             continuation: continuation,
             address: `${'ETHEREUM'}:${address}`,
-            blockchains: ['ETHEREUM','POLYGON'],
+            blockchains: ['ETHEREUM', 'POLYGON'],
           },
         },
       });
@@ -434,13 +437,16 @@ function NFTListingCard({...props}) {
 function ListSection({ID, onsubmit, onClose, connected}: any) {
   const [price, setPrice] = useState(0);
   const [blockchain, setBlockchain] = useState('POLYGON');
-  var dabu =
-    typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-      ? new DABU(blockchain, window.ethereum)
-      : new DABU(blockchain);
+  var dabu = new DABU();
+  dabu.init();
+  // Ensure user is on the correct network
+  const networkMismatch = useNetworkMismatch();
+
+  const [, switchNetwork] = useNetwork();
+
   return (
     <div className=''>
-      <form
+      <div
         className=' p-2 bg-light d-flex flex-column'
         onSubmit={async (e) => {
           e.preventDefault();
@@ -469,9 +475,24 @@ function ListSection({ID, onsubmit, onClose, connected}: any) {
           <Button
             className='btn btn-success'
             onClick={async (e) => {
-              // e.preventDefault();
+       
+              ID.split(':')[0] === 'ETHEREUM' && switchNetwork(ChainId.Mainnet);
+
+              ID.split(':')[0] === 'POLYGON' && switchNetwork(ChainId.Polygon);
+
+              e.preventDefault();
+              console.log({
+                tokenId: ID.split(':')[2],
+                assetContractAddress: ID.split(':')[1],
+                startTimestamp: new Date(),
+                buyoutPricePerToken: price,
+                quantity: 1,
+                currencyContractAddress: NATIVE_TOKEN_ADDRESS,
+                listingDurationInSeconds: 86400,
+                network: ID.split(':')[0].toLowerCase(),
+              });
               const date = Date.now();
-              return dabu
+              dabu
                 .create_direct_listing({
                   tokenId: ID.split(':')[2],
                   assetContractAddress: ID.split(':')[1],
@@ -480,9 +501,11 @@ function ListSection({ID, onsubmit, onClose, connected}: any) {
                   quantity: 1,
                   currencyContractAddress: NATIVE_TOKEN_ADDRESS,
                   listingDurationInSeconds: 86400,
+                  network: ID.split(':')[0].toLowerCase(),
                 })
                 .then((res) => {
-                  onsubmit();
+                  console.log('res', res);
+                  // onsubmit();
                 })
                 .catch((err) => {
                   console.log(err);
@@ -491,7 +514,7 @@ function ListSection({ID, onsubmit, onClose, connected}: any) {
             Submit
           </Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

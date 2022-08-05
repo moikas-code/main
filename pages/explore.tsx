@@ -67,9 +67,7 @@ export default function Dragon({connected}: any) {
   const [listed_nfts, setNFTS] = useState<any>([[]]);
 
   var dabu = new DABU();
-  typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-    ? dabu.init(blockchain, window.ethereum)
-    : dabu.init(blockchain);
+  dabu.init();
 
   useEffect(() => {
     formatListings(market_nfts).then((nfts) => {

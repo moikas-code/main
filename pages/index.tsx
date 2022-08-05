@@ -13,11 +13,7 @@ export default function Dragon({connected}: any) {
   const [blockchain, setBlockchain] = useState('POLYGON');
 
   var dabu = new DABU();
-  typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-    ? dabu.init(blockchain, window.ethereum)
-    : dabu.init(blockchain);
-
-  dabu.setNetwork(blockchain);
+  dabu.init();
   const {
     latest_nft: {
       id,
@@ -27,6 +23,7 @@ export default function Dragon({connected}: any) {
       buyOutPrice,
       currencyContractAddress,
       decimals,
+      network,
     },
     loading,
     complete,
@@ -35,7 +32,6 @@ export default function Dragon({connected}: any) {
     <>
       <style jsx global>
         {`
-
           .neg-m-5rem {
             margin-top: -5rem;
           }
@@ -72,6 +68,7 @@ export default function Dragon({connected}: any) {
                   Latest Listed
                 </h4>
                 <span className='nft-wrapper'>
+                  
                   <NFTMARKETCARD
                     id={id}
                     tokenId={tokenId}
@@ -82,6 +79,7 @@ export default function Dragon({connected}: any) {
                     buyOutPrice={buyOutPrice}
                     currencyContractAddress={currencyContractAddress}
                     decimals={decimals}
+                    network={network}
                   />
                 </span>
               </div>
