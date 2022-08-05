@@ -71,14 +71,14 @@ export default function about({connected}): ReactNode {
                 Our Contracts
               </span>
             </h4>
-            {/* <p>
+            <p>
               Ethereum Exchange Contract:{' '}
               <a
                 target='_blank'
                 href='https://etherscan.com/address/0x61f46e5835434DC2990492336dF84C3Fbd1ac468'>
                 0x61f46e5835434DC2990492336dF84C3Fbd1ac468
               </a>
-            </p> */}
+            </p>
             <p>
               Polygon Exchange Contract:{' '}
               <a
