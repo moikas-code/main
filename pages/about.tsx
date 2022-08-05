@@ -30,10 +30,10 @@ export default function about({connected}): ReactNode {
 
             <p>
               Home to my smol Community built around Gaming, Technology, and
-              Memes alwhile being a way to showcase what all I'm working on.
+              Memes, as well as being a way to showcase what all I'm working on.
             </p>
             <p>
-              To do this I decided to put my skills to the test, learn what I
+              To do this I decided to put my skills to the test, or learn what I
               could, and as a result a small ecosystem was put into development
               <ANIM_Ellipsis />
             </p>
