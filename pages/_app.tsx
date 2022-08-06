@@ -153,7 +153,7 @@ function MyApp({Component, pageProps}: AppProps) {
                     }}
                   />
                 </div>
-                  <Footer />
+                  {/* <Footer /> */}
               </>
             </Provider>
           </ApolloProvider>
