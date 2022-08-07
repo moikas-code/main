@@ -234,8 +234,10 @@ function ListPage({connected}) {
   if (loading) {
     return (
       <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
-        Walking Dog
-        <ANIM_Ellipsis />
+        <h4>
+          Walking Dog
+          <ANIM_Ellipsis />
+        </h4>
       </div>
     );
   }
@@ -299,29 +301,51 @@ function ListPage({connected}) {
               );
             })}
           <hr />
-          <div className='d-flex flex-row justify-content-between'>
+          <div className='d-flex flex-row justify-content-between align-items-center mb-3'>
             <Button disabled={page === 0} onClick={() => setPage(page - 1)}>
-              Previous
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='16'
+                height='16'
+                fill='currentColor'
+                className='bi bi-arrow-left-circle'
+                viewBox='0 0 16 16'>
+                <path
+                  fill-rule='evenodd'
+                  d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z'
+                />
+              </svg>
             </Button>
-            {`Page ${page + 1} of ${nft_list.length}`}
+            {`${page + 1} of ${nft_list.length}`}
             <div>
               <Button
                 disabled={!(page < nft_list.length - 1)}
                 onClick={() => {
                   setPage(page + 1);
                 }}>
-                Next
-              </Button>
-              <Button
-                disabled={page < nft_list.length - 1}
-                onClick={() => {
-                  // setPage(page + 1);
-                  fetchMoreNFTS();
-                }}>
-                LoadMore
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='16'
+                  height='16'
+                  fill='currentColor'
+                  className='bi bi-arrow-right-circle'
+                  viewBox='0 0 16 16'>
+                  <path
+                    fill-rule='evenodd'
+                    d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z'
+                  />
+                </svg>
               </Button>
             </div>
           </div>
+          <Button
+            disabled={page < nft_list.length - 1}
+            onClick={() => {
+              // setPage(page + 1);
+              fetchMoreNFTS();
+            }}>
+            LoadMore
+          </Button>
           <hr />
         </div>
       </div>
@@ -475,7 +499,6 @@ function ListSection({ID, onsubmit, onClose, connected}: any) {
           <Button
             className='btn btn-success'
             onClick={async (e) => {
-       
               ID.split(':')[0] === 'ETHEREUM' && switchNetwork(ChainId.Mainnet);
 
               ID.split(':')[0] === 'POLYGON' && switchNetwork(ChainId.Polygon);

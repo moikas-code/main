@@ -35,10 +35,7 @@ export default function Dragon({connected}: any) {
           .neg-m-5rem {
             margin-top: -5rem;
           }
-          .nft-wrapper {
-            min-width: calc(95.5% / 3);
-            max-width: calc(95.5% / 3);
-          }
+
           .strokeme {
             color: #000;
             text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
@@ -55,7 +52,7 @@ export default function Dragon({connected}: any) {
       />
       {!loading && complete ? (
         <div className='d-flex flex-row justify-content-center position-relative w-100 h-100 mt-5 mt-lg-0'>
-          <div className='wrapper d-flex flex-column p-3'>
+          <div className='wrapper h-100 d-flex flex-column p-3'>
             <div className='s1 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
               <div className='d-flex flex-column m-5 text-center strokeme'>
                 <h2 className='display-1'>Welcome to The Lookout!</h2>
@@ -67,8 +64,7 @@ export default function Dragon({connected}: any) {
                 <h4 className='border-bottom border-dark mb-3 strokeme'>
                   Latest Listed
                 </h4>
-                <span className='nft-wrapper'>
-                  
+                <span className='nft-wrapper'>               
                   <NFTMARKETCARD
                     id={id}
                     tokenId={tokenId}

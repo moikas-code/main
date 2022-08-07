@@ -20,7 +20,7 @@ export default function about({connected}): ReactNode {
         keywords='gaming, nfts, web3'
       />
       <div
-        className={`d-flex flex-row justify-content-center position-relative w-100 px-3 px-lg-0`}>
+        className={`d-flex flex-row justify-content-center position-relative h-100 w-100 px-3 px-lg-0`}>
         <div className='wrapper d-flex flex-column p-3 pt-5 px-md-5 lh-lg'>
           {/* Header */}
           <div className=' mb-5'>
@@ -92,18 +92,23 @@ export default function about({connected}): ReactNode {
           {/* Our Team Section */}
           <div className=' mb-5'>
             <h4>
-              <span className='border-bottom border-dark pe-5'>Our Team</span>
+              <span className='border-bottom border-dark pe-5'>The Team</span>
             </h4>
-            <div className='d-flex flex-row'>
+            <div className='d-flex flex-column'>
               <p>
-                Lead Dev: -{' '}
-                <span className='border-bottom border-dark'>moika.eth</span> -
+                <span className='border-bottom border-dark'>moika.eth</span>
+              </p>
+              <p>Lead Dev </p>
+              <p>
+                -
                 <a
                   className='mx-2'
                   target={'_blank'}
                   href='https://etherscan.io/address/0x877728846bfb8332b03ac0769b87262146d777f3'>
                   Etherscan
                 </a>
+              </p>
+              <p>
                 -
                 <a
                   className='mx-2'
@@ -112,14 +117,15 @@ export default function about({connected}): ReactNode {
                   Polygonscan
                 </a>
               </p>
-              -{' '}
-              <a
-                className='mx-2'
-                target={'_blank'}
-                href='https://twitter.com/0xmoika'>
-                {' '}
-                Twitter
-              </a>
+              <p>
+                -
+                <a
+                  className='mx-2'
+                  target={'_blank'}
+                  href='https://twitter.com/0xmoika'>
+                  Twitter
+                </a>
+              </p>
             </div>
           </div>
 

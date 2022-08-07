@@ -63,7 +63,8 @@ function MyApp({Component, pageProps}: AppProps) {
                 }
 
                 #tako {
-                  height: calc(100% - 110px);
+                  height: calc(100% - 110.25px);
+                  overflow-y: scroll;
                 }
                 .bg-white {
                   background-color: rgba(255, 255, 255, 0.6);

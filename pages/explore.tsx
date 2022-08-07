@@ -144,12 +144,17 @@ export default function Dragon({connected}: any) {
       />
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
+          <div className='my-5'>
+
           <h5>Service Fees: 0.05%</h5>
           <hr />
+          </div>
           {loading ? (
             <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
-              Washing Dishes
-              <ANIM_Ellipsis />
+              <h4>
+                Washing Dishes
+                <ANIM_Ellipsis />
+              </h4>
             </div>
           ) : (
             complete &&
@@ -173,13 +178,12 @@ export default function Dragon({connected}: any) {
                         buyOutPrice,
                         currencyContractAddress,
                         decimals,
-                        network
+                        network,
                       }: any,
                       _key: number
                     ) => {
                       return (
                         <span className='nft-wrapper'>
-                   
                           <NFTMARKETCARD
                             id={id}
                             key={_key}
@@ -203,16 +207,42 @@ export default function Dragon({connected}: any) {
             })
           )}
           <hr />
-          <div className='d-flex flex-row justify-content-between'>
+          <div className='d-flex flex-row justify-content-between align-items-center mb-3'>
             <Button disabled={page === 0} onClick={() => setPage(page - 1)}>
-              Previous
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='16'
+                height='16'
+                fill='currentColor'
+                className='bi bi-arrow-left-circle'
+                viewBox='0 0 16 16'>
+                <path
+                  fill-rule='evenodd'
+                  d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z'
+                />
+              </svg>
             </Button>
             {`Page ${page + 1} of ${listed_nfts.length}`}
-            <Button
-              disabled={!(page < listed_nfts.length - 1)}
-              onClick={() => setPage(page + 1)}>
-              Next
-            </Button>
+            <div>
+              <Button
+                disabled={!(page < listed_nfts.length - 1)}
+                onClick={() => {
+                  setPage(page + 1);
+                }}>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='16'
+                  height='16'
+                  fill='currentColor'
+                  className='bi bi-arrow-right-circle'
+                  viewBox='0 0 16 16'>
+                  <path
+                    fill-rule='evenodd'
+                    d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z'
+                  />
+                </svg>
+              </Button>
+            </div>
           </div>
           <hr />
         </div>
@@ -220,5 +250,3 @@ export default function Dragon({connected}: any) {
     </>
   );
 }
-
-
