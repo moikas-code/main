@@ -9,6 +9,7 @@ import {
 } from '@thirdweb-dev/react';
 // @ts-ignore
 import Button from '@/src/components/Button';
+import {useRouter} from 'next/router';
 const NFTMARKETCARD = ({
   id,
   tokenId,
@@ -28,6 +29,8 @@ const NFTMARKETCARD = ({
   const networkMismatch = useNetworkMismatch();
 
   const [, switchNetwork] = useNetwork();
+
+  const router = useRouter();
 
   return (
     <div
@@ -52,12 +55,14 @@ const NFTMARKETCARD = ({
           <Button
             className='btn btn-dark'
             onClick={async (e) => {
-              console.log('Network mismatch', networkMismatch,network);
+              console.log('Network mismatch', networkMismatch, network);
               network === 'ethereum' && switchNetwork(ChainId.Mainnet);
               network === 'polygon' && switchNetwork(ChainId.Polygon);
 
               // Prevent page from refreshing
               e.preventDefault();
+              router.push(`/trades/${network}-${id}`);
+              return;
               return dabu
                 ?.buy_nft({
                   listingId: id,
@@ -77,7 +82,7 @@ const NFTMARKETCARD = ({
                   console.log(e);
                 });
             }}>
-            Quick Buy
+            Trade Page
           </Button>
         )}
       </div>

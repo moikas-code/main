@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import DABU from '../dabu/index';
+import DABU from '../../dabu/index';
 
 import {useAddress, MediaRenderer} from '@thirdweb-dev/react';
 //@ts-ignore
@@ -221,7 +221,7 @@ export default function Dragon({connected}: any) {
                 />
               </svg>
             </Button>
-            {`Page ${page + 1} of ${listed_nfts.length}`}
+            {`${page + 1} of ${listed_nfts.length}`}
             <div>
               <Button
                 disabled={!(page < listed_nfts.length - 1)}

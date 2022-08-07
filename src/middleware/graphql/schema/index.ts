@@ -16,6 +16,11 @@ const typeDefs = gql`
     start_date: String
   }
 
+  input QueryMarketTradeInput {
+    listingId: String
+    blockchain: String
+  }
+
   type Collection_Data {
     items: [COLLECTION_ITEM]
     totalSupply: Int
@@ -170,7 +175,7 @@ const typeDefs = gql`
   type Query {
     Query_Latest_Market_Sell_Order(input: QueryInput): MARKET_NFT
     Query_Market_Sell_Orders(input: QueryInput): MARKET_NFTS
-
+    Query_Market_Sell_Order(input: QueryMarketTradeInput): MARKET_NFT
     Query_Address_NFTS(input: QueryInput): Address_Data
   }
 `;

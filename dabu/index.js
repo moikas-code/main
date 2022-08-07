@@ -114,9 +114,31 @@ class DABU {
     }
   }
   // Query
-  async get_nft_listing({ listingId }) {
+  async get_nft_listing({ listingId, network }) {
     try {
-      return await this.dabu.getListing(listingId);
+      var res;
+      // console.log({ listingId, network });
+      // if (typeof network === 'undefined') {
+      //   return 'Network is Invalid';
+      // }
+
+      if (network === 'ETHEREUM' || network === 'ethereum') {
+        
+        res = {
+          ...await this.dabu_eth.getListing(listingId),
+          network,
+        };
+        return res
+      }
+      if (network === 'POLYGON' || network === 'polygon') {
+       
+        return {
+          ...await this.dabu_polygon.getListing(listingId),
+          network,
+        };
+        
+      }
+      return 'Invalid Network';
     } catch (error) {
       return {
         error: error.message,
@@ -198,7 +220,7 @@ class DABU {
     network,
   }) {
     try {
-      if (!isGasless) {
+      if (isGasless) {
         if (
           typeof window !== 'undefined' &&
           typeof window.ethereum !== 'undefined'

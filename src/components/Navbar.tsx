@@ -63,9 +63,9 @@ function Navbar(props: any) {
           |
           <Button
             onClick={() => {
-              router.push('/explore');
+              router.push('/trades');
             }}>
-            Explore
+            Trades
           </Button>
           {address && (
             <>
