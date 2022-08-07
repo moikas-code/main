@@ -18,7 +18,16 @@ import Button from '@/src/components/Button';
 import getTrade from '@/src/hooks/getTrade';
 // @ts-ignore
 import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
-
+function truncateAddress(address) {
+  try {
+    return `${address.substring(0, 6).toLowerCase()}...${address
+      .substring(38, address.length)
+      .toLowerCase()}`;
+  } catch (error) {
+    console.log(`truncateAddress(): ${error}`);
+    return `truncateAddress(): ${error}`;
+  }
+}
 export default function Dragon({connected}: any) {
   const router = useRouter();
   // De-construct network_id out of the router.query.
@@ -28,9 +37,8 @@ export default function Dragon({connected}: any) {
   const address = useAddress();
   var network;
   var listingId;
-  const [blockchain, setBlockchain] = useState('POLYGON');
   if (network_id) {
-    network = network_id.split('-')[0];
+    network = network_id.split('-')[0].toLowerCase();
     listingId = network_id.split('-')[1];
   }
   const {trade, isLoading} = getTrade({
@@ -39,8 +47,6 @@ export default function Dragon({connected}: any) {
   });
 
   const [isError, setIsError] = useState<any>(false);
-  const [page, setPage] = useState<any>(0);
-  const [listed_nfts, setNFTS] = useState<any>([[]]);
   // Ensure user is on the correct network
   const networkMismatch = useNetworkMismatch();
 
@@ -57,7 +63,6 @@ export default function Dragon({connected}: any) {
       setIsError(false);
     }
   }, [trade]);
-  // console.log(isError);
   if (isError) {
     return (
       <div className='h-100 d-flex flex-column justify-content-center align-items-center'>
@@ -77,8 +82,13 @@ export default function Dragon({connected}: any) {
 
   return (
     <>
-      <style jsx>
+      <style global jsx>
         {`
+          .market-buy-btn {
+            font-size: 1.25rem;
+            width: 100%;
+            max-width: 375px;
+          }
           .nft-wrapper {
             width: 100%;
           }
@@ -143,78 +153,101 @@ export default function Dragon({connected}: any) {
       />
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
-          <div className='my-5'>
-            <h5>Service Fees: 0.05%</h5>
-            <hr />
-          </div>
           {isLoading ? (
             <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
               <h4>
-                Washing Dishes
+                Mowing Lawn
                 <ANIM_Ellipsis />
               </h4>
             </div>
           ) : (
-            <>
-              <div className='d-flex flex-column w-100'>
-                <h3 className='text-capitalize '>
-                  <span className='border-bottom border-dark pe-5'>
-                    {trade.type === 0 ? 'Direct Listing' : 'Auction'} on{' '}
-                    {trade.network}
-                  </span>
-                </h3>
-                <h4>{trade.asset.name}</h4>
+            <div className='d-flex flex-column px-0 px-md-5 pt-4'>
+              <div className='d-flex flex-column flex-lg-row flex-wrap justify-content-between py-3'>
+                <div className='d-flex flex-column'>
+                  <h1>{trade.asset.name}</h1>
+                  <h3 className='text-capitalize '>
+                    <span className='border-bottom border-dark pe-5'>
+                      {trade.type === 0 ? 'Direct Listing' : 'Auction'} on{' '}
+                      {trade.network}
+                    </span>
+                  </h3>
+                </div>
+              </div>
+              <div className='d-flex flex-column flex-lg-row'>
                 <MediaRenderer
-                  className='w-100 col card'
+                  className='col col-lg-6 card mb-3'
                   src={trade.asset.image}
                 />
+                <div className='ms-0 ms-lg-4 d-flex flex-column w-100 align-items-end'>
+                  {address && (
+                    <Button
+                      className='btn-dark market-buy-btn text-capitalize'
+                      onClick={async (e) => {
+                        network === 'ethereum' &&
+                          switchNetwork(ChainId.Mainnet);
+                        network === 'polygon' && switchNetwork(ChainId.Polygon);
+
+                        // Prevent page from refreshing
+                        e.preventDefault();
+                        const price =
+                          BN(trade.buyoutPrice._hex) /
+                          BN(10 ** trade.buyoutCurrencyValuePerToken.decimals);
+
+                        return dabu
+                          ?.buy_nft({
+                            listingId: trade.id,
+                            quantity: 1,
+                            address: address,
+                            isGasless: false,
+                            price: price,
+                            currencyContractAddress:
+                              trade.currencyContractAddress,
+                            decimals:
+                              trade.buyoutCurrencyValuePerToken.decimals,
+                            network: network,
+                          })
+                          .then((res: any) => {
+                            // alert('NFT bought successfully!');
+                          })
+                          .catch((e) => {
+                            console.log(e);
+                          });
+                      }}>
+                      Buy for{' '}
+                      {BN(trade.buyoutPrice._hex) /
+                        BN(
+                          10 ** trade.buyoutCurrencyValuePerToken.decimals
+                        )}{' '}
+                      {trade.buyoutCurrencyValuePerToken.symbol}
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <hr />
+              <div className='w-100'>
+                <p title={trade.sellerAddress}>
+                  <strong className='border-bottom border-dark pe-5'>
+                    Sold By:{' '}
+                  </strong>{' '}
+                  <br />
+                  {truncateAddress(trade.sellerAddress)}
+                </p>
                 <hr />
-                <p></p>
                 <p>
-                  <strong>Description:</strong> <hr />
+                  <strong className='border-bottom border-dark pe-5'>
+                    Description:
+                  </strong>{' '}
+                  <br />
                   {trade.asset.description}
                 </p>
+                <hr />
+                <p>
+                  More Coming Soon
+                  <ANIM_Ellipsis />
+                </p>
               </div>
-            </>
+            </div>
           )}
-          <hr />
-          {address && (
-            <Button
-              className='btn btn-dark'
-              onClick={async (e) => {
-                console.log('Network mismatch', networkMismatch, network);
-                network === 'ethereum' && switchNetwork(ChainId.Mainnet);
-                network === 'polygon' && switchNetwork(ChainId.Polygon);
-
-                // Prevent page from refreshing
-                e.preventDefault();
-                const price =
-                  BN(trade.buyoutPrice._hex) /
-                  BN(10 ** trade.buyoutCurrencyValuePerToken.decimals);
-                console.log(price);
-                return dabu
-                  ?.buy_nft({
-                    listingId: trade.id,
-                    quantity: 1,
-                    address: address,
-                    isGasless: false,
-                    price: price,
-                    currencyContractAddress: trade.currencyContractAddress,
-                    decimals: trade.buyoutCurrencyValuePerToken.decimals,
-                    network: network,
-                  })
-                  .then((res: any) => {
-                    console.log(res);
-                    // alert('NFT bought successfully!');
-                  })
-                  .catch((e) => {
-                    console.log(e);
-                  });
-              }}>
-              Quick Buy
-            </Button>
-          )}
-          <hr />
         </div>
       </div>
     </>

@@ -12,25 +12,6 @@ export default function GetTrade({
   dabu.init();
   const [complete, setComplete] = useState<boolean>(false);
   const [trade, setTrade] = useState<any>(null);
-  const query = gql`
-    query Query_Market_Sell_Order($input: QueryMarketTradeInput) {
-      Query_Market_Sell_Order(input: $input) {
-        id
-        asset {
-          id
-          name
-          description
-          image
-        }
-        currencyContractAddress
-        currencySymbol
-        buyOutPrice
-        decimals
-        network
-      }
-    }
-  `;
-  let data: any;
   async function handleTrade({
     blockchain,
     listingId,

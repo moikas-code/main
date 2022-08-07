@@ -51,36 +51,15 @@ const NFTMARKETCARD = ({
             Price: {buyOutPrice} {currencySymbol}
           </p>
         </div>
-        {address && (
+        { (
           <Button
             className='btn btn-dark'
             onClick={async (e) => {
-              console.log('Network mismatch', networkMismatch, network);
-              network === 'ethereum' && switchNetwork(ChainId.Mainnet);
-              network === 'polygon' && switchNetwork(ChainId.Polygon);
 
               // Prevent page from refreshing
               e.preventDefault();
               router.push(`/trades/${network}-${id}`);
               return;
-              return dabu
-                ?.buy_nft({
-                  listingId: id,
-                  quantity: 1,
-                  address: address,
-                  isGasless: currencySymbol !== 'MATIC',
-                  price: buyOutPrice,
-                  currencyContractAddress: currencyContractAddress,
-                  decimals: decimals,
-                  network: network,
-                })
-                .then((res: any) => {
-                  console.log(res);
-                  // alert('NFT bought successfully!');
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
             }}>
             Trade Page
           </Button>

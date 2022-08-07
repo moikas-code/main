@@ -66,6 +66,10 @@ function MyApp({Component, pageProps}: AppProps) {
                   height: calc(100% - 110.25px);
                   overflow-y: scroll;
                 }
+                button,
+                p{
+                  font-size: 1.25rem;
+                }
                 .bg-white {
                   background-color: rgba(255, 255, 255, 0.6);
                 }
