@@ -146,7 +146,10 @@ export default function Dragon({connected}: any) {
         `}
       </style>
       <SEO
-        title={`Trade on ${network} - Trade ${listingId} - Moika's Lookout`}
+        title={
+          typeof network !== 'undefined' ?
+          `Trade on ${network} - Trade ${listingId} - Moika's Lookout`:"Trade - Moika's Lookout"
+        }
         description="moikaslookout.com: Moika's Lookout is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content."
         twitter='takolabsio'
         keywords='gaming, nfts, web3'
@@ -166,7 +169,7 @@ export default function Dragon({connected}: any) {
                 <div className='d-flex flex-column'>
                   <h1>{trade.asset.name}</h1>
                   <h3 className='text-capitalize '>
-                    <span className='border-bottom border-dark pe-5'>
+                    <span className=''>
                       {trade.type === 0 ? 'Direct Listing' : 'Auction'} on{' '}
                       {trade.network}
                     </span>
@@ -226,7 +229,7 @@ export default function Dragon({connected}: any) {
               <hr />
               <div className='w-100'>
                 <p title={trade.sellerAddress}>
-                  <strong className='border-bottom border-dark pe-5'>
+                  <strong className=''>
                     Sold By:{' '}
                   </strong>{' '}
                   <br />
@@ -234,7 +237,7 @@ export default function Dragon({connected}: any) {
                 </p>
                 <hr />
                 <p>
-                  <strong className='border-bottom border-dark pe-5'>
+                  <strong className=''>
                     Description:
                   </strong>{' '}
                   <br />
