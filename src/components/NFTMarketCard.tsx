@@ -37,7 +37,10 @@ const NFTMARKETCARD = ({
       id={id}
       className='rounded border border-dark m-2 p-2 d-flex flex-column justify-content-between bg-white'>
       <div className='icon-wrapper mx-auto'>
-        <MediaRenderer className='mx-auto h-100 w-100' src={image} />
+        <MediaRenderer
+          className='mx-auto h-100 w-100'
+          src={image}
+        />
         {/* <img className='mx-auto' src={image} alt='' /> */}
       </div>
       <div className='d-flex flex-column'>
@@ -51,11 +54,10 @@ const NFTMARKETCARD = ({
             Price: {buyOutPrice} {currencySymbol}
           </p>
         </div>
-        { (
+        {
           <Button
             className='btn btn-dark'
             onClick={async (e) => {
-
               // Prevent page from refreshing
               e.preventDefault();
               router.push(`/trades/${network}-${id}`);
@@ -63,7 +65,7 @@ const NFTMARKETCARD = ({
             }}>
             Trade Page
           </Button>
-        )}
+        }
       </div>
     </div>
   );

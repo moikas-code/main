@@ -2,11 +2,11 @@ import Web3 from 'web3';
 import { ThirdwebSDK, ChainId, NATIVE_TOKENS } from '@thirdweb-dev/sdk';
 import {
   useAddress,
+  useSigner,
   useDisconnect,
   useMetamask,
   useNetwork,
   useNetworkMismatch,
-  useMarketplace,
 } from '@thirdweb-dev/react';
 import abi from './abi.js';
 /**
@@ -31,88 +31,41 @@ import abi from './abi.js';
  */
 
 class DABU {
-  constructor(NETWORK, PROVIDER) {
-    this.dabu;
-    this.provider;
-    this.Web3;
-    // console.log(NETWORK,this.Web3);
-    this.sdk;
-    this.contract_address;
-    this.currency_address;
-
-    // switch (NETWORK) {
-    //   case 'ETHEREUM':
-    //     if (typeof window === 'undefined') {
-    //       console.log('ETHEREUM');
-    //       // this.Web3 = new Web3(this.provider);
-    //       this.dabu = this.sdk.getMarketplace(this.contract_address);
-    //     } else if (typeof window !== 'undefined') {
-    //       this.dabu = useMarketplace(this.contract_address);
-    //     }
-
-    //     this.currency_address = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
-    //     return;
-    //   case 'POLYGON':
-    //     this.contract_address = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
-    //     if (typeof window === 'undefined') {
-    //       // this.Web3 = new Web3(this.provider);
-    //       this.dabu = this.sdk.getMarketplace(this.contract_address);
-    //     } else if (typeof window !== 'undefined') {
-    //       this.dabu = useMarketplace(this.contract_address);
-    //     }
-    //     this.currency_address =
-    //       NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
-    //     return;
-    // }
-  }
-  // SETUP
-  async init() {
+  constructor() {
+    this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
+    this.polygon_market = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
+    this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
+    this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
+    this.ethSDK_ReadOnly = new ThirdwebSDK('ethereum', {});
+    this.polygonSDK_ReadOnly = new ThirdwebSDK('polygon', {});
+    ///
     const SSR = typeof window === 'undefined';
     if (SSR) {
-      this.Web3 = new Web3.providers.HttpProvider(
-        'https://mainnet.infura.io/v3/5fe95d0d3fdc4330a17a622a19f2ce86'
+      // console.log('SSR');
+      this.dabu_eth = this.ethSDK_ReadOnly.getMarketplace(this.eth_market);
+      this.dabu_polygon = this.polygonSDK_ReadOnly.getMarketplace(
+        this.polygon_market
       );
-      this.ethSDK = new ThirdwebSDK('ethereum', this.Web3);
-      this.polygonSDK = new ThirdwebSDK('polygon', this.Web3);
-
-      this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
-      this.polygon_market = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
-
-      this.dabu_eth = this.ethSDK.getMarketplace(this.eth_market);
-      this.dabu_polygon = this.polygonSDK.getMarketplace(this.polygon_market);
-
-      this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
-      this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
     } else {
-      this.Web3 = new Web3(window.ethereum);
-      this.ethSDK = new ThirdwebSDK('ethereum', this.Web3);
-      this.polygonSDK = new ThirdwebSDK('polygon', this.Web3);
+      // console.log('Browser');
+      const sig = useSigner();
 
-      this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
-      this.polygon_market = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
-
-      this.dabu_eth = useMarketplace(this.eth_market);
-      this.dabu_polygon = useMarketplace(this.polygon_market);
-      this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
-      this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
-    }
-  }
-
-  async getNetwork() {
-    try {
-      const id = await this.Web3.eth.net.getId();
-      switch (id) {
-        case 1:
-          return 'ETHEREUM';
-        case 137:
-        default:
-          return 'POLYGON';
+      if (sig) {
+        this.ethSDK = ThirdwebSDK.fromSigner(sig, 'ethereum');
+        this.polygonSDK = ThirdwebSDK.fromSigner(sig, 'polygon');
+        this.dabu_eth = this.ethSDK.getMarketplace(this.eth_market);
+        this.dabu_polygon = this.polygonSDK.getMarketplace(this.polygon_market);
+      } else {
+        this.dabu_eth = this.ethSDK_ReadOnly.getMarketplace(this.eth_market);
+        this.dabu_polygon = this.polygonSDK_ReadOnly.getMarketplace(
+          this.polygon_market
+        );
       }
-      return await id;
-    } catch (error) {
-      return error.message;
     }
   }
+  // TODO RM - this is not used anymore
+  async init() {}
+
   // Query
   async get_nft_listing({ listingId, network }) {
     try {
@@ -123,20 +76,17 @@ class DABU {
       // }
 
       if (network === 'ETHEREUM' || network === 'ethereum') {
-        
         res = {
-          ...await this.dabu_eth.getListing(listingId),
+          ...(await this.dabu_eth.getListing(listingId)),
           network,
         };
-        return res
+        return res;
       }
       if (network === 'POLYGON' || network === 'polygon') {
-       
         return {
-          ...await this.dabu_polygon.getListing(listingId),
+          ...(await this.dabu_polygon.getListing(listingId)),
           network,
         };
-        
       }
       return 'Invalid Network';
     } catch (error) {

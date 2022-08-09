@@ -58,9 +58,10 @@ export default function Dragon({connected}: any) {
     if (trade !== null) {
       if (typeof trade.error !== 'undefined') {
         setIsError(true);
+      } else {
+        console.log(trade);
+        setIsError(false);
       }
-      console.log(trade);
-      setIsError(false);
     }
   }, [trade]);
   if (isError) {
@@ -147,8 +148,9 @@ export default function Dragon({connected}: any) {
       </style>
       <SEO
         title={
-          typeof network !== 'undefined' ?
-          `Trade on ${network} - Trade ${listingId} - Moika's Lookout`:"Trade - Moika's Lookout"
+          typeof network !== 'undefined'
+            ? `Trade on ${network} - Trade ${listingId} - Moika's Lookout`
+            : "Trade - Moika's Lookout"
         }
         description="moikaslookout.com: Moika's Lookout is a WEB3 Community that is focused on the development of decentralized applications and services as well providing gaming content."
         twitter='takolabsio'
@@ -163,11 +165,13 @@ export default function Dragon({connected}: any) {
                 <ANIM_Ellipsis />
               </h4>
             </div>
-          ) : (
-            <div className='d-flex flex-column px-0 px-md-5 pt-4'>
+          ) : trade !== null && typeof trade !== 'undefined' ? (
+            <div className='d-flex flex-column px-0 px-md-5'>
               <div className='d-flex flex-column flex-lg-row flex-wrap justify-content-between py-3'>
                 <div className='d-flex flex-column'>
-                  <h1>{trade.asset.name}</h1>
+                  <h1>
+                    {typeof trade.asset !== 'undefined' && trade.asset.name}
+                  </h1>
                   <h3 className='text-capitalize '>
                     <span className=''>
                       {trade.type === 0 ? 'Direct Listing' : 'Auction'} on{' '}
@@ -177,10 +181,12 @@ export default function Dragon({connected}: any) {
                 </div>
               </div>
               <div className='d-flex flex-column flex-lg-row'>
-                <MediaRenderer
-                  className='col col-lg-6 card mb-3'
-                  src={trade.asset.image}
-                />
+                {typeof trade.asset !== 'undefined' && (
+                  <MediaRenderer
+                    className='col col-lg-6 card mb-3'
+                    src={trade.asset.image}
+                  />
+                )}
                 <div className='ms-0 ms-lg-4 d-flex flex-column w-100 align-items-end'>
                   {address && (
                     <Button
@@ -229,26 +235,26 @@ export default function Dragon({connected}: any) {
               <hr />
               <div className='w-100'>
                 <p title={trade.sellerAddress}>
-                  <strong className=''>
-                    Sold By:{' '}
-                  </strong>{' '}
-                  <br />
+                  <strong className=''>Sold By: </strong> <br />
                   {truncateAddress(trade.sellerAddress)}
                 </p>
                 <hr />
-                <p>
-                  <strong className=''>
-                    Description:
-                  </strong>{' '}
-                  <br />
-                  {trade.asset.description}
-                </p>
+                {typeof trade.asset !== 'undefined' && (
+                  <p>
+                    <strong className=''>Description:</strong> <br />
+                    {trade.asset.description}
+                  </p>
+                )}
                 <hr />
                 <p>
                   More Coming Soon
                   <ANIM_Ellipsis />
                 </p>
               </div>
+            </div>
+          ) : (
+            <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
+              <h4>Trouble Finding Trade</h4>
             </div>
           )}
         </div>
