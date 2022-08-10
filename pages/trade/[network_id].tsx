@@ -94,12 +94,12 @@ export default function Dragon({connected}: any) {
 
           .icon-wrapper {
             width: 100%;
-            height: 300px;
+            min-height: 300px;
           }
 
           .icon-wrapper img {
             width: 100%;
-            max-height: 300px;
+            max-height: 600px;
             object-fit: contain;
           }
 
@@ -181,7 +181,7 @@ export default function Dragon({connected}: any) {
               <div className='d-flex flex-column flex-lg-row'>
                 {typeof trade.asset !== 'undefined' && (
                   <MediaRenderer
-                    className='col col-lg-6 rounded mb-3'
+                    className='col col-lg-6 rounded mb-3 icon-wrapper'
                     src={trade.asset.image}
                   />
                 )}
