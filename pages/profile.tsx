@@ -1,4 +1,5 @@
 import React, {useRef, useState} from 'react';
+import { useRouter } from 'next/router';
 import {gql, useLazyQuery} from '@apollo/client';
 //@ts-ignore
 import TAKO from '@/src/tako';
@@ -86,7 +87,7 @@ async function formatListings(listings: any, sort: string = 'latest') {
 }
 
 function ListPage({connected}) {
-  const marketRef = useRef(null);
+  const router = useRouter();
   const [unclean_unlisted, set_unclean_unlisted] = React.useState([]);
   const [nft_list, set_nft_list] = React.useState([[]]);
 
@@ -220,6 +221,7 @@ function ListPage({connected}) {
   };
 
   React.useEffect(() => {
+    !connected&&router.push('/');
     address &&
       Query_Address_NFTS({
         variables: {
@@ -263,7 +265,6 @@ function ListPage({connected}) {
         )}
         {blockchain}
         <div
-          ref={marketRef}
           className='wrapper d-flex flex-column justify-content-center p-5'>
           {typeof nft_list[page] !== 'undefined' &&
             nft_list[page].map((nft_row: any, k) => {

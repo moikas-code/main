@@ -67,7 +67,8 @@ function Navbar(props: any) {
             }}>
             Trades
           </Button>
-          {address && (
+          {/* Temporarily rm */}
+          {false && (
             <>
               |
               <Button
