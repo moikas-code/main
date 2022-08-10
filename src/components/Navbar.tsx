@@ -63,7 +63,7 @@ function Navbar(props: any) {
           |
           <Button
             onClick={() => {
-              router.push('/trades');
+              router.push('/trade');
             }}>
             Trades
           </Button>

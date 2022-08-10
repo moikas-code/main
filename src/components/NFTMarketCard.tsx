@@ -47,9 +47,9 @@ const NFTMARKETCARD = ({
           <Button
             className='btn btn-dark'
             onClick={async (e: any) => {
-              return router.push(`/trades/${network}-${id}`);
+              return router.push(`/trade/${network}-${id}`);
             }}>
-            Trade Page
+            View Trade
           </Button>
         }
       </div>
