@@ -13,72 +13,60 @@ import NFTMARKETCARD from '@/src/components/NFTMarketCard';
 // @ts-ignore
 import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
 async function formatListings(listings: any, sort: string = 'latest') {
-  var i = 0;
-  let rowarr = [] as any;
-  let groupArr = [] as any;
-  for (const nft of [...listings].sort((a: any, b: any) => {
-    switch (sort) {
-      case 'oldest':
-        return a.id - b.id;
-      case 'latest':
-      default:
-        return b.id - a.id;
+  function groupAsArrayOfArray(dataArr: Array<any>, rowSize = 4) {
+    var i = 0;
+    let rowarr = [] as any;
+    let groupArr = [] as any;
+
+    // const cleantListings = removeDuplicateObjectFromArray(listings, 'id');
+    // console.log(cleantListings);
+    for (const data of dataArr.sort((a: any, b: any) => {
+      switch (sort) {
+        case 'oldest':
+          return a.id - b.id;
+        case 'latest':
+        default:
+          return b.id - a.id;
+      }
+    })) {
+      if (rowarr.length < rowSize && i !== dataArr.length - 1) {
+        rowarr.push(data);
+      } else if (i == dataArr.length - 1) {
+        rowarr.push(data);
+        groupArr.push(rowarr);
+      } else if (rowarr.length == rowSize) {
+        groupArr.push(rowarr);
+        rowarr = [];
+        rowarr.push(data);
+      }
+      i = i + 1;
     }
-  })) {
-    i = i + 1;
-    if (rowarr.length < 4 && i !== listings.length - 1) {
-      rowarr.push(nft);
-    } else if (i == listings.length - 1) {
-      rowarr.push(nft);
-      groupArr.push(rowarr);
-    } else if (rowarr.length == 4) {
-      groupArr.push(rowarr);
-      rowarr = [];
-      rowarr.push(nft);
-    }
+    return groupArr;
   }
-
-  let row = 1;
-  const rowSize = 3;
-  let arr: any[] = [];
-  let arr2: any[] = [];
-  await groupArr.map((_nft: any, key: number) => {
-    if (arr.length == rowSize) {
-      arr2.push(arr);
-      arr = [];
-    }
-    if (groupArr.length == key + 1 && !arr.includes(_nft)) {
-      arr.push(_nft);
-      arr2.push(arr);
-    } else {
-      arr.push(_nft);
-    }
-  });
-
-  return arr2;
+  const listingsGrouped = groupAsArrayOfArray(listings, 4);
+  const listingPages = groupAsArrayOfArray(listingsGrouped, 3);
+  return listingPages;
 }
 
-export default function Dragon({connected}: any) {
+export default function Dragon({connected, dabu}: any) {
   const address = useAddress();
   const [blockchain, setBlockchain] = useState('POLYGON');
-  const {market_nfts, complete, loading} = ActiveListings(blockchain);
+  const {market_nfts, isLoading, error} = ActiveListings(dabu);
   const [_error, setError] = useState<any>('');
   const [page, setPage] = useState<any>(0);
   const [listed_nfts, setNFTS] = useState<any>([[]]);
 
-  var dabu = new DABU();
-  dabu.init();
-
   useEffect(() => {
+    // console.log(market_nfts);
     formatListings(market_nfts).then((nfts) => {
-      console.log(nfts);
+      // console.log(nfts);
       setNFTS(nfts);
     });
   }, [market_nfts]);
 
   return (
     <>
-      <style jsx>
+      <style global jsx>
         {`
           .nft-wrapper {
             width: 100%;
@@ -86,7 +74,8 @@ export default function Dragon({connected}: any) {
 
           .icon-wrapper {
             width: 100%;
-            height: 300px;
+            height: 100%;
+            min-height: 300px;
           }
 
           .icon-wrapper img {
@@ -148,7 +137,7 @@ export default function Dragon({connected}: any) {
             <h5>Service Fees: 0.05%</h5>
             <hr />
           </div>
-          {loading ? (
+          {isLoading ? (
             <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
               <h4>
                 Washing Dishes
@@ -156,7 +145,6 @@ export default function Dragon({connected}: any) {
               </h4>
             </div>
           ) : (
-            complete &&
             typeof listed_nfts[page] !== 'undefined' &&
             listed_nfts[page].map((nfts: any, key: number) => {
               return (

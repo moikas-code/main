@@ -47,8 +47,6 @@ export default function Dragon({connected}: any) {
   });
 
   const [isError, setIsError] = useState<any>(false);
-  // Ensure user is on the correct network
-  const networkMismatch = useNetworkMismatch();
 
   const [, switchNetwork] = useNetwork();
   var dabu = new DABU();
@@ -192,10 +190,7 @@ export default function Dragon({connected}: any) {
                     <Button
                       className='btn-dark market-buy-btn text-capitalize'
                       onClick={async (e) => {
-                        network === 'ethereum' &&
-                          switchNetwork(ChainId.Mainnet);
-                        network === 'polygon' && switchNetwork(ChainId.Polygon);
-
+                        await switchNetwork(network.toLowerCase());
                         // Prevent page from refreshing
                         e.preventDefault();
                         const price =

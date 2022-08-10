@@ -1,13 +1,5 @@
-import Web3 from 'web3';
-import { ThirdwebSDK, ChainId, NATIVE_TOKENS } from '@thirdweb-dev/sdk';
-import {
-  useAddress,
-  useSigner,
-  useDisconnect,
-  useMetamask,
-  useNetwork,
-  useNetworkMismatch,
-} from '@thirdweb-dev/react';
+import { ThirdwebSDK, ChainId, NATIVE_TOKENS } from '@takolabs/sdk';
+import { useSigner } from '@thirdweb-dev/react';
 import abi from './abi.js';
 /**
  *
@@ -69,18 +61,11 @@ class DABU {
   // Query
   async get_nft_listing({ listingId, network }) {
     try {
-      var res;
-      // console.log({ listingId, network });
-      // if (typeof network === 'undefined') {
-      //   return 'Network is Invalid';
-      // }
-
       if (network === 'ETHEREUM' || network === 'ethereum') {
-        res = {
+        return {
           ...(await this.dabu_eth.getListing(listingId)),
           network,
         };
-        return res;
       }
       if (network === 'POLYGON' || network === 'polygon') {
         return {

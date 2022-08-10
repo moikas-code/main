@@ -33,8 +33,8 @@ function MyApp({Component, pageProps}: AppProps) {
       //   },
       // }}
     >
-      {({connected}) => {
-        // console.log('pageProps', pageProps, connected, address, network);
+      {({connected,dabu}) => {
+        // console.log('pageProps',dabu);
 
         return (
           <ApolloProvider client={client}>
@@ -67,7 +67,7 @@ function MyApp({Component, pageProps}: AppProps) {
                   overflow-y: scroll;
                 }
                 button,
-                p{
+                p {
                   font-size: 1.25rem;
                 }
                 .bg-white {
@@ -155,10 +155,11 @@ function MyApp({Component, pageProps}: AppProps) {
                     {...{
                       ...pageProps,
                       connected: connected,
+                      dabu,
                     }}
                   />
                 </div>
-                  {/* <Footer /> */}
+                {/* <Footer /> */}
               </>
             </Provider>
           </ApolloProvider>

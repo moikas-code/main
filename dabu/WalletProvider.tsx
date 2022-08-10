@@ -1,6 +1,11 @@
+import DABU from './';
 import { startCore } from '@/src/helpers';
 import { ThirdwebProvider } from '@thirdweb-dev/react';
 import React, { useState, useEffect } from 'react';
+function Wrap({ children }: any) {
+  var dabu = new DABU();
+  return <>{children(dabu)}</>;
+}
 export default function WalletProvider({
   desiredChainId,
   chainRpc,
@@ -39,9 +44,14 @@ export default function WalletProvider({
       chainRpc={chainRpc}
       supportedChains={supportedChains}
       sdkOptions={sdkOptions}>
-      {children({
-        connected: connected,
-      })}
+      <Wrap>
+        {(dabu: any) => {
+          return children({
+            connected: connected,
+            dabu: dabu,
+          });
+        }}
+      </Wrap>
     </ThirdwebProvider>
   );
 }

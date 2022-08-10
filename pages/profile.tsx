@@ -38,54 +38,40 @@ function removeDuplicateObjectFromArray(array, key) {
 }
 
 async function formatListings(listings: any, sort: string = 'latest') {
-  var i = 0;
-  let rowarr = [] as any;
-  let groupArr = [] as any;
+  function groupAsArrayOfArray(dataArr: Array<any>, rowSize = 4) {
+    var i = 0;
+    let rowarr = [] as any;
+    let groupArr = [] as any;
 
-  const cleantListings = removeDuplicateObjectFromArray(listings, 'id');
-  // console.log(cleantListings);
-  for (const nft of cleantListings.sort((a: any, b: any) => {
-    switch (sort) {
-      case 'oldest':
-        return a.id - b.id;
-      case 'latest':
-      default:
-        return b.id - a.id;
+    const cleantListings = removeDuplicateObjectFromArray(dataArr, 'id');
+    // console.log(cleantListings);
+    for (const data of cleantListings.sort((a: any, b: any) => {
+      switch (sort) {
+        case 'oldest':
+          return a.id - b.id;
+        case 'latest':
+        default:
+          return b.id - a.id;
+      }
+    })) {
+      if (rowarr.length < rowSize && i !== dataArr.length - 1) {
+        rowarr.push(data);
+      } else if (i == dataArr.length - 1) {
+        rowarr.push(data);
+        groupArr.push(rowarr);
+      } else if (rowarr.length == rowSize) {
+        groupArr.push(rowarr);
+        rowarr = [];
+        rowarr.push(data);
+      }
+      i = i + 1;
     }
-  })) {
-    i = i + 1;
-    if (rowarr.length < 4 && i !== listings.length - 1) {
-      rowarr.push(nft);
-    } else if (i == listings.length - 1) {
-      rowarr.push(nft);
-      groupArr.push(rowarr);
-    } else if (rowarr.length == 4) {
-      groupArr.push(rowarr);
-      rowarr = [];
-      rowarr.push(nft);
-    }
+    return groupArr;
   }
-
-  let row = 1;
-  const rowSize = 3;
-  let arr: any[] = [];
-  let arr2: any[] = [];
-  await groupArr.map((_nft: any, key: number) => {
-    if (arr.length == rowSize) {
-      arr2.push(arr);
-      arr = [];
-    }
-    if (groupArr.length == key + 1 && !arr.includes(_nft)) {
-      arr.push(_nft);
-      arr2.push(arr);
-    } else {
-      arr.push(_nft);
-    }
-  });
-
-  return arr2;
+  const listingsGrouped = groupAsArrayOfArray(listings, 4);
+  const listingPages = groupAsArrayOfArray(listingsGrouped, 3);
+  return listingPages;
 }
-
 function ListPage({connected}) {
   const router = useRouter();
   const [unclean_unlisted, set_unclean_unlisted] = React.useState([]);

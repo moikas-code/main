@@ -14,9 +14,10 @@
     "@graphql-tools/schema": "^8.5.0",
     "@metamask/detect-provider": "^1.2.0",
     "@metamask/onboarding": "^1.0.1",
-    "@rarible/sdk": "^0.8.16",
-    "@thirdweb-dev/react": "^2.5.1",
-    "@thirdweb-dev/sdk": "^2.3.33",
+    "@rarible/sdk": "^0.9.16",
+    "@thirdweb-dev/react": "^2.6.2",
+    "@thirdweb-dev/sdk": "^2.3.34",
+    "@takolabs/sdk":"https://github.com/tako-labs/typescript-sdk.git",
     "apollo-server-core": "^3.10.0",
     "apollo-server-micro": "^3.10.0",
     "bignumber.js": "^9.0.2",
@@ -26,7 +27,7 @@
     "graphql": "^16.5.0",
     "luxon": "^3.0.1",
     "micro": "^9.4.0",
-    "next": "12.2.2",
+    "next": "12.2.4",
     "next-pwa": "^5.5.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -38,7 +39,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1",
     "use-sync-external-store": "^1.2.0",
-    "web3": "^1.7.4"
+    "web3": "^1.7.5"
   },
   "devDependencies": {
     "@types/node": "18.0.3",
