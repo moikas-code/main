@@ -65,7 +65,7 @@ function Navbar(props: any) {
             onClick={() => {
               router.push('/trade');
             }}>
-            Trades
+            Trade
           </Button>
           {/* Temporarily rm */}
           {false && (
