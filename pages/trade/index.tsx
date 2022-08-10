@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import DABU from '../../dabu/index';
 
-import {useAddress, MediaRenderer} from '@thirdweb-dev/react';
+import {useAddress,} from '@thirdweb-dev/react';
 //@ts-ignore
 import SEO from '@/src/components/SEO';
 // @ts-ignore
@@ -50,7 +49,6 @@ async function formatListings(listings: any, sort: string = 'latest') {
 
 export default function Dragon({connected, dabu}: any) {
   const address = useAddress();
-  const [blockchain, setBlockchain] = useState('POLYGON');
   const {market_nfts, isLoading, error} = ActiveListings(dabu);
   const [_error, setError] = useState<any>('');
   const [page, setPage] = useState<any>(0);
@@ -129,7 +127,7 @@ export default function Dragon({connected, dabu}: any) {
             <hr />
           </div>
           {isLoading ? (
-            <div className='h-100 w-100 d-flex flex-row justify-content-start align-items-start'>
+            <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
               <h4>
                 Washing Dishes
                 <ANIM_Ellipsis />
