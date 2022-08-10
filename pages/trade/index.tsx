@@ -70,19 +70,10 @@ export default function Dragon({connected, dabu}: any) {
         {`
           .nft-wrapper {
             width: 100%;
+            overflow: hidden;
           }
 
-          .icon-wrapper {
-            width: 100%;
-            height: 100%;
-            min-height: 300px;
-          }
-
-          .icon-wrapper img {
-            width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-          }
+    
 
           // Small devices (landscape phones, 576px and up)
           @media (min-width: 576px) {
@@ -138,7 +129,7 @@ export default function Dragon({connected, dabu}: any) {
             <hr />
           </div>
           {isLoading ? (
-            <div className='h-100 w-100 d-flex flex-row justify-content-center align-items-center'>
+            <div className='h-100 w-100 d-flex flex-row justify-content-start align-items-start'>
               <h4>
                 Washing Dishes
                 <ANIM_Ellipsis />
