@@ -181,7 +181,7 @@ export default function Dragon({connected}: any) {
               <div className='d-flex flex-column flex-lg-row'>
                 {typeof trade.asset !== 'undefined' && (
                   <MediaRenderer
-                    className='col col-lg-6 card mb-3'
+                    className='col col-lg-6 rounded mb-3'
                     src={trade.asset.image}
                   />
                 )}
