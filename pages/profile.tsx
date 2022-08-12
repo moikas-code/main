@@ -43,9 +43,9 @@ async function formatListings(listings: any, sort: string = 'latest') {
     let rowarr = [] as any;
     let groupArr = [] as any;
 
-    const cleantListings = removeDuplicateObjectFromArray(dataArr, 'id');
+    
     // console.log(cleantListings);
-    for (const data of cleantListings.sort((a: any, b: any) => {
+    for (const data of dataArr.sort((a: any, b: any) => {
       switch (sort) {
         case 'oldest':
           return a.id - b.id;
@@ -68,8 +68,10 @@ async function formatListings(listings: any, sort: string = 'latest') {
     }
     return groupArr;
   }
-  const listingsGrouped = groupAsArrayOfArray(listings, 4);
+  const cleantListings = removeDuplicateObjectFromArray(listings, 'id');
+  const listingsGrouped = groupAsArrayOfArray(cleantListings, 4);
   const listingPages = groupAsArrayOfArray(listingsGrouped, 3);
+  console.log(listingPages);
   return listingPages;
 }
 function ListPage({connected,dabu }) {
@@ -152,7 +154,7 @@ function ListPage({connected,dabu }) {
         Query_Address_NFTS.unlisted !== null
       ) {
         let nfts: any = await Query_Address_NFTS.unlisted;
-        set_unclean_unlisted(nfts);
+        // set_unclean_unlisted(nfts);/
         formatListings(nfts).then((arr: any) => {
           set_nft_list(arr);
           setContinuation(Query_Address_NFTS.continuation);

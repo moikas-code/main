@@ -193,9 +193,7 @@ export default {
     ) => {
       // INIT DABU
       var dabu = new DABU();
-      typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'
-        ? dabu.init(window.ethereum)
-        : dabu.init();
+
       // Get Owned NFTs
       const res: any = await TAKO.get_items_by_owner(
         args.input.address,
@@ -203,30 +201,29 @@ export default {
         args.input.continuation
       );
 
-      // Get Market NFTs
+      // Get Listed NFTs
       const active_listings_as_raible_id: any = await dabu
         .get_active_nft_listings()
         .then((res: any) => {
           return res.map((nft: any) => {
             const _tokenId = BN(nft.tokenId._hex);
-            // console.log(nft.network);
             return `${nft.network.toUpperCase()}:${nft.assetContractAddress.toLowerCase()}:${_tokenId}`;
           });
         });
-      // GET Listed NFTs
+      // seperate listed and unlisted nfts
 
       var listed: any[] = [];
       var unlisted: any[] = [];
       if (Array.isArray(res.nfts)) {
         for (var nft of res.nfts) {
-          if (
-            active_listings_as_raible_id.includes(nft.id) &&
-            nft.lazySupply === '0'
-          ) {
-            listed.push(nft);
-          }
-          if (!listed.includes(nft) && nft.lazySupply === '0') {
-            unlisted.push(nft);
+          // filter out lazy loaded nfts
+          if (nft.lazySupply === '0') {
+            if (active_listings_as_raible_id.includes(nft.id)) {
+              listed.push(nft);
+            }
+            if (!listed.includes(nft)) {
+              unlisted.push(nft);
+            }
           }
         }
       }
