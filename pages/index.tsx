@@ -9,11 +9,9 @@ import {GetServerSideProps} from 'next';
 import client from '../src/middleware/graphql/apollo-client';
 import {ApolloClient, gql, HttpLink, InMemoryCache} from '@apollo/client';
 import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
-export default function Dragon({connected}: any) {
+export default function Dragon({connected,dabu}: any) {
   const [blockchain, setBlockchain] = useState('POLYGON');
 
-  var dabu = new DABU();
-  dabu.init();
   const {
     latest_nft: {
       id,
@@ -47,7 +45,7 @@ export default function Dragon({connected}: any) {
       <SEO
         title={`Moka's Lookout | Home`}
         description="Moika's Lookout is a WEB3 Community."
-        twitter='takolabsio'
+        twitter='moikaslookout'
         keywords='gaming, nfts, web3'
       />
       {!loading && complete ? (
@@ -56,7 +54,7 @@ export default function Dragon({connected}: any) {
             <div className='s1 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
               <div className='d-flex flex-column m-5 text-center strokeme'>
                 <h2 className='display-1'>Welcome to The Lookout!</h2>
-                <h4>Open Alpha</h4>
+                <h4>Closed Alpha</h4>
 
                 <p>Building on Polygon</p>
               </div>

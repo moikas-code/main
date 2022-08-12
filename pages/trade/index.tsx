@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
-import {useAddress,} from '@thirdweb-dev/react';
+import {useAddress} from '@thirdweb-dev/react';
 //@ts-ignore
 import SEO from '@/src/components/SEO';
 // @ts-ignore
@@ -54,10 +54,10 @@ export default function Dragon({connected, dabu}: any) {
   const [page, setPage] = useState<any>(0);
   const [listed_nfts, setNFTS] = useState<any>([[]]);
 
-  useEffect(() => {
-    // console.log(market_nfts);
+  React.useEffect(() => {
+    console.log(market_nfts);
     formatListings(market_nfts).then((nfts) => {
-      // console.log(nfts);
+      console.log(nfts);
       setNFTS(nfts);
     });
   }, [market_nfts]);
@@ -70,8 +70,6 @@ export default function Dragon({connected, dabu}: any) {
             width: 100%;
             overflow: hidden;
           }
-
-    
 
           // Small devices (landscape phones, 576px and up)
           @media (min-width: 576px) {
@@ -123,6 +121,7 @@ export default function Dragon({connected, dabu}: any) {
       <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
           <div className='my-5'>
+            <h4>Alpha software. Use at your own risk.</h4>
             <h5>Service Fees: 0.05%</h5>
             <hr />
           </div>

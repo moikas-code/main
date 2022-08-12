@@ -28,7 +28,7 @@ function truncateAddress(address) {
     return `truncateAddress(): ${error}`;
   }
 }
-export default function Dragon({connected}: any) {
+export default function Dragon({connected,dabu}: any) {
   const router = useRouter();
   // De-construct network_id out of the router.query.
   // This means that if the user visits /listing/ethereum-0 then the network_id will be 0.
@@ -49,8 +49,6 @@ export default function Dragon({connected}: any) {
   const [isError, setIsError] = useState<any>(false);
 
   const [, switchNetwork] = useNetwork();
-  var dabu = new DABU();
-  dabu.init();
 
   useEffect(() => {
     if (trade !== null) {
@@ -95,11 +93,13 @@ export default function Dragon({connected}: any) {
           .icon-wrapper {
             width: 100%;
             min-height: 300px;
+            max-width: 600px;
           }
 
           .icon-wrapper img {
             width: 100%;
             max-height: 600px;
+
             object-fit: contain;
           }
 
@@ -181,11 +181,11 @@ export default function Dragon({connected}: any) {
               <div className='d-flex flex-column flex-lg-row'>
                 {typeof trade.asset !== 'undefined' && (
                   <MediaRenderer
-                    className='col col-lg-6 rounded mb-3 icon-wrapper'
+                    className=' rounded mb-3 icon-wrapper'
                     src={trade.asset.image}
                   />
                 )}
-                <div className='ms-0 ms-lg-4 d-flex flex-column w-100 align-items-end'>
+                <div className='ms-0 ms-lg-4 d-flex flex-column w-100 align-items-start align-items-lg-end'>
                   {address && (
                     <Button
                       className='btn-dark market-buy-btn text-capitalize'
