@@ -72,7 +72,7 @@ async function formatListings(listings: any, sort: string = 'latest') {
   const listingPages = groupAsArrayOfArray(listingsGrouped, 3);
   return listingPages;
 }
-function ListPage({connected}) {
+function ListPage({connected,dabu }) {
   const router = useRouter();
   const [unclean_unlisted, set_unclean_unlisted] = React.useState([]);
   const [nft_list, set_nft_list] = React.useState([[]]);
@@ -141,8 +141,8 @@ function ListPage({connected}) {
     }
   `;
 
-  var dabu = new DABU();
-  dabu.init();
+  // var dabu = new DABU();
+  // dabu.init();
 
   const [Query_Address_NFTS, {loading, refetch}] = useLazyQuery(query, {
     onCompleted: async ({Query_Address_NFTS}) => {
@@ -207,7 +207,7 @@ function ListPage({connected}) {
   };
 
   React.useEffect(() => {
-    !connected&&router.push('/');
+    // !connected&&router.push('/');
     address &&
       Query_Address_NFTS({
         variables: {
