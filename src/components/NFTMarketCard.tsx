@@ -7,7 +7,7 @@ import {
   ChainId,
 } from '@thirdweb-dev/react';
 // @ts-ignore
-import Button from '@/src/components/Button';
+import Button from './Button';
 import {useRouter} from 'next/router';
 const NFTMARKETCARD = ({
   id,

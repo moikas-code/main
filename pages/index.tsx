@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 //@ts-ignore
-import SEO from '@/src/components/SEO';
+import SEO from '../src/components/SEO';
 // @ts-ignore
-import NFTMARKETCARD from '@/src/components/NFTMarketCard';
+import NFTMARKETCARD from '../src/components/NFTMarketCard';
 import DABU from '../dabu';
-import getLatestListing from '@/src/hooks/getLatestListing';
+import getLatestListing from '../src/hooks/getLatestListing';
 import {GetServerSideProps} from 'next';
 import client from '../src/middleware/graphql/apollo-client';
 import {ApolloClient, gql, HttpLink, InMemoryCache} from '@apollo/client';
-import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
+import ANIM_Ellipsis from '../src/components/ANIM-Ellipsis';
 export default function Dragon({connected,dabu}: any) {
   const [blockchain, setBlockchain] = useState('POLYGON');
 
