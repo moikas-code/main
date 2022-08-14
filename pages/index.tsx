@@ -118,7 +118,7 @@ export default function Dragon({connected, dabu, latestListing, scriptDuration}:
         twitter='moikaslookout'
         keywords='gaming, nfts, web3'
       />
-      {scriptDuration}
+      {/* {scriptDuration} */}
       {true ? (
         <div className='d-flex flex-row justify-content-center position-relative w-100 h-100 mt-5 mt-lg-0'>
           <div className='wrapper h-100 d-flex flex-column p-3'>
