@@ -40,9 +40,9 @@ class DABU {
       );
     } else {
       // console.log('Browser');
-      const sig = useSigner();
+      // const sig = useSigner();
 
-      if (sig) {
+      if (false) {
         this.ethSDK = ThirdwebSDK.fromSigner(sig, 'ethereum');
         this.polygonSDK = ThirdwebSDK.fromSigner(sig, 'polygon');
         this.dabu_eth = this.ethSDK.getMarketplace(this.eth_market);
@@ -95,6 +95,28 @@ class DABU {
           return { ...listing, network: 'polygon' };
         }),
       ];
+    } catch (error) {
+      return {
+        error: error.message,
+      };
+    }
+  }
+
+  async get_latest_nft_listing() {
+    try {
+      const _listings = await Promise.all([
+        this.dabu_eth.getActiveListings(),
+        this.dabu_polygon.getActiveListings(),
+      ]);
+      const listings = [
+        ..._listings[0].map((listing) => {
+          return { ...listing, network: 'ethereum' };
+        }),
+        ..._listings[1].map((listing) => { 
+          return { ...listing, network: 'polygon' };
+        }),
+      ]
+      return listings.slice(listings.length-1, listings.length)[0];
     } catch (error) {
       return {
         error: error.message,
