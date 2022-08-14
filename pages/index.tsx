@@ -14,69 +14,69 @@ import H from '../src/components/H';
 import DABU from '../dabu';
 import Web3 from 'web3';
 var BN: any = Web3.utils.hexToNumberString;
-export async function getServerSideProps(context: any) {
- const getLatestListed=  async () => {
-     // INIT Dabu
-     var dabu = new DABU();
-     //Get Active Listings
-     const active_listings: any = await dabu.get_active_nft_listings();
-     //Filter and Sort Active Listings
-     const nft = active_listings
-       .filter((item: any) => {
-         return item.asset.name !== 'Failed to load NFT metadata';
-       })
-       .sort((a: any, b: any) => {
-         return b.id - a.id;
-       })[0];
+export async function getStaticProps(context: any, dabu: any) {
+  // console.log('getServerSideProps', dabu, context);
+  async function runTime(callback: () => any) {
+    const scriptStart = DateTime.local();
+    const res = await callback();
+    const scriptEnd = DateTime.local();
+    const scriptDuration = scriptEnd.toSeconds() - scriptStart.toSeconds();
 
-     const _tokenId = BN(nft.tokenId._hex);
-     // console.log('_tokenId', _tokenId);
-     const _quantity = BN(nft.quantity._hex);
-     // console.log('_supply', _supply);
-     const _price = BN(nft.buyoutPrice._hex);
-     // console.log('_price', _price);
+    console.log(`Script took ${scriptDuration} seconds to run.`);
+    return {scriptDuration, res};
+  }
+  const getLatestListed = async () => {
+    // INIT Dabu
+    var dabu = new DABU();
+    //Get Active Listings
+    const active_listings: any = await dabu.get_latest_nft_listing();
+    //Filter and Sort Active Listings
 
-     const _startTimeInSeconds = BN(nft.startTimeInSeconds._hex);
-     // console.log('_startTimeInSeconds', _startTimeInSeconds);
-     const _secondsUntilEnd = BN(nft.secondsUntilEnd._hex);
+    const nft = active_listings;
 
-     let now = Date.now();
-     return {
-       ...nft,
-       id: nft.id,
-       tokenId: _tokenId,
-       quantity: _quantity,
-       contractAddress: nft.assetContractAddress,
-       buyOutPrice: _price.substr(
-         0,
-         _price.length - nft.buyoutCurrencyValuePerToken.decimals
-       ),
-       currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
-
-       decimals: nft.buyoutCurrencyValuePerToken.decimals,
-       sellerAddress: nft.sellerAddress,
-       startTime: DateTime.fromMillis(
-         now - parseInt(_startTimeInSeconds)
-       ).toLocaleString(DateTime.DATETIME_SHORT),
-       endTime: DateTime.fromMillis(
-         now + parseInt(_secondsUntilEnd)
-       ).toLocaleString(DateTime.DATETIME_SHORT),
-       asset: {
-         ...nft.asset,
-         id: BN(nft.asset.id._hex),
-       },
-     };
-   };
+    const _tokenId = BN(nft.tokenId._hex);
+    return {
+      ...nft,
+      id: nft.id,
+      tokenId: _tokenId,
+      contractAddress: nft.assetContractAddress,
+      currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
+      sellerAddress: nft.sellerAddress,
+      asset: {
+        ...nft.asset,
+        id: BN(nft.asset.id._hex),
+      },
+    };
+  };
+  // const res = await getLatestListed();
+  const {scriptDuration: duration, res: latestListing} = await runTime(
+    getLatestListed
+  );
+  // console.log('latestListing', latestListing, duration);
   return {
     props: {
-      latestListing: getLatestListed(),
-    },
+      latestListing: JSON.stringify(latestListing),
+      scriptDuration: duration,
+    }, // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every 10 seconds
+    revalidate: 15, // In seconds
   };
 }
 
-export default function Dragon({connected, dabu}: any) {
+export default function Dragon({connected, dabu, latestListing, scriptDuration}: any) {
+  const {
+    id,
+    tokenId,
+    currencySymbol,
+    asset,
+    buyOutPrice,
+    currencyContractAddress,
+    decimals,
+    network,
+  } = JSON.parse(latestListing);
   // const {
-  //   latest_nft: {
+  //  latest_nft: {
   //     id,
   //     tokenId,
   //     currencySymbol,
@@ -89,6 +89,13 @@ export default function Dragon({connected, dabu}: any) {
   //   loading,
   //   complete,
   // } = getLatestListing();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (connected) {
+      console.log('connected');
+    }
+    setLoading(false);
+  }, []);
   return (
     <>
       <style jsx global>
@@ -111,7 +118,8 @@ export default function Dragon({connected, dabu}: any) {
         twitter='moikaslookout'
         keywords='gaming, nfts, web3'
       />
-      {false ? (
+      {scriptDuration}
+      {true ? (
         <div className='d-flex flex-row justify-content-center position-relative w-100 h-100 mt-5 mt-lg-0'>
           <div className='wrapper h-100 d-flex flex-column p-3'>
             <div className='s1 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
