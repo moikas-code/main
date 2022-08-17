@@ -20,7 +20,7 @@ function WalletButton({
       <style jsx>
         {`
           .wallet-button {
-            width: 175px;
+            width: 150px;
             background-color: #fff;
           }
         `}
@@ -35,7 +35,7 @@ function WalletButton({
         </div>
       ) : (
         <div
-          className={`wallet-button-address hover-blackflame d-flex flex-column align-items-center justify-content-center px-3 h-100 w-100 cursor-pointer`}
+          className={`wallet-button-address hover-blackflame d-flex flex-column align-items-center justify-content-center px-2 h-100 w-100 cursor-pointer`}
           onClick={() => connectWithMetamask()}>
           CONNECT
         </div>

@@ -2,8 +2,6 @@ module.exports = {
   stories: [
     '../src/**/*.stories.mdx',
     '../pages/**/*.stories.@(js|jsx|ts|tsx)',
-
-    '../src/**/*.stories.@(js|jsx|ts|tsx)',
     '../stories/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [
@@ -12,8 +10,6 @@ module.exports = {
     '@storybook/addon-interactions',
     'storybook-addon-apollo-client',
     'storybook-dark-mode',
-    'storybook-addon-next',
-    '@storybook/addon-a11y',
   ],
   framework: '@storybook/react',
   core: {

@@ -33,7 +33,7 @@ function Navbar(props: any) {
       <div className='position-relative bg-white z-3 d-flex flex-column'>
         <div className='navbar d-flex flex-row justify-content-between align-items-center border border-dark'>
           <Link href={'/'}>
-            <a className='d-flex flex-column justify-content-center h-100 fnt-color-black text-decoration-none text-center nav-brand width-10rem ms-5'>
+            <a className='d-flex flex-column justify-content-center h-100 fnt-color-black text-decoration-none text-center nav-brand width-10rem ms-3'>
               <span className='text-uppercase'>Moika's Lookout</span>
             </a>
           </Link>
@@ -53,14 +53,14 @@ function Navbar(props: any) {
             }}>
             Home
           </Button>
-          |
+          -
           <Button
             onClick={() => {
               router.push('/about');
             }}>
             About
           </Button>
-          |
+          -
           <Button
             onClick={() => {
               router.push('/trade');
@@ -70,7 +70,7 @@ function Navbar(props: any) {
           {/* Temporarily rm */}
           {false && (
             <>
-              |
+              -
               <Button
                 onClick={() => {
                   router.push('/profile');
@@ -84,23 +84,4 @@ function Navbar(props: any) {
     </>
   );
 }
-// {show && (
-//   <div
-//     className={`wallet-button-items d-flex flex-column bg-grey position-absolute end-0`}>
-//     <WalletButtonItem
-//       text={`Create Contract`}
-//       onPress={() => {
-//         router.push('https://deploy.takolabs.io');
-//         setShow(false);
-//       }}
-//     />
-//     <WalletButtonItem
-//       text={`Create`}
-//       onPress={() => {
-//         router.push('https://mint.takolabs.io');
-//         setShow(false);
-//       }}
-//     />
-//   </div>
-// )}
 export default Navbar;

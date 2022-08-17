@@ -5,10 +5,7 @@ import SEO from '../src/components/SEO';
 import NFTMARKETCARD from '../src/components/NFTMarketCard';
 
 const {DateTime} = require('luxon');
-// import getLatestListin g from '../src/hooks/getLatestListing';
-// import {GetServerSideProps} from 'next';
-import client from '../src/middleware/graphql/apollo-client';
-import {ApolloClient, gql, HttpLink, InMemoryCache} from '@apollo/client';
+
 import ANIM_Ellipsis from '../src/components/ANIM-Ellipsis';
 import H from '../src/components/H';
 import DABU from '../dabu';
@@ -48,23 +45,20 @@ export async function getStaticProps(context: any, dabu: any) {
       },
     };
   };
-  // const res = await getLatestListed();
   const {scriptDuration: duration, res: latestListing} = await runTime(
     getLatestListed
   );
-  // console.log('latestListing', latestListing, duration);
   return {
     props: {
       latestListing: JSON.stringify(latestListing),
       scriptDuration: duration,
-    }, // Next.js will attempt to re-generate the page:
-    // - When a request comes in
+    },
     // - At most once every 10 seconds
     revalidate: 15, // In seconds
   };
 }
 
-export default function Dragon({connected, dabu, latestListing, scriptDuration}: any) {
+export default function Dragon({latestListing}: any) {
   const {
     id,
     tokenId,
@@ -75,94 +69,80 @@ export default function Dragon({connected, dabu, latestListing, scriptDuration}:
     decimals,
     network,
   } = JSON.parse(latestListing);
-  // const {
-  //  latest_nft: {
-  //     id,
-  //     tokenId,
-  //     currencySymbol,
-  //     asset,
-  //     buyOutPrice,
-  //     currencyContractAddress,
-  //     decimals,
-  //     network,
-  //   },
-  //   loading,
-  //   complete,
-  // } = getLatestListing();
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    if (connected) {
-      console.log('connected');
-    }
-    setLoading(false);
-  }, []);
+
   return (
     <>
       <style jsx global>
         {`
-          .neg-m-5rem {
-            margin-top: -5rem;
-          }
-
           .strokeme {
             color: #000;
             text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
               1px 1px 0 #fff;
           }
+          .wrapper {
+            height: 100%;
+            width: 100%;
+            margin: 0 auto;
+          }
+          .wrapper > div {
+            height: 100%;
+            width: 100%;
+            padding-top: 1rem;
+          }
+          // Medium devices (tablets, 768px and up)
+          @media (min-width: 768px) {
+          }
+
+          // Large devices (desktops, 992px and up)
+          @media (min-width: 992px) {
+          }
+
+          // X-Large devices (large desktops, 1200px and up)
+          @media (min-width: 1200px) {
+          }
+
+          // XX-Large devices (larger desktops, 1400px and up)
+          @media (min-width: 1400px) {
+          }
         `}
       </style>
 
       <SEO
-        title={`Moka's Lookout | Home`}
+        title={`Home | Moka's Lookout`}
         description="Moika's Lookout is a WEB3 Community."
         twitter='moikaslookout'
         keywords='gaming, nfts, web3'
       />
-      {/* {scriptDuration} */}
-      {true ? (
-        <div className='d-flex flex-row justify-content-center position-relative w-100 h-100 mt-5 mt-lg-0'>
-          <div className='wrapper h-100 d-flex flex-column p-3'>
-            <div className='s1 d-flex flex-column flex-lg-row justify-content-center align-items-center text-start mt-5'>
-              <div className='d-flex flex-column m-5 text-center strokeme'>
-                <H headerSize='2' className='display-1'>
-                  Welcome to The Lookout!
-                </H>
-                <H headerSize='4'>Closed Alpha</H>
+      <div className='wrapper d-flex flex-row justify-content-center align-items-center position-relative'>
+        <div className='d-flex flex-column flex-lg-row justify-content-lg-around  text-start px-0 px-sm-5'>
+          <div className='d-flex flex-column my-5 mx-2 text-center justify-content-center'>
+            <H headerSize='2' className='display-1 mb-2'>
+              Welcome to<br/> The Lookout!
+            </H>
+            <H headerSize='4'>Closed Alpha</H>
 
-                <p>Building on Polygon</p>
-              </div>
-              <div className='col-md-5'>
-                <H
-                  headerSize='4'
-                  className='border-bottom border-dark mb-3 strokeme'>
-                  Latest Listed
-                </H>
-                <span className='nft-wrapper'>
-                  <NFTMARKETCARD
-                    id={id}
-                    tokenId={tokenId}
-                    currencySymbol={currencySymbol}
-                    name={asset?.name}
-                    description={asset?.description}
-                    image={asset?.image}
-                    buyOutPrice={buyOutPrice}
-                    currencyContractAddress={currencyContractAddress}
-                    decimals={decimals}
-                    network={network}
-                  />
-                </span>
-              </div>
-            </div>
+            <p>Building on Ethereum & Polygon</p>
+          </div>
+          <div className='s1 d-flex flex-column justify-content-start justify-content-lg-center px-3 px-sm-0 col col-lg-5'>
+            <H headerSize='4' className='border-bottom border-dark mb-3'>
+              Latest Listed
+            </H>
+
+            <NFTMARKETCARD
+              id={id}
+              tokenId={tokenId}
+              currencySymbol={currencySymbol}
+              name={asset?.name}
+              description={asset?.description}
+              image={asset?.image}
+              buyOutPrice={buyOutPrice}
+              currencyContractAddress={currencyContractAddress}
+              decimals={decimals}
+              network={network}
+            />
           </div>
         </div>
-      ) : (
-        <div className='d-flex flex-column justify-content-center align-items-center h-100'>
-          <H headerSize='4'>
-            Feeding the Birds
-            <ANIM_Ellipsis />
-          </H>
-        </div>
-      )}
+      </div>
     </>
   );
 }

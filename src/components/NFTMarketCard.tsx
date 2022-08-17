@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   useAddress,
   MediaRenderer,
@@ -23,31 +23,52 @@ const NFTMARKETCARD = ({
   dabu,
 }: any) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const imageLoaded = () => {
+    setIsLoading(false);
+  };
 
   return (
     <>
       <style global jsx>
         {`
+          .nft-wrapper {
+            min-width: 21.875rem;
+          }
           .icon-wrapper {
-            max-width: 100%;
-            height: 100%;
-            min-height: 300px;
-            -o-object-fit: cover !important;
+            max-width: 37.5rem;
+            width: 100%;
+            height: 21.875rem;
+            // height: 100%;
+            -o-object-fit: contain !important;
             object-fit: contain;
+
             overflow: hidden;
           }
-
-          .icon-wrapper img {
-            max-height: 300px;
-            object-fit: cover !important;
+          img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain !important;
           }
         `}
       </style>
       <div
         id={id}
-        className='rounded border border-dark m-2 p-2 d-flex flex-column justify-content-between bg-white'>
-        <div className='icon-wrapper mx-auto  d-flex flex-column justify-content-center align-items-center'>
-          <MediaRenderer className='' src={image} />
+        className='nft-wrapper rounded border border-dark p-2 d-flex flex-column justify-content-between bg-white'>
+        <div className='icon-wrapper d-flex flex-column justify-content-center align-items-center'>
+          <MediaRenderer
+            onLoad={() => {
+              imageLoaded();
+            }}
+            className={`${isLoading ? 'd-none' : ''}`}
+            src={image}
+          />
+          <div
+            className={isLoading ? 'spinner-border text-primary' : 'd-none'}
+            role='status'>
+            <span className='sr-only'></span>
+          </div>
         </div>
         <div className='d-flex flex-column'>
           <hr />

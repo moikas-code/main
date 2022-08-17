@@ -18,7 +18,7 @@
     "@metamask/onboarding": "^1.0.1",
     "@rarible/sdk": "^0.9.16",
     "@takolabs/sdk": "https://github.com/tako-labs/typescript-sdk",
-    "@thirdweb-dev/react": "^2.6.2",
+    "@thirdweb-dev/react": "^2.6.3",
     "@thirdweb-dev/sdk": "^2.3.34",
     "apollo-server-core": "^3.10.0",
     "apollo-server-micro": "^3.10.0",
@@ -40,7 +40,6 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1",
-    "storybook-addon-next": "^1.6.7",
     "use-sync-external-store": "^1.2.0",
     "web3": "^1.7.5"
   },
@@ -60,8 +59,12 @@
     "babel-loader": "^8.2.5",
     "eslint": "8.19.0",
     "eslint-config-next": "12.2.2",
+    "https": "^1.0.0",
+    "https-browserify": "^1.0.0",
     "storybook-addon-apollo-client": "^4.0.12",
     "storybook-dark-mode": "^1.1.0",
+    "stream": "^0.0.2",
+    "stream-http": "^3.2.0",
     "typescript": "4.7.4"
   }
 }
