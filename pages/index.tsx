@@ -2,26 +2,17 @@ import React, {useEffect, useState} from 'react';
 //@ts-ignore
 import SEO from '../src/components/SEO';
 // @ts-ignore
-import NFTMARKETCARD from '../src/components/NFTMarketCard';
+import NFTCARD from '../src/components/NFTCard';
 
 const {DateTime} = require('luxon');
 
 import ANIM_Ellipsis from '../src/components/ANIM-Ellipsis';
 import H from '../src/components/H';
 import DABU from '../dabu';
+import {runTime} from '../dabu/helpers';
 import Web3 from 'web3';
 var BN: any = Web3.utils.hexToNumberString;
 export async function getStaticProps(context: any, dabu: any) {
-  // console.log('getServerSideProps', dabu, context);
-  async function runTime(callback: () => any) {
-    const scriptStart = DateTime.local();
-    const res = await callback();
-    const scriptEnd = DateTime.local();
-    const scriptDuration = scriptEnd.toSeconds() - scriptStart.toSeconds();
-
-    console.log(`Script took ${scriptDuration} seconds to run.`);
-    return {scriptDuration, res};
-  }
   const getLatestListed = async () => {
     // INIT Dabu
     var dabu = new DABU();
@@ -117,7 +108,8 @@ export default function Dragon({latestListing}: any) {
         <div className='d-flex flex-column flex-lg-row justify-content-lg-around  text-start px-0 px-sm-5'>
           <div className='d-flex flex-column my-5 mx-2 text-center justify-content-center'>
             <H headerSize='2' className='display-1 mb-2'>
-              Welcome to<br/> The Lookout!
+              Welcome to
+              <br /> The Lookout!
             </H>
             <H headerSize='4'>Closed Alpha</H>
 
@@ -128,7 +120,7 @@ export default function Dragon({latestListing}: any) {
               Latest Listed
             </H>
 
-            <NFTMARKETCARD
+            <NFTCARD
               id={id}
               tokenId={tokenId}
               currencySymbol={currencySymbol}

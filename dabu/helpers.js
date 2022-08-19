@@ -1,5 +1,7 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
 import Web3 from 'web3';
+const { DateTime } = require('luxon');
+
 import detectEthereumProvider from '@metamask/detect-provider';
 // import { getProfile } from "./sessionActions";
 /**
@@ -163,3 +165,13 @@ export const setChainId = async (payload) => {
 };
 
 export const setBalance = (payload) => payload;
+
+export async function runTime(callback) {
+  const scriptStart = DateTime.local();
+  const res = await callback();
+  const scriptEnd = DateTime.local();
+  const scriptDuration = scriptEnd.toSeconds() - scriptStart.toSeconds();
+
+  console.log(`Script took ${scriptDuration} seconds to run.`);
+  return { scriptDuration, res };
+}

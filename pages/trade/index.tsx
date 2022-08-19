@@ -8,7 +8,7 @@ import SEO from '@/src/components/SEO';
 // @ts-ignore
 import Button from '@/src/components/Button';
 // @ts-ignore
-import NFTMARKETCARD from '@/src/components/NFTMarketCard';
+import NFTCard from '@/src/components/NFTCard';
 // @ts-ignore
 import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
 import Web3 from 'web3';
@@ -237,7 +237,7 @@ export default function Dragon({connected, dabu, activeListings}: any) {
                       _key: number
                     ) => {
                       return (
-                        <NFTMARKETCARD
+                        <NFTCard
                           id={id}
                           key={_key}
                           tokenId={tokenId}

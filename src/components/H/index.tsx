@@ -45,8 +45,8 @@ export default function H({
             {children}
           </h6>
         );
-      default:
       case '1':
+      default:
         return (
           <h1
             className={`${typeof className !== 'undefined' ? className : ''}`}>
