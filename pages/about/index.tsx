@@ -1,16 +1,8 @@
 import React, {ReactNode} from 'react';
-import {
-  useMarketplace,
-  useAddress,
-  useMetamask,
-  useConnect,
-} from '@thirdweb-dev/react';
+import H from '../../src/components/common/H';
 //@ts-ignore
 import SEO from '@/src/components/SEO';
-// @ts-ignore
-import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
-export default function about({connected}): ReactNode {
-  const address = useAddress();
+export default function About(): ReactNode {
   return (
     <>
       <SEO
@@ -20,7 +12,7 @@ export default function about({connected}): ReactNode {
         keywords='gaming, nfts, web3'
       />
       <div
-        className={`d-flex flex-row justify-content-center position-relative h-100 w-100 px-3 px-lg-0`}>
+        className={`d-flex flex-row justify-content-center position-relative w-100 px-3 px-lg-0`}>
         <div className='wrapper d-flex flex-column p-3 pt-5 px-md-5 lh-lg'>
           {/* Header */}
           <div className=' mb-5'>
@@ -28,15 +20,24 @@ export default function about({connected}): ReactNode {
               <span className='border-bottom border-dark pe-5'>About</span>
             </h1>
 
+            <H headerSize={'4'}>
+              What is <span className=''>Moika's Lookout</span>?
+            </H>
+
+            <p>A Community built for Gamers, Developers, and Designers.</p>
+            <H headerSize={'4'}>
+              Why was <span className=''>Moika's Lookout</span> created?
+            </H>
             <p>
-              Home to my smol Community built around Gaming, Technology, and
-              Memes, as well as being a way to showcase what all I'm working on.
+              Moika's Lookout was created to be a community for the development
+              of decentralized applications and services as well providing
+              gaming and nft content.
             </p>
-            <p>
+            {/* <p>
               To do this I decided to put my skills to the test, or learn what I
               could, and as a result a small ecosystem was put into development
               <ANIM_Ellipsis />
-            </p>
+            </p> */}
             {/* <p>
               A Community Site to host le content and projects currently in
               development.

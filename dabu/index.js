@@ -1,6 +1,9 @@
+import { EthereumAuthProvider, SelfID, WebClient } from '@self.id/web';
 import { ThirdwebSDK, ChainId, NATIVE_TOKENS } from '@takolabs/sdk';
-import { useSigner } from '@thirdweb-dev/react';
+import { useSigner, useAddress } from '@thirdweb-dev/react';
 import abi from './abi.js';
+import Web3 from 'web3';
+var BN = Web3.utils.hexToNumberString;
 /**
  *
  * There are two types of listings in marketplaces.
@@ -22,6 +25,16 @@ import abi from './abi.js';
  * seller.
  */
 
+async function handleID(sig, address) {
+  return await SelfID.authenticate({
+    authProvider: new EthereumAuthProvider(sig, address),
+    ceramic: 'testnet-clay',
+    connectNetwork: 'testnet-clay',
+  }).then(async (res) => {
+    return res;
+  });
+}
+
 class DABU {
   constructor() {
     this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
@@ -40,13 +53,31 @@ class DABU {
       );
     } else {
       // console.log('Browser');
-      // const sig = useSigner();
+      const sig = useSigner();
 
-      if (false) {
+      if (sig) {
+        // const addr = useAddress();
         this.ethSDK = ThirdwebSDK.fromSigner(sig, 'ethereum');
         this.polygonSDK = ThirdwebSDK.fromSigner(sig, 'polygon');
         this.dabu_eth = this.ethSDK.getMarketplace(this.eth_market);
         this.dabu_polygon = this.polygonSDK.getMarketplace(this.polygon_market);
+
+        // A SelfID instance can only be created with an authenticated Ceramic instance
+        // const data = (async()=>await handleID(
+        //   window.ethereum,
+        //   window.ethereum.selectedAddress
+        // ).then( ({ client, did, id }) => {
+        //   // console.log('is', client, did, id);
+        //   this.self = new SelfID({ client });
+        //   this.did = id;
+        //   return  {
+        //     client,
+        //     did,
+        //     id,
+        //   };
+        // }))();
+        // console.log('qwert',data);
+        // this.self = new SelfID({ id })a;
       } else {
         this.dabu_eth = this.ethSDK_ReadOnly.getMarketplace(this.eth_market);
         this.dabu_polygon = this.polygonSDK_ReadOnly.getMarketplace(
@@ -81,6 +112,32 @@ class DABU {
     }
   }
 
+  async get_active_auction_listings() {
+    try {
+      const _listings = await Promise.all([
+        this.dabu_eth.getActiveListings(),
+        this.dabu_polygon.getActiveListings(),
+      ]);
+      // console.log('_listings', _listings);
+      return [
+        ..._listings[0]
+          .filter((nft) => nft.type === 1)
+          .map((listing) => {
+            return { ...listing, network: 'ethereum' };
+          }),
+        ..._listings[1]
+          .filter((nft) => nft.type === 1)
+          .map((listing) => {
+            return { ...listing, network: 'polygon' };
+          }),
+      ];
+    } catch (error) {
+      return {
+        error: error.message,
+      };
+    }
+  }
+
   async get_active_nft_listings() {
     try {
       const _listings = await Promise.all([
@@ -88,12 +145,16 @@ class DABU {
         this.dabu_polygon.getActiveListings(),
       ]);
       return [
-        ..._listings[0].map((listing) => {
-          return { ...listing, network: 'ethereum' };
-        }),
-        ..._listings[1].map((listing) => {
-          return { ...listing, network: 'polygon' };
-        }),
+        ..._listings[0]
+          .filter((nft) => nft.type === 0)
+          .map((listing) => {
+            return { ...listing, network: 'ethereum' };
+          }),
+        ..._listings[1]
+          .filter((nft) => nft.type === 0)
+          .map((listing) => {
+            return { ...listing, network: 'polygon' };
+          }),
       ];
     } catch (error) {
       return {
@@ -109,14 +170,18 @@ class DABU {
         this.dabu_polygon.getActiveListings(),
       ]);
       const listings = [
-        ..._listings[0].map((listing) => {
-          return { ...listing, network: 'ethereum' };
-        }),
-        ..._listings[1].map((listing) => { 
-          return { ...listing, network: 'polygon' };
-        }),
-      ]
-      return listings.slice(listings.length-1, listings.length)[0];
+        ..._listings[0]
+          .filter((nft) => nft.type === 0)
+          .map((listing) => {
+            return { ...listing, network: 'ethereum' };
+          }),
+        ..._listings[1]
+          .filter((nft) => nft.type === 0)
+          .map((listing) => {
+            return { ...listing, network: 'polygon' };
+          }),
+      ];
+      return listings.slice(listings.length - 1, listings.length)[0];
     } catch (error) {
       return {
         error: error.message,

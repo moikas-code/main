@@ -1,10 +1,17 @@
 import React, {useEffect, useState, useRef, useMemo} from 'react';
 import mime from 'mime/lite.js';
-import {useQuery} from '@tanstack/react-query';
-// import {MediaRenderer} from '@thirdweb-dev/react';
 // @ts-ignore
-import Button from '../Button';
+import ANIM_Ellipsis from '../../components/ANIM-Ellipsis';
+import {
+  useQuery,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+const queryClient = new QueryClient();
+// @ts-ignore
+import Button from '../../components/common/Button';
 import {useRouter} from 'next/router';
+
 const NFTCard = ({
   tradeId,
   name,
@@ -12,6 +19,8 @@ const NFTCard = ({
   image,
   buyOutPrice,
   network,
+  seller_address,
+  quantity,
 }: any): JSX.Element => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -30,15 +39,14 @@ const NFTCard = ({
         {`
           .nft-wrapper {
             min-width: 21.875rem;
+            max-width: 21.875rem;
           }
           .icon-wrapper {
             max-width: 37.5rem;
             width: 100%;
-            height: 21.875rem;
-            // height: 100%;
+            height: 20rem;
             -o-object-fit: contain !important;
             object-fit: contain;
-
             overflow: hidden;
           }
           img {
@@ -48,39 +56,41 @@ const NFTCard = ({
           }
         `}
       </style>
-      <div className='nft-wrapper rounded border border-dark p-2 d-flex flex-column justify-content-between bg-white'>
-        <div className='icon-wrapper d-flex flex-column justify-content-center align-items-center'>
-          <MediaRenderer
-            onLoad={() => imageLoaded()}
-            className={`${isLoading ? 'd-none' : ''}`}
-            src={image}
-          />
-          <div
-            className={isLoading ? 'spinner-border text-primary' : 'd-none'}
-            role='status'>
-            <span className='sr-only'></span>
-          </div>
+      <div className='nft-wrapper rounded border border-dark p-2 mb-3 d-flex flex-column justify-content-between bg-white'>
+        <div
+          onClick={async (e: any) => {
+            return router.push(`/trade/${network}-${tradeId}`);
+          }}
+          className='icon-wrapper d-flex flex-column justify-content-center align-items-center pointer'>
+          <QueryClientProvider client={queryClient}>
+            <MediaRenderer
+              onLoad={() => imageLoaded()}
+              className={`${isLoading ? 'd-none' : ''}`}
+              src={image}
+            />
+          </QueryClientProvider>
+          <h1 className={isLoading ? '' : 'd-none'} role='status'>
+            <ANIM_Ellipsis />
+          </h1>
         </div>
         <div className='d-flex flex-column'>
-          <hr />
-          <p className='m-0'>{name}</p>
-          <hr />
-          <p className='text-capitalize mb-0'>Network: {network}</p>
-          <hr />
-          <div className='d-flex flex-row'>
-            <p>
-              Price: {buyOutPrice} {currencySymbol}
-            </p>
+          <hr className='my-1' />
+          <p className='m-0'>
+            {name}
+            <br />
+            <small>{truncateAddress(seller_address)}</small>
+          </p>
+          <div className='d-flex flex-row justify-content-between'>
+            {buyOutPrice && (
+              <>
+                {/* <hr className='my-1' /> */}
+                <p className='m-0'>
+                  {buyOutPrice} {currencySymbol}
+                </p>
+              </>
+            )}
+            x{quantity}
           </div>
-          {
-            <Button
-              className='btn btn-dark'
-              onClick={async (e: any) => {
-                return router.push(`/trade/${network}-${tradeId}`);
-              }}>
-              View Trade
-            </Button>
-          }
         </div>
       </div>
     </>
@@ -96,7 +106,7 @@ function MediaRenderer({
   src: string;
   onLoad: () => any;
   className: string;
-}): React.ReactNode {
+}): any {
   const DEFAULT_IPFS_GATEWAY = 'https://gateway.ipfscdn.io/ipfs/';
   const DEFAULT_IPFS_RESOLVER_OPTIONS: any = {
     gatewayUrl: DEFAULT_IPFS_GATEWAY,
@@ -161,5 +171,16 @@ function MediaRenderer({
 
     default:
       return <div className={className}>Unsupported media type</div>;
+  }
+}
+
+function truncateAddress(address) {
+  try {
+    return `${address.substring(0, 6).toLowerCase()}...${address
+      .substring(38, 42)
+      .toLowerCase()}`;
+  } catch (error) {
+    console.log(`truncateAddress(): ${error}`);
+    return `truncateAddress(): ${error}`;
   }
 }

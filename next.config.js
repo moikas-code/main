@@ -3,7 +3,7 @@ const withPWA = require('next-pwa');
 const nextConfig = {
   // assetPrefix: './',
   // trailingSlash: true,
-  reactStrictMode: true,
+  reactStrictMode: false,
   pwa: {
     dest: 'public',
   },
@@ -44,4 +44,4 @@ const nextConfig = {
     NEXT_PUBLIC_OPENZEPPELIN_URL: process.env.NEXT_PUBLIC_OPENZEPPELIN_URL,
   },
 };
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig;

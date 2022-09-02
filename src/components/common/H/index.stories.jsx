@@ -1,7 +1,7 @@
 // /stories/pages/H.stories.jsx
 import _H from '.';
 export default {
-  title: 'Components/H',
+  title: 'Components/Common/H',
   component: _H,
 };
 
