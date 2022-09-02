@@ -2,7 +2,7 @@
 import _NFTCard from '.';
 
 export default {
-  title: 'UI/NFTCard',
+  title: 'Components/UI/NFTCard',
   component: _NFTCard,
 };
 

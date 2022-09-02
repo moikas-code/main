@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef, useMemo} from 'react';
 import mime from 'mime/lite.js';
 // @ts-ignore
-import ANIM_Ellipsis from '../../components/ANIM-Ellipsis';
+import ANIM_Ellipsis from '../../blocks/ANIM-Ellipsis';
 import {
   useQuery,
   QueryClient,
@@ -9,7 +9,7 @@ import {
 } from '@tanstack/react-query';
 const queryClient = new QueryClient();
 // @ts-ignore
-import Button from '../../components/common/Button';
+import Button from '../../common/Button';
 import {useRouter} from 'next/router';
 
 const NFTCard = ({

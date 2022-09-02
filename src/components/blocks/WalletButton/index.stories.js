@@ -1,7 +1,7 @@
 // /stories/pages/Button.stories.jsx
 import WalletButton from '.';
 export default {
-  title: 'Components/WalletButton',
+  title: 'Components/Blocks/WalletButton',
   component: WalletButton,
 };
 

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
-import WalletButton from '../../components/WalletButton';
-import Button from '../../components/common/Button';
+import WalletButton from '../../blocks/WalletButton';
+import Button from '../../common/Button';
 import Link from 'next/link';
-import NavItem from '../../components/NavItem';
+import NavItem from '../../blocks/NavItem';
 function Navbar({wrapperCss = '', ...props}: any): React.ReactElement {
   const router = useRouter();
   const [show, setShow] = useState(false);

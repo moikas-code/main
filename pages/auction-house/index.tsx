@@ -1,10 +1,10 @@
 import React, {Fragment, useEffect, useState} from 'react';
 //@ts-ignore
-import SEO from '../../src/components/SEO';
+import SEO from '../../src/components/common/SEO';
 
 const {DateTime} = require('luxon');
 
-import ANIM_Ellipsis from '../../src/components/ANIM-Ellipsis';
+import ANIM_Ellipsis from '../../src/components/blocks/ANIM-Ellipsis';
 import H from '../../src/components/common/H';
 import DABU from '../../dabu';
 import {runTime} from '../../dabu/helpers';

@@ -4,13 +4,13 @@ const {DateTime} = require('luxon');
 import DABU from '../../dabu';
 import {useAddress} from '@thirdweb-dev/react';
 //@ts-ignore
-import SEO from '@/src/components/SEO';
+import SEO from '@/src/components/common/SEO';
 // @ts-ignore
 import Button from '@/src/components/common/Button';
 // @ts-ignore
 import NFTCard from '../../src/ui/NFTCard';
 // @ts-ignore
-import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
+import ANIM_Ellipsis from '@/src/components/blocks/ANIM-Ellipsis';
 import Web3 from 'web3';
 import { runTime } from '../../dabu/helpers';
 var BN: any = Web3.utils.hexToNumberString;

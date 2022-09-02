@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import H from '../../src/components/common/H';
 //@ts-ignore
-import SEO from '@/src/components/SEO';
+import SEO from '@/src/components/common/SEO';
 export default function About(): ReactNode {
   return (
     <>

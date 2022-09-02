@@ -3,8 +3,8 @@ import React from 'react';
 import {ApolloProvider} from '@apollo/client';
 import client from '../src/middleware/graphql/apollo-client';
 import type {AppProps /*, AppContext */, NextWebVitalsMetric} from 'next/app';
-import Navbar from '../src/ui/Navbar';
-import Footer from '../src/ui/Footer';
+import Navbar from '../src/components/ui/Navbar';
+import Footer from '../src/components/ui/Footer';
 import {Provider} from 'react-redux';
 // @ts-ignore
 import {store} from '../src/store';

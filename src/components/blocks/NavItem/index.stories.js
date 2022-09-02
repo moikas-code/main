@@ -1,7 +1,7 @@
 // /stories/pages/Button.stories.jsx
 import _NavItem from '.';
 export default {
-  title: 'Components/NavItem',
+  title: 'Components/Blocks/NavItem',
   component: _NavItem,
 };
 

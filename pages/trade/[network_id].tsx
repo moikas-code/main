@@ -11,13 +11,13 @@ import {
   ChainId,
 } from '@thirdweb-dev/react';
 //@ts-ignore
-import SEO from '../../src/components/SEO';
+import SEO from '../../src/components/common/SEO';
 // @ts-ignore
 import Button from '../../src/components/common/Button';
 // @ts-ignore
 import getTrade from '../../src/hooks/getTrade';
 // @ts-ignore
-import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
+import ANIM_Ellipsis from '@/src/components/blocks/ANIM-Ellipsis';
 function truncateAddress(address) {
   try {
     return `${address.substring(0, 6).toLowerCase()}...${address

@@ -1,12 +1,12 @@
 import React, {Fragment, useEffect, useState} from 'react';
 //@ts-ignore
-import SEO from '../src/components/SEO';
+import SEO from '../src/components/common/SEO';
 // @ts-ignore
-import NFTCARD from '../src/ui/NFTCard';
+import NFTCARD from '../src/components/ui/NFTCard';
 
 const {DateTime} = require('luxon');
 
-import ANIM_Ellipsis from '../src/components/ANIM-Ellipsis';
+import ANIM_Ellipsis from '../src/components/blocks/ANIM-Ellipsis';
 import H from '../src/components/common/H';
 import DABU from '../dabu';
 import {runTime} from '../dabu/helpers';

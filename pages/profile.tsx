@@ -6,11 +6,11 @@ import TAKO from '@/src/tako';
 import DABU from '../dabu';
 
 //@ts-ignore
-import SEO from '@/src/components/SEO';
+import SEO from '@/src/components/common/SEO';
 //@ts-ignore
 import Button from '@/src/components/common/Button';
 // @ts-ignore
-import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
+import ANIM_Ellipsis from '@/src/components/blocks/ANIM-Ellipsis';
 import {
   useAddress,
   MediaRenderer,

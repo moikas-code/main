@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
-import WalletButton from '../../components/WalletButton';
-import Button from '../../components/common/Button';
+import WalletButton from '../../blocks/WalletButton';
+import Button from '../../common/Button';
 import Link from 'next/link';
 function Footer({wrapperCss = '', ...props}: any) {
   const router = useRouter();

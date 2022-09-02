@@ -2,7 +2,7 @@
 import _Navbar from '.';
 
 export default {
-  title: 'UI/Navbar',
+  title: 'Components/UI/Navbar',
   component: _Navbar,
 };
 

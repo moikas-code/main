@@ -1,5 +1,5 @@
-import Button from '../common/Button';
-import {truncateAddress} from '../../../dabu/helpers/truncateAddress';
+import Button from '../../common/Button';
+import {truncateAddress} from '../../../../dabu/helpers/truncateAddress';
 function WalletButton({address, onPress, onLogin}) {
   return (
     <div
