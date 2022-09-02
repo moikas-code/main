@@ -3,11 +3,9 @@ import { startCore } from '@/src/helpers';
 import { ThirdwebProvider, useAddress, useMetamask } from '@thirdweb-dev/react';
 import React, { useState, useEffect } from 'react';
 function Wrap({ children }: any) {
-  var dabu = new DABU();
+  var dabu = new DABU( process.env.AKKORO_ENV );
   const address = useAddress();
-  return (
-    <>{children({ dabu, address, connect: useMetamask() })}</>
-  );
+  return <>{children({ dabu, address, connect: useMetamask() })}</>;
 }
 export default function WalletProvider({
   desiredChainId,

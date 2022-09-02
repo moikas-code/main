@@ -15,33 +15,11 @@ var BN: any = Web3.utils.hexToNumberString;
 export async function getStaticProps(context: any, dabu: any) {
   const getLatestListed = async () => {
     // INIT Dabu
-    var dabu = new DABU();
+    var dabu = new DABU(process.env.AKKORO_ENV);
     //Get Active Listings
-    const active_listings: any = await dabu.get_latest_nft_listing();
-    //Filter and Sort Active Listings
+    const latestListing: any = await dabu.get_latest_nft_listing();
 
-    const nft = active_listings;
-
-    const _tokenId = BN(nft.tokenId._hex);
-    const _quantity = BN(nft.quantity._hex);
-    const _price = BN(nft.buyoutPrice._hex);
-    return {
-      ...nft,
-      id: nft.id,
-      tokenId: _tokenId,
-      quantity: _quantity,
-      contractAddress: nft.assetContractAddress,
-      buyOutPrice: _price.substr(
-        0,
-        _price.length - nft.buyoutCurrencyValuePerToken.decimals
-      ),
-      currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
-      sellerAddress: nft.sellerAddress,
-      asset: {
-        ...nft.asset,
-        id: BN(nft.asset.id._hex),
-      },
-    };
+    return latestListing;
   };
   const {scriptDuration: duration, res: latestListing} = await runTime(
     getLatestListed
@@ -56,20 +34,63 @@ export async function getStaticProps(context: any, dabu: any) {
   };
 }
 
-export default function Dragon({latestListing}: any):JSX.Element {
-  const {
-    id,
-    tokenId,
-    currencySymbol,
-    asset,
-    buyOutPrice,
-    currencyContractAddress,
-    decimals,
-    network,
-    sellerAddress,
-    quantity,
-  } = JSON.parse(latestListing);
+export default function Dragon({latestListing}: any): JSX.Element {
+  const [
+    {
+      id,
+      tokenId,
+      currencySymbol,
+      asset,
+      buyOutPrice,
+      currencyContractAddress,
+      decimals,
+      network,
+      sellerAddress,
+      quantity,
+    },
+    setState,
+  ] = useState({
+    id: '',
+    tokenId: '',
+    currencySymbol: '',
+    asset: '',
+    buyOutPrice: '',
+    currencyContractAddress: '',
+    decimals: '',
+    network: '',
+    sellerAddress: '',
+    quantity: '',
+  } as any);
+  useEffect(() => {
+    latestListing = JSON.parse(latestListing);
+    if (typeof latestListing === 'object' && latestListing !== null) {
+      const nft = latestListing;
 
+      const _tokenId = BN(nft.tokenId._hex);
+      const _quantity = BN(nft.quantity._hex);
+      const _price = BN(nft.buyoutPrice._hex);
+      setState({
+        ...nft,
+        id: nft.id,
+        tokenId: _tokenId,
+        quantity: _quantity,
+        contractAddress: nft.assetContractAddress,
+        buyOutPrice:
+          typeof _price !== 'undefined'
+            ? _price.substr(
+                0,
+                _price.length - nft.buyoutCurrencyValuePerToken.decimals
+              )
+            : null,
+        currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
+        sellerAddress: nft.sellerAddress,
+        asset: {
+          ...nft.asset,
+          id: BN(nft.asset.id._hex),
+        },
+      });
+    }
+  }, [latestListing]);
   return (
     <>
       <style jsx global>

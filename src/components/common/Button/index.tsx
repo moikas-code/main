@@ -5,7 +5,7 @@ export default function Button({disabled=false, children, className, onClick}: a
         {`
           .btn {
             min-width: 100px;
-            min-height: 40px;
+            min-height: 20px;
           }
         `}
       </style>

@@ -3,8 +3,8 @@ import {useRouter} from 'next/router';
 import WalletButton from '../../components/WalletButton';
 import Button from '../../components/common/Button';
 import Link from 'next/link';
-import NavButton from '../../components/NavButton';
-function Navbar({wrapperCss = '', ...props}: any) {
+import NavItem from '../../components/NavItem';
+function Navbar({wrapperCss = '', ...props}: any): React.ReactElement {
   const router = useRouter();
   const [show, setShow] = useState(false);
 
@@ -42,29 +42,29 @@ function Navbar({wrapperCss = '', ...props}: any) {
           </div>
         </div>
         <div className='d-flex flex-row justify-content-center align-items-center border-start border-end border-bottom border-dark bg-white px-4 py-2'>
-          <NavButton
+          <NavItem
             onClick={() => {
               router.push('/trade');
             }}>
             Trade
-          </NavButton>
-          -
-          <NavButton
+          </NavItem>
+
+          <NavItem
             onClick={() => {
               router.push('/auction-house');
             }}>
             Auction House
-          </NavButton>
+          </NavItem>
           {/* Temporarily rm */}
           {false && (
             <>
               -
-              <NavButton
+              <NavItem
                 onClick={() => {
                   router.push('/profile');
                 }}>
                 My NFT
-              </NavButton>
+              </NavItem>
             </>
           )}
         </div>

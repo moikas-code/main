@@ -36,15 +36,28 @@ async function handleID(sig, address) {
 }
 
 class DABU {
-  constructor() {
-    this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
-    this.polygon_market = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
-    this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
-    this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
-    this.ethSDK_ReadOnly = new ThirdwebSDK('ethereum', {});
-    this.polygonSDK_ReadOnly = new ThirdwebSDK('polygon', {});
+  constructor(environment) {
     ///
     const SSR = typeof window === 'undefined';
+    if (environment === 'production') {
+      this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
+      this.polygon_market = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
+      this.native_eth = NATIVE_TOKENS[ChainId['Mainnet']].wrapped.address;
+      this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
+      this.ethSDK_ReadOnly = new ThirdwebSDK('ethereum', {});
+      this.polygonSDK_ReadOnly = new ThirdwebSDK('polygon', {});
+
+    } else {
+      this.eth_market = '0x823925BA556501E040dCbC1d01C84837c41C499C';
+      this.polygon_market = '0xe493E7066bB74eE33A6826cf0A564233B7F67f48';
+      this.native_eth = NATIVE_TOKENS[ChainId['Goerli']].wrapped.address;
+      this.native_polygon = NATIVE_TOKENS[ChainId['Mumbai']].wrapped.address;
+      this.ethSDK_ReadOnly = new ThirdwebSDK('goerli', {});
+      this.polygonSDK_ReadOnly = new ThirdwebSDK('mumbai', {});
+
+    }
+   
+
     if (SSR) {
       // console.log('SSR');
       this.dabu_eth = this.ethSDK_ReadOnly.getMarketplace(this.eth_market);
@@ -169,19 +182,24 @@ class DABU {
         this.dabu_eth.getActiveListings(),
         this.dabu_polygon.getActiveListings(),
       ]);
-      const listings = [
-        ..._listings[0]
-          .filter((nft) => nft.type === 0)
-          .map((listing) => {
-            return { ...listing, network: 'ethereum' };
-          }),
-        ..._listings[1]
-          .filter((nft) => nft.type === 0)
-          .map((listing) => {
-            return { ...listing, network: 'polygon' };
-          }),
-      ];
-      return listings.slice(listings.length - 1, listings.length)[0];
+      console.log('_listings', _listings);
+      if (_listings.flat().length > 0) {
+        const listings = [
+          ..._listings[0]
+            .filter((nft) => nft.type === 0)
+            .map((listing) => {
+              return { ...listing, network: 'ethereum' };
+            }),
+          ..._listings[1]
+            .filter((nft) => nft.type === 0)
+            .map((listing) => {
+              return { ...listing, network: 'polygon' };
+            }),
+        ];
+        return listings.slice(listings.length - 1, listings.length)[0];
+      } else {
+        return null;
+      }
     } catch (error) {
       return {
         error: error.message,
