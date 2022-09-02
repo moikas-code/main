@@ -8,7 +8,7 @@ import DABU from '../dabu';
 //@ts-ignore
 import SEO from '@/src/components/SEO';
 //@ts-ignore
-import Button from '@/src/components/Button';
+import Button from '@/src/components/common/Button';
 // @ts-ignore
 import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
 import {
