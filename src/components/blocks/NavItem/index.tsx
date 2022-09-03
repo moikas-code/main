@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../../common/Button';
-export default function NavButton({
+export default function NavItem({
   children,
   className,
   onClick,
@@ -30,10 +30,7 @@ export default function NavButton({
         `}
       </style>
       <div
-        className={
-          `d-flex flex-row justify-content-center cursor-pointer nav-btn ` +
-          className
-        }
+        className={`d-flex flex-row justify-content-center cursor-pointer nav-btn ${className}`}
         onClick={onClick}>
         {children}
       </div>

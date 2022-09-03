@@ -3,12 +3,8 @@ import React, {Fragment, useEffect, useState} from 'react';
 import SEO from '../src/components/common/SEO';
 // @ts-ignore
 import NFTCARD from '../src/components/ui/NFTCard';
-
-const {DateTime} = require('luxon');
-
-import ANIM_Ellipsis from '../src/components/blocks/ANIM-Ellipsis';
-import H from '../src/components/common/H';
 import DABU from '../dabu';
+import H from '../src/components/common/H';
 import {runTime} from '../dabu/helpers';
 import Web3 from 'web3';
 var BN: any = Web3.utils.hexToNumberString;

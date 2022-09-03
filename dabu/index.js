@@ -39,6 +39,7 @@ class DABU {
   constructor(environment) {
     ///
     const SSR = typeof window === 'undefined';
+    this.environment = environment;
     if (environment === 'production') {
       this.eth_market = '0x61f46e5835434DC2990492336dF84C3Fbd1ac468';
       this.polygon_market = '0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded';
@@ -46,7 +47,6 @@ class DABU {
       this.native_polygon = NATIVE_TOKENS[ChainId['Polygon']].wrapped.address;
       this.ethSDK_ReadOnly = new ThirdwebSDK('ethereum', {});
       this.polygonSDK_ReadOnly = new ThirdwebSDK('polygon', {});
-
     } else {
       this.eth_market = '0x823925BA556501E040dCbC1d01C84837c41C499C';
       this.polygon_market = '0xe493E7066bB74eE33A6826cf0A564233B7F67f48';
@@ -54,9 +54,7 @@ class DABU {
       this.native_polygon = NATIVE_TOKENS[ChainId['Mumbai']].wrapped.address;
       this.ethSDK_ReadOnly = new ThirdwebSDK('goerli', {});
       this.polygonSDK_ReadOnly = new ThirdwebSDK('mumbai', {});
-
     }
-   
 
     if (SSR) {
       // console.log('SSR');
@@ -65,9 +63,7 @@ class DABU {
         this.polygon_market
       );
     } else {
-      // console.log('Browser');
       const sig = useSigner();
-
       if (sig) {
         // const addr = useAddress();
         this.ethSDK = ThirdwebSDK.fromSigner(sig, 'ethereum');
@@ -105,19 +101,26 @@ class DABU {
   // Query
   async get_nft_listing({ listingId, network }) {
     try {
-      if (network === 'ETHEREUM' || network === 'ethereum') {
-        return {
-          ...(await this.dabu_eth.getListing(listingId)),
-          network,
-        };
+      if (typeof network !== 'string')
+        throw new Error('network is not a string');
+      // Valid network
+      const _network = network.toLowerCase();
+      switch (_network) {
+        case 'ethereum':
+        case 'goerli':
+          return {
+            ...(await this.dabu_eth.getListing(listingId)),
+            network,
+          };
+        case 'polygon':
+        case 'mumbai':
+          return {
+            ...(await this.dabu_polygon.getListing(listingId)),
+            network,
+          };
+        default:
+          return 'Invalid Network';
       }
-      if (network === 'POLYGON' || network === 'polygon') {
-        return {
-          ...(await this.dabu_polygon.getListing(listingId)),
-          network,
-        };
-      }
-      return 'Invalid Network';
     } catch (error) {
       return {
         error: error.message,

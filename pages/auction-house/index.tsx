@@ -10,9 +10,9 @@ import DABU from '../../dabu';
 import {runTime} from '../../dabu/helpers';
 import Button from '../../src/components/common/Button';
 import {useAddress} from '@thirdweb-dev/react';
-import NFTCard from '../../src/ui/NFTCard';
+import NFTCard from '../../src/components/ui/NFTCard';
 import Web3 from 'web3';
-var BN: any = Web3.utils.hexToNumberString;
+
 async function formatListings(listings: any, sort: string = 'latest') {
   function groupAsArrayOfArray(dataArr: Array<any>, rowSize = 4) {
     var i = 0;
@@ -49,62 +49,62 @@ async function formatListings(listings: any, sort: string = 'latest') {
   return listingPages;
 }
 
-export async function getStaticProps(context: any, dabu: any) {
-  // console.log('getServerSideProps', dabu, context);
+const getAuctionListings = async () => {
+  var BN: any = Web3.utils.hexToNumberString;
+  // INIT Dabu
+  var dabu = new DABU();
+  //Get Active Listings
+  const auction_listings: any = await dabu.get_active_auction_listings();
+  //Filter and Sort Active Listings
+  // console.log('get', auction_listings);
 
-  const getAuctionListings = async () => {
-    // INIT Dabu
-    var dabu = new DABU();
-    //Get Active Listings
-    const auction_listings: any = await dabu.get_active_auction_listings();
-    //Filter and Sort Active Listings
-    // console.log('get', auction_listings);
+  return auction_listings.map((nft: any) => {
+    const _tokenId = BN(nft.tokenId._hex);
+    // console.log('_tokenId', _tokenId);
+    const _quantity = BN(nft.quantity._hex);
+    // console.log('_supply', _supply);
+    const _price = BN(nft.buyoutPrice._hex);
+    // console.log('_price', _price);
 
-    return auction_listings.map((nft: any) => {
-      const _tokenId = BN(nft.tokenId._hex);
-      // console.log('_tokenId', _tokenId);
-      const _quantity = BN(nft.quantity._hex);
-      // console.log('_supply', _supply);
-      const _price = BN(nft.buyoutPrice._hex);
-      // console.log('_price', _price);
+    // const _startTimeInSeconds = BN(nft.startTimeInSeconds._hex);
+    // // console.log('_startTimeInSeconds', _startTimeInSeconds);
+    // const _secondsUntilEnd = BN(nft.secondsUntilEnd._hex);
 
-      // const _startTimeInSeconds = BN(nft.startTimeInSeconds._hex);
-      // // console.log('_startTimeInSeconds', _startTimeInSeconds);
-      // const _secondsUntilEnd = BN(nft.secondsUntilEnd._hex);
+    let now = Date.now();
+    // console.log('assets',nft.asset);
+    // arr.push();
+    // }
 
-      let now = Date.now();
-      // console.log('assets',nft.asset);
-      // arr.push();
-      // }
+    return {
+      ...nft,
+      id: nft.id,
+      tokenId: _tokenId,
+      quantity: _quantity,
+      network: nft.network,
+      contractAddress: nft.assetContractAddress,
+      buyOutPrice: _price.substr(
+        0,
+        _price.length - nft.buyoutCurrencyValuePerToken.decimals
+      ),
+      currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
 
-      return {
-        ...nft,
-        id: nft.id,
-        tokenId: _tokenId,
-        quantity: _quantity,
-        network: nft.network,
-        contractAddress: nft.assetContractAddress,
-        buyOutPrice: _price.substr(
-          0,
-          _price.length - nft.buyoutCurrencyValuePerToken.decimals
-        ),
-        currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
+      decimals: nft.buyoutCurrencyValuePerToken.decimals,
+      sellerAddress: nft.sellerAddress,
+      // startTime: DateTime.fromMillis(
+      //   now - parseInt(_startTimeInSeconds)
+      // ).toLocaleString(DateTime.DATETIME_SHORT),
+      // endTime: DateTime.fromMillis(
+      //   now + parseInt(_secondsUntilEnd)
+      // ).toLocaleString(DateTime.DATETIME_SHORT),
+      asset: {
+        ...nft.asset,
+        id: BN(nft.asset.id._hex),
+      },
+    };
+  }) as any;
+};
 
-        decimals: nft.buyoutCurrencyValuePerToken.decimals,
-        sellerAddress: nft.sellerAddress,
-        // startTime: DateTime.fromMillis(
-        //   now - parseInt(_startTimeInSeconds)
-        // ).toLocaleString(DateTime.DATETIME_SHORT),
-        // endTime: DateTime.fromMillis(
-        //   now + parseInt(_secondsUntilEnd)
-        // ).toLocaleString(DateTime.DATETIME_SHORT),
-        asset: {
-          ...nft.asset,
-          id: BN(nft.asset.id._hex),
-        },
-      };
-    }) as any;
-  };
+export async function getStaticProps(context: any) {
   const {scriptDuration: duration, res: activeListings} = await runTime(
     getAuctionListings
   );
@@ -113,7 +113,6 @@ export async function getStaticProps(context: any, dabu: any) {
       activeListings: JSON.stringify(activeListings),
       scriptDuration: duration,
     },
-    // - At most once every 10 seconds
     revalidate: 15, // In seconds
   };
 }
