@@ -1,8 +1,8 @@
-import { EthereumAuthProvider, SelfID, WebClient } from '@self.id/web';
-import { ThirdwebSDK, ChainId, NATIVE_TOKENS } from '@takolabs/sdk';
+import { ThirdwebSDK, ChainId, NATIVE_TOKENS } from '@thirdweb-dev/sdk';
 import { useSigner, useAddress } from '@thirdweb-dev/react';
 import abi from './abi.js';
 import Web3 from 'web3';
+import autoBind from 'auto-bind';
 var BN = Web3.utils.hexToNumberString;
 /**
  *
@@ -24,16 +24,6 @@ var BN = Web3.utils.hexToNumberString;
  * At the end of the auction, the closeAuction function needs to be called twice; once for the buyer and once for the
  * seller.
  */
-
-async function handleID(sig, address) {
-  return await SelfID.authenticate({
-    authProvider: new EthereumAuthProvider(sig, address),
-    ceramic: 'testnet-clay',
-    connectNetwork: 'testnet-clay',
-  }).then(async (res) => {
-    return res;
-  });
-}
 
 class DABU {
   constructor(environment) {
@@ -70,23 +60,6 @@ class DABU {
         this.polygonSDK = ThirdwebSDK.fromSigner(sig, 'polygon');
         this.dabu_eth = this.ethSDK.getMarketplace(this.eth_market);
         this.dabu_polygon = this.polygonSDK.getMarketplace(this.polygon_market);
-
-        // A SelfID instance can only be created with an authenticated Ceramic instance
-        // const data = (async()=>await handleID(
-        //   window.ethereum,
-        //   window.ethereum.selectedAddress
-        // ).then( ({ client, did, id }) => {
-        //   // console.log('is', client, did, id);
-        //   this.self = new SelfID({ client });
-        //   this.did = id;
-        //   return  {
-        //     client,
-        //     did,
-        //     id,
-        //   };
-        // }))();
-        // console.log('qwert',data);
-        // this.self = new SelfID({ id })a;
       } else {
         this.dabu_eth = this.ethSDK_ReadOnly.getMarketplace(this.eth_market);
         this.dabu_polygon = this.polygonSDK_ReadOnly.getMarketplace(
@@ -94,10 +67,9 @@ class DABU {
         );
       }
     }
-  }
-  // TODO RM - this is not used anymore
-  async init() {}
 
+    autoBind(this);
+  }
   // Query
   async get_nft_listing({ listingId, network }) {
     try {

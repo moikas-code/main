@@ -12,6 +12,7 @@ export async function getStaticProps(context: any, dabu: any) {
   const getLatestListed = async () => {
     // INIT Dabu
     var dabu = new DABU(process.env.AKKORO_ENV);
+    console.log('dabu', dabu, await dabu.get_latest_nft_listing());
     //Get Active Listings
     const latestListing: any = await dabu.get_latest_nft_listing();
 
