@@ -13,6 +13,7 @@ import metrics from '../src/metrics';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import WalletProvider from '../dabu/WalletProvider';
 import {ChainId} from '@thirdweb-dev/react';
+import TwitchEmbed from '@/src/components/blocks/TwitchEmbed';
 function MyApp({Component, pageProps}: AppProps) {
   return (
     <WalletProvider
@@ -149,7 +150,9 @@ function MyApp({Component, pageProps}: AppProps) {
                     connect,
                   }}
                 />
-                <Footer />
+                <div className='position-absolute bottom-0 end-0'>
+                  <TwitchEmbed />
+                </div>
               </div>
             </Provider>
           </ApolloProvider>

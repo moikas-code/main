@@ -41,33 +41,6 @@ function Navbar({wrapperCss = '', ...props}: any): React.ReactElement {
             />
           </div>
         </div>
-        <div className='d-flex flex-row justify-content-center align-items-center border-start border-end border-bottom border-dark bg-white px-4 py-2'>
-          <NavItem
-            onClick={() => {
-              router.push('/trade');
-            }}>
-            Trade
-          </NavItem>
-
-          <NavItem
-            onClick={() => {
-              router.push('/auction-house');
-            }}>
-            Auction House
-          </NavItem>
-          {/* Temporarily rm */}
-          {false && (
-            <>
-              -
-              <NavItem
-                onClick={() => {
-                  router.push('/profile');
-                }}>
-                My NFT
-              </NavItem>
-            </>
-          )}
-        </div>
       </div>
     </>
   );
