@@ -1,5 +1,6 @@
+import { MintType } from '@rarible/sdk/build/types/nft/mint/prepare';
 import axios from 'axios';
-import {MintType} from '@rarible/sdk/build/types/nft/mint/domain';
+
 if (typeof window === 'undefined') require('dotenv').config();
 var name = 'akkoro_Lib';
 var version = '0.0.1';
