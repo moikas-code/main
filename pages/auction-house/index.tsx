@@ -1,19 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
+//@ts-ignore
+import SEO from '../../src/components/common/SEO';
+
 const {DateTime} = require('luxon');
 
+import ANIM_Ellipsis from '../../src/components/blocks/ANIM-Ellipsis';
+import H from '../../src/components/common/H';
 import DABU from '../../dabu';
+import {runTime} from '../../dabu/helpers';
+import Button from '../../src/components/common/Button';
 import {useAddress} from '@thirdweb-dev/react';
-//@ts-ignore
-import SEO from '@/src/components/common/SEO';
-// @ts-ignore
-import Button from '@/src/components/common/Button';
-// @ts-ignore
-import NFTCard from '../../src/ui/NFTCard';
-// @ts-ignore
-import ANIM_Ellipsis from '@/src/components/blocks/ANIM-Ellipsis';
+import NFTCard from '../../src/components/ui/NFTCard';
 import Web3 from 'web3';
-import { runTime } from '../../dabu/helpers';
-var BN: any = Web3.utils.hexToNumberString;
+
 async function formatListings(listings: any, sort: string = 'latest') {
   function groupAsArrayOfArray(dataArr: Array<any>, rowSize = 4) {
     var i = 0;
@@ -50,73 +49,70 @@ async function formatListings(listings: any, sort: string = 'latest') {
   return listingPages;
 }
 
-export async function getStaticProps(context: any, dabu: any) {
-  // console.log('getServerSideProps', dabu, context);
-  
-  const getActiveListings = async () => {
-    // INIT Dabu
-    var dabu = new DABU();
-    //Get Active Listings
-    const active_listings: any = await dabu.get_active_nft_listings();
-    //Filter and Sort Active Listings
-    // console.log('get', active_listings);
-    const listings = (await active_listings
-      .filter((nft) => nft.type === 0)
-      .map((nft: any) => {
-        const _tokenId = BN(nft.tokenId._hex);
-        // console.log('_tokenId', _tokenId);
-        const _quantity = BN(nft.quantity._hex);
-        // console.log('_supply', _supply);
-        const _price = BN(nft.buyoutPrice._hex);
-        // console.log('_price', _price);
+const getAuctionListings = async () => {
+  var BN: any = Web3.utils.hexToNumberString;
+  // INIT Dabu
+  var dabu = new DABU();
+  //Get Active Listings
+  const auction_listings: any = await dabu.get_active_auction_listings();
+  //Filter and Sort Active Listings
+  // console.log('get', auction_listings);
 
-        const _startTimeInSeconds = BN(nft.startTimeInSeconds._hex);
-        // console.log('_startTimeInSeconds', _startTimeInSeconds);
-        const _secondsUntilEnd = BN(nft.secondsUntilEnd._hex);
+  return auction_listings.map((nft: any) => {
+    const _tokenId = BN(nft.tokenId._hex);
+    // console.log('_tokenId', _tokenId);
+    const _quantity = BN(nft.quantity._hex);
+    // console.log('_supply', _supply);
+    const _price = BN(nft.buyoutPrice._hex);
+    // console.log('_price', _price);
 
-        let now = Date.now();
-        // console.log('assets',nft.asset);
-        // arr.push();
-        // }
+    // const _startTimeInSeconds = BN(nft.startTimeInSeconds._hex);
+    // // console.log('_startTimeInSeconds', _startTimeInSeconds);
+    // const _secondsUntilEnd = BN(nft.secondsUntilEnd._hex);
 
-        return {
-          ...nft,
-          id: nft.id,
-          tokenId: _tokenId,
-          quantity: _quantity,
-          network: nft.network,
-          contractAddress: nft.assetContractAddress,
-          buyOutPrice: _price.substr(
-            0,
-            _price.length - nft.buyoutCurrencyValuePerToken.decimals
-          ),
-          currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
+    let now = Date.now();
+    // console.log('assets',nft.asset);
+    // arr.push();
+    // }
 
-          decimals: nft.buyoutCurrencyValuePerToken.decimals,
-          sellerAddress: nft.sellerAddress,
-          startTime: DateTime.fromMillis(
-            now - parseInt(_startTimeInSeconds)
-          ).toLocaleString(DateTime.DATETIME_SHORT),
-          endTime: DateTime.fromMillis(
-            now + parseInt(_secondsUntilEnd)
-          ).toLocaleString(DateTime.DATETIME_SHORT),
-          asset: {
-            ...nft.asset,
-            id: BN(nft.asset.id._hex),
-          },
-        };
-      })) as any;
-    return listings;
-  };
+    return {
+      ...nft,
+      id: nft.id,
+      tokenId: _tokenId,
+      quantity: _quantity,
+      network: nft.network,
+      contractAddress: nft.assetContractAddress,
+      buyOutPrice: _price.substr(
+        0,
+        _price.length - nft.buyoutCurrencyValuePerToken.decimals
+      ),
+      currencySymbol: nft.buyoutCurrencyValuePerToken.symbol,
+
+      decimals: nft.buyoutCurrencyValuePerToken.decimals,
+      sellerAddress: nft.sellerAddress,
+      // startTime: DateTime.fromMillis(
+      //   now - parseInt(_startTimeInSeconds)
+      // ).toLocaleString(DateTime.DATETIME_SHORT),
+      // endTime: DateTime.fromMillis(
+      //   now + parseInt(_secondsUntilEnd)
+      // ).toLocaleString(DateTime.DATETIME_SHORT),
+      asset: {
+        ...nft.asset,
+        id: BN(nft.asset.id._hex),
+      },
+    };
+  }) as any;
+};
+
+export async function getStaticProps(context: any) {
   const {scriptDuration: duration, res: activeListings} = await runTime(
-    getActiveListings
+    getAuctionListings
   );
   return {
     props: {
       activeListings: JSON.stringify(activeListings),
       scriptDuration: duration,
     },
-    // - At most once every 10 seconds
     revalidate: 15, // In seconds
   };
 }
@@ -129,11 +125,12 @@ export default function Dragon({connected, dabu, activeListings}: any) {
   const [listed_nfts, setNFTS] = useState<any>([[]]);
 
   React.useEffect(() => {
-    // console.log(typeof activeListings);
-    formatListings(JSON.parse(activeListings)).then((nfts) => {
-      // console.log(nfts);
-      setNFTS(nfts);
-    });
+    // console.log(typeof activeListings, activeListings);
+    activeListings !== null &&
+      formatListings(JSON.parse(activeListings)).then((nfts) => {
+        console.log(nfts);
+        setNFTS(nfts);
+      });
   }, [activeListings]);
 
   return (
@@ -144,9 +141,9 @@ export default function Dragon({connected, dabu, activeListings}: any) {
         twitter='takolabsio'
         keywords='gaming, nfts, web3'
       />
-      <div className='d-flex flex-row justify-content-center position-relative w-100'>
+      <div className='d-flex flex-row justify-content-center position-relative w-100 h-100'>
         <div className='wrapper d-flex flex-column p-3'>
-          <div className='my-5'>
+          <div className='my-2'>
             <h4>Alpha software. Use at your own risk.</h4>
             <h5>Service Fees: 0.05%</h5>
             <hr />

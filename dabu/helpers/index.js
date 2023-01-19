@@ -1,6 +1,6 @@
-import MetaMaskOnboarding from '@metamask/onboarding';
+
 import Web3 from 'web3';
-const { DateTime } = require('luxon');
+import  {DateTime}   from'luxon';
 
 import detectEthereumProvider from '@metamask/detect-provider';
 // import { getProfile } from "./sessionActions";

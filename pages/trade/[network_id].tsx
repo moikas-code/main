@@ -11,13 +11,13 @@ import {
   ChainId,
 } from '@thirdweb-dev/react';
 //@ts-ignore
-import SEO from '@/src/components/SEO';
+import SEO from '../../src/components/common/SEO';
 // @ts-ignore
-import Button from '@/src/components/Button';
+import Button from '../../src/components/common/Button';
 // @ts-ignore
-import getTrade from '@/src/hooks/getTrade';
+import getTrade from '../../src/hooks/getTrade';
 // @ts-ignore
-import ANIM_Ellipsis from '@/src/components/ANIM-Ellipsis';
+import ANIM_Ellipsis from '@/src/components/blocks/ANIM-Ellipsis';
 function truncateAddress(address) {
   try {
     return `${address.substring(0, 6).toLowerCase()}...${address
@@ -28,7 +28,7 @@ function truncateAddress(address) {
     return `truncateAddress(): ${error}`;
   }
 }
-export default function Dragon({connected,dabu}: any) {
+export default function Dragon({connected, dabu}: any) {
   const router = useRouter();
   // De-construct network_id out of the router.query.
   // This means that if the user visits /listing/ethereum-0 then the network_id will be 0.
@@ -186,7 +186,7 @@ export default function Dragon({connected,dabu}: any) {
                   />
                 )}
                 <div className='ms-0 ms-lg-4 d-flex flex-column w-100 align-items-start align-items-lg-end'>
-                  {address && (
+                  {address && trade.type == 0 ? (
                     <Button
                       className='btn-dark market-buy-btn text-capitalize'
                       onClick={async (e) => {
@@ -224,6 +224,91 @@ export default function Dragon({connected,dabu}: any) {
                         )}{' '}
                       {trade.buyoutCurrencyValuePerToken.symbol}
                     </Button>
+                  ) : (
+                    address &&
+                    trade.type == 1 && (
+                      <div className='d-flex flex-column'>
+                        <Button
+                          className='btn-dark market-buy-btn text-capitalize'
+                          onClick={async (e) => {
+                            await switchNetwork(network.toLowerCase());
+                            // Prevent page from refreshing
+                            e.preventDefault();
+                            const price =
+                              BN(trade.buyoutPrice._hex) /
+                              BN(
+                                10 ** trade.buyoutCurrencyValuePerToken.decimals
+                              );
+
+                            return dabu
+                              ?.buy_nft({
+                                listingId: trade.id,
+                                quantity: 1,
+                                address: address,
+                                isGasless: false,
+                                price: price,
+                                currencyContractAddress:
+                                  trade.currencyContractAddress,
+                                decimals:
+                                  trade.buyoutCurrencyValuePerToken.decimals,
+                                network: network,
+                              })
+                              .then((res: any) => {
+                                // alert('NFT bought successfully!');
+                              })
+                              .catch((e) => {
+                                console.log(e);
+                              });
+                          }}>
+                          Buy for{' '}
+                          {BN(trade.buyoutPrice._hex) /
+                            BN(
+                              10 ** trade.buyoutCurrencyValuePerToken.decimals
+                            )}{' '}
+                          {trade.buyoutCurrencyValuePerToken.symbol}
+                        </Button>
+                        <hr/>
+                        <Button
+                          className='btn-dark market-buy-btn text-capitalize'
+                          onClick={async (e) => {
+                            await switchNetwork(network.toLowerCase());
+                            // Prevent page from refreshing
+                            e.preventDefault();
+                            const price =
+                              BN(trade.buyoutPrice._hex) /
+                              BN(
+                                10 ** trade.buyoutCurrencyValuePerToken.decimals
+                              );
+
+                            return dabu
+                              ?.buy_nft({
+                                listingId: trade.id,
+                                quantity: 1,
+                                address: address,
+                                isGasless: false,
+                                price: price,
+                                currencyContractAddress:
+                                  trade.currencyContractAddress,
+                                decimals:
+                                  trade.buyoutCurrencyValuePerToken.decimals,
+                                network: network,
+                              })
+                              .then((res: any) => {
+                                // alert('NFT bought successfully!');
+                              })
+                              .catch((e) => {
+                                console.log(e);
+                              });
+                          }}>
+                          Bid
+                          {BN(trade.buyoutPrice._hex) /
+                            BN(
+                              10 ** trade.buyoutCurrencyValuePerToken.decimals
+                            )}{' '}
+                          {trade.buyoutCurrencyValuePerToken.symbol}
+                        </Button>
+                      </div>
+                    )
                   )}
                 </div>
               </div>

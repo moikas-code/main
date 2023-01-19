@@ -21,6 +21,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["src", "pages/_app.tsx", "pages/index.tsx", "stories"],
+  "include": ["src", "pages/_app.tsx", "pages", "stories"],
   "exclude": ["node_modules"]
 }

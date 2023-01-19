@@ -1,4 +1,4 @@
-import Input from './common/input.tsx';
+import Input from '../common/input.tsx';
 import NFTInput from './NFTInput';
 export default function FormInputs({
   id,

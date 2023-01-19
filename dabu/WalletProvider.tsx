@@ -1,10 +1,11 @@
 import DABU from './';
 import { startCore } from '@/src/helpers';
-import { ThirdwebProvider } from '@thirdweb-dev/react';
+import { ThirdwebProvider, useAddress, useMetamask } from '@thirdweb-dev/react';
 import React, { useState, useEffect } from 'react';
 function Wrap({ children }: any) {
-  var dabu = new DABU();
-  return <>{children(dabu)}</>;
+  var dabu = new DABU( process.env.AKKORO_ENV );
+  const address = useAddress();
+  return <>{children({ dabu, address, connect: useMetamask() })}</>;
 }
 export default function WalletProvider({
   desiredChainId,
@@ -43,12 +44,23 @@ export default function WalletProvider({
       desiredChainId={desiredChainId}
       chainRpc={chainRpc}
       supportedChains={supportedChains}
-      sdkOptions={sdkOptions}>
+      sdkOptions={sdkOptions}
+    >
       <Wrap>
-        {(dabu: any) => {
+        {({
+          dabu,
+          address,
+          connect,
+        }: {
+          dabu: any;
+          address: string;
+          connect: () => Promise<any>;
+        }) => {
           return children({
             connected: connected,
             dabu: dabu,
+            address: address,
+            connect,
           });
         }}
       </Wrap>

@@ -3,7 +3,8 @@ import React from 'react';
 import {ApolloProvider} from '@apollo/client';
 import client from '../src/middleware/graphql/apollo-client';
 import type {AppProps /*, AppContext */, NextWebVitalsMetric} from 'next/app';
-import Navbar from '../src/components/Navbar';
+import Navbar from '../src/components/ui/Navbar';
+import Footer from '../src/components/ui/Footer';
 import {Provider} from 'react-redux';
 // @ts-ignore
 import {store} from '../src/store';
@@ -11,29 +12,14 @@ import Head from 'next/head';
 import metrics from '../src/metrics';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import WalletProvider from '../dabu/WalletProvider';
-import {ChainId, ThirdwebProvider, useAddress} from '@thirdweb-dev/react';
-import dynamic from 'next/dynamic';
-import Footer from '@/src/components/Footer';
+import {ChainId} from '@thirdweb-dev/react';
+import TwitchEmbed from '@/src/components/blocks/TwitchEmbed';
 function MyApp({Component, pageProps}: AppProps) {
   return (
     <WalletProvider
       desiredChainId={ChainId.Polygon}
-      chainRpc={{
-        [ChainId.Polygon]:
-          'https://polygon-mainnet.infura.io/v3/157c8192a65149daa7bea1a4b17d3abf',
-      }}
-      supportedChains={[ChainId.Mainnet, ChainId.Polygon]}
-      // sdkOptions={{
-      //   gasSettings: {maxPriceInGwei: 500, speed: 'fast'},
-      //   gasless: {
-      //     openzeppelin: {
-      //       relayerForwarderAddress:'0x140786e784015c1aebcac3238414a41bfcbc4ea9',
-      //       relayerUrl: process.env.NEXT_PUBLIC_OPENZEPPELIN_URL,
-      //     },
-      //   },
-      // }}
-    >
-      {({connected,dabu}) => {
+      supportedChains={[ChainId.Mainnet, ChainId.Polygon]}>
+      {({connected, dabu, address, connect}) => {
         // console.log('pageProps',dabu);
 
         return (
@@ -50,7 +36,7 @@ function MyApp({Component, pageProps}: AppProps) {
                   display: flex;
                   flex-direction: column;
                   height: 100%;
-                  font-family: 'Inter',monospace;
+                  font-family: 'Inter', monospace;
                 }
 
                 body {
@@ -148,20 +134,26 @@ function MyApp({Component, pageProps}: AppProps) {
             </style>
 
             <Provider store={store}>
-              <>
-                <Navbar />
-                {/*TODO: Create Layout*/}
-                <div id='tako' className='position-relative'>
-                  <Component
-                    {...{
-                      ...pageProps,
-                      connected: connected,
-                      dabu,
-                    }}
-                  />
+              <Navbar
+                siteTitle={"Moika's Lookout"}
+                address={address}
+                connect={connect}
+              />
+              {/*TODO: Create Layout*/}
+              <div id='tako' className='position-relative'>
+                <Component
+                  {...{
+                    ...pageProps,
+                    connected: connected,
+                    dabu,
+                    address,
+                    connect,
+                  }}
+                />
+                <div className='position-absolute bottom-0 end-0'>
+                  <TwitchEmbed />
                 </div>
-                {/* <Footer /> */}
-              </>
+              </div>
             </Provider>
           </ApolloProvider>
         );
