@@ -8,31 +8,11 @@ import H from '../src/components/common/H';
 import {runTime} from '../dabu/helpers';
 import Web3 from 'web3';
 import TwitchEmbed from '@/src/components/blocks/TwitchEmbed';
+import Chatbot from '@/src/components/ui/Chatbot';
+import MoiLinkTree from '@/src/components/ui/MoiLinkTree';
 var BN: any = Web3.utils.hexToNumberString;
-// export async function getStaticProps(context: any, dabu: any) {
-//   const getLatestListed = async () => {
-//     // INIT Dabu
-//     var dabu = new DABU(process.env.AKKORO_ENV);
-//     console.log('dabu', dabu, await dabu.get_latest_nft_listing());
-//     //Get Active Listings
-//     const latestListing: any = await dabu.get_latest_nft_listing();
 
-//     return latestListing;
-//   };
-//   const {scriptDuration: duration, res: latestListing} = await runTime(
-//     getLatestListed
-//   );
-//   return {
-//     props: {
-//       latestListing: JSON.stringify(latestListing),
-//       scriptDuration: duration,
-//     },
-//     // - At most once every 10 seconds
-//     revalidate: 15, // In seconds
-//   };
-// }
-
-export default function Dragon({latestListing}: any): JSX.Element {
+export default function Index(): JSX.Element {
   return (
     <>
       <style jsx global>
@@ -79,32 +59,8 @@ export default function Dragon({latestListing}: any): JSX.Element {
         twitter='moikaslookout'
         keywords='gaming, nfts, web3'
       />
-      <div className='wrapper d-flex flex-column position-relative'>
-        <h1 className='mt-5'>Welcome!</h1>
-        {/* Our Contract Section */}
-        <div className=' mb-5'>
-          <h4>
-            <span className='border-bottom border-dark pe-5'>
-              Our Contracts
-            </span>
-          </h4>
-          <p className='fs-6'>
-            Ethereum Exchange Contract:{' '}
-            <a
-              target='_blank'
-              href='https://etherscan.com/address/0x61f46e5835434DC2990492336dF84C3Fbd1ac468'>
-              0x61f46e5835434DC2990492336dF84C3Fbd1ac468
-            </a>
-          </p>
-          <p className='fs-6'>
-            Polygon Exchange Contract:{' '}
-            <a
-              target={'_blank'}
-              href='https://polygonscan.com/address/0x342a4abec68e1cdd917d6f33fbf9665a39b14ded'>
-              0x342a4aBEc68E1cdD917D6f33fBF9665a39B14ded
-            </a>
-          </p>
-        </div>
+      <div className='wrapper d-flex flex-column justify-content-center align-items-center'>
+        <MoiLinkTree/>
       </div>
     </>
   );
