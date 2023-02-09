@@ -2,13 +2,13 @@ import React, {Fragment, useEffect, useState} from 'react';
 //@ts-ignore
 import SEO from '../src/components/common/SEO';
 // @ts-ignore
-import NFTCARD from '../src/components/ui/NFTCard';
-import DABU from '../dabu';
-import H from '../src/components/common/H';
-import {runTime} from '../dabu/helpers';
+// import NFTCARD from '../src/components/ui/NFTCard';
+// import DABU from '../dabu';
+// import H from '../src/components/common/H';
+// import {runTime} from '../dabu/helpers';
 import Web3 from 'web3';
-import TwitchEmbed from '@/src/components/blocks/TwitchEmbed';
-import Chatbot from '@/src/components/ui/Chatbot';
+// import TwitchEmbed from '@/src/components/blocks/TwitchEmbed';
+// import Chatbot from '@/src/components/ui/Chatbot';
 import MoiLinkTree from '@/src/components/ui/MoiLinkTree';
 var BN: any = Web3.utils.hexToNumberString;
 

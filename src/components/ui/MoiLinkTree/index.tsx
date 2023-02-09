@@ -23,7 +23,7 @@ const links: {label: string; url: string}[] = [
   },
   {
     label: 'Discord',
-    url: 'https://discord.gg/3Z5Y4Y4',
+    url: 'https://discord.gg/DnbkrC8',
   },
   {
     label: 'Twitch',
