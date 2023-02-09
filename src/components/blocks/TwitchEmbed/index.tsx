@@ -18,8 +18,7 @@ export default function TwitchEmbed(props: any): React.ReactElement | null {
     }
   }, []);
   return (
-    <div>
-
+    <div className='d-none d-md-flex'>
       <div id={props.targetID}></div>
     </div>
   );
