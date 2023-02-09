@@ -48,7 +48,7 @@ export default function MoiLinkTree() {
           // background:#000;
         }
       `}</style>
-      <div className='mlt d-flex flex-column align-items-center'>
+      <div className='mlt d-none d-md-flex flex-column align-items-center'>
         <h1 className=''>Welcome to Moika's Lookout!!</h1>
         <p className='text-capitalize'>
           A Simple Link Tree To Take you to all of our official links
